@@ -4,20 +4,22 @@
     :to="`/competition/${league_properties.id}`"
     @click="setToolBarInfo()"
   >
+
     <v-img
       :src="require(`@/assets/leagues_logo/league_${league_properties.code}.png`)"
       aspect-ratio="1"
+      max-height="180"
       contain
     >
     </v-img>
 
-    <v-card-title primary-title>
-      <div>
+    <v-card-text class=" text-xs-center">
+      <div class="pt-3">
         <div class="subtitle">{{league_properties.name}}</div>
         <span class="grey--text">{{league_properties.area.name}}</span>
         <span class="grey--text">{{league_properties.id}}</span>
       </div>
-    </v-card-title>
+    </v-card-text>
 
   </v-card>
 </template>

@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
 import Matches from "./views/Matches.vue";
+import MatchInfo from "./views/MatchInfo.vue";
 
 Vue.use(Router);
 
@@ -13,19 +14,16 @@ export default new Router({
       component: Home
     },
     {
-      path: "/competition/:id",
+      path: "/competition/:id_competition",
       name: "competition",
       component: Matches,
-      props: true,
-      children: [
-        {
-          // About will be rendered inside Matches's <router-view>
-          // when /user/:id/profile is matched
-          path: "match",
-          component: () =>
-            import(/* webpackChunkName: "about" */ "./views/About.vue")
-        }
-      ]
+      props: true
+    },
+    {
+      path: "/competition/:id_competition/match/:id_match",
+      name: "competition",
+      component: MatchInfo,
+      props: true
     },
     {
       path: "/about",

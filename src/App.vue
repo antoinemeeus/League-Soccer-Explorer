@@ -2,12 +2,11 @@
   <v-app>
     <v-navigation-drawer
       app
-      fixed
       clipped
       v-model="drawer"
       width="220"
     >
-      <v-list>
+      <v-list dense>
         <v-list-tile>
           <v-list-tile-action>
             <v-icon>home</v-icon>
@@ -31,11 +30,11 @@
     </v-navigation-drawer>
 
     <v-toolbar
-      color="indigo"
-      dark
-      app
       fixed
       clipped-left
+      app
+      color="indigo"
+      dark
     >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer></v-spacer>
@@ -52,6 +51,7 @@
       />
 
     </v-toolbar>
+
     <v-content>
 
       <router-view />

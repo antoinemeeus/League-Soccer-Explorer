@@ -12,6 +12,8 @@
         :key="i"
         class="pa-2"
         xs6
+        sm4
+        md3
       >
         <LeagueCard
           :img_code="jsonFileImported.competitions[i-1].code"

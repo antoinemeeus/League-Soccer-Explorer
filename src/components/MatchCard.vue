@@ -17,12 +17,15 @@
               <v-list-tile-avatar color="grey darken-3">
                 <v-img
                   class="elevation-6"
-                  :src="require(`@/assets/placeholdershield.png`)"
+                  :src="cardTeams.homeTeam.crestUrl"
                 ></v-img>
               </v-list-tile-avatar>
 
               <v-list-tile-content>
-                <v-list-tile-title :class="{'grey--text': !isHomeWinner}">{{indvMatch.homeTeam.name}}</v-list-tile-title>
+                <v-list-tile-title
+                  class="body-2"
+                  :class="{'grey--text': isAwayWinner}"
+                >{{indvMatch.homeTeam.name}}</v-list-tile-title>
               </v-list-tile-content>
               <v-layout
                 align-center
@@ -37,12 +40,15 @@
               <v-list-tile-avatar color="grey darken-3">
                 <v-img
                   class="elevation-6"
-                  :src="require(`@/assets/placeholdershield.png`)"
+                  :src="cardTeams.awayTeam.crestUrl"
                 ></v-img>
               </v-list-tile-avatar>
 
               <v-list-tile-content>
-                <v-list-tile-title :class="{'grey--text':isHomeWinner}">{{indvMatch.awayTeam.name}}</v-list-tile-title>
+                <v-list-tile-title
+                  class="body-2"
+                  :class="{'grey--text':isHomeWinner}"
+                >{{indvMatch.awayTeam.name}}</v-list-tile-title>
               </v-list-tile-content>
 
               <v-layout
@@ -84,7 +90,7 @@
 <script>
 export default {
   name: "MatchCard",
-  props: ["indvMatch"],
+  props: ["indvMatch", "cardTeams"],
   data: () => ({}),
   methods: {
     getLocalDateAndTime(utcD) {
@@ -107,6 +113,9 @@ export default {
   computed: {
     isHomeWinner() {
       return this.indvMatch.score.winner === "HOME_TEAM";
+    },
+    isAwayWinner() {
+      return this.indvMatch.score.winner === "AWAY_TEAM";
     },
     localTime() {
       return this.getLocalDateAndTime(this.indvMatch.utcDate);
