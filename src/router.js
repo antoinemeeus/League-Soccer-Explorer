@@ -20,11 +20,12 @@ export default new Router({
       props: true
     },
     {
-      path: "/competition/:id_competition/match/:id_match",
-      name: "competition",
+      path: "/match/:id_match",
+      name: "matchinfo",
       component: MatchInfo,
       props: true
     },
+
     {
       path: "/about",
       name: "about",

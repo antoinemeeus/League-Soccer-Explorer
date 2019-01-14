@@ -1,12 +1,13 @@
 <template>
   <v-card
     height="250"
-    :to="`/competition/${league_properties.id}`"
-    @click="setToolBarInfo()"
+    :to="{ name: 'competition' , params:{ id_competition:league_properties.id }}"
+    @click="sendLeagueInfoStore()"
   >
 
     <v-img
-      :src="require(`@/assets/leagues_logo/league_${league_properties.code}.png`)"
+      :src="
+      require(`@/assets/leagues_logo/league_${league_properties.code}.png`)"
       aspect-ratio="1"
       max-height="180"
       contain
@@ -30,11 +31,10 @@ export default {
   props: ["league_properties"],
   data: () => ({}),
   methods: {
-    setToolBarInfo() {
-      this.$store.commit("SET_TITLE", this.league_properties.name);
-      this.$store.commit("SET_ICON", this.league_properties.code);
+    sendLeagueInfoStore() {
+      this.$store.commit("SET_LEAGUE_ICON", this.league_properties.code);
+      this.$store.commit("SET_APP_TITLE", this.league_properties.name);
     }
   }
 };
 </script>
-

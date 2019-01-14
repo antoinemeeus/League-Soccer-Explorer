@@ -44,18 +44,35 @@
       <v-spacer></v-spacer>
       <v-img
         class="pr-2"
-        :src="toolBarIcon"
+        :src="require(`@/assets/leagues_logo/league_${toolBarIcon}.png`)"
         contain
         max-height="50"
         min-height="40"
       />
-
+      <v-layout
+        slot="extension"
+        align-center
+      >
+        <v-flex xs4>
+          <v-btn
+            v-if="goBackButton"
+            icon
+            @click="$router.go(-1)"
+          >
+            <v-icon>arrow_back</v-icon>
+          </v-btn>
+        </v-flex>
+        <v-flex>
+          <h4> Season: {{seasonTitle}}</h4>
+          <h4> {{pageTitle}} </h4>
+        </v-flex>
+      </v-layout>
     </v-toolbar>
 
     <v-content>
-
-      <router-view />
-
+      <v-fade-transition mode="out-in">
+        <router-view></router-view>
+      </v-fade-transition>
     </v-content>
 
     <v-footer
@@ -101,7 +118,10 @@ export default {
   data() {
     return {
       drawer: null,
-      leagueSelected: false
+      toolBarIcon: "",
+      appTitle: "",
+      seasonTitle: "",
+      pageTitle: ""
     };
   },
   methods: {
@@ -110,19 +130,54 @@ export default {
     },
     setIcon(newSrc) {
       this.$store.commit("SET_ICON", newSrc);
+    },
+    getYearFromDate(strDate) {
+      var d = new Date(strDate);
+      return d.getFullYear();
+    },
+    currentSeasonYears(seasonObj) {
+      return (
+        this.getYearFromDate(seasonObj.startDate) +
+        "-" +
+        this.getYearFromDate(seasonObj.endDate)
+      );
+    },
+    capitalizeFirstLetter(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
     }
   },
   computed: {
-    ...mapState(["appTitle", "toolBarIcon"])
+    ...mapState(["app_title", "league_icon", "league_matches"]),
+    leagueSelected() {
+      //console.log(this.$router.app._route.name);
+      if (this.$router.app._route.name == "home") return false;
+      return true;
+    },
+    goBackButton() {
+      return this.$router.app._route.name != "home";
+    }
   },
+  created() {
+    this.appTitle = "League Soccer Explorer";
+    this.pageTitle = "Leagues And Cups";
+    this.toolBarIcon = "Home";
+    this.seasonTitle = this.currentSeasonYears(
+      this.league_matches.matches[0].season
+    );
+  },
+
   watch: {
     $route(to, from) {
+      console.log(to);
+      this.appTitle = this.app_title;
+      this.pageTitle = this.capitalizeFirstLetter(to.name);
+
       if (to.name == "home") {
-        console.log("Route changed");
-        this.setTitle("Football League Explorer");
-        this.setIcon("Home");
-        this.leagueSelected = false;
-      } else this.leagueSelected = true;
+        console.log("We are in home");
+        this.appTitle = "Leagues And Cups";
+        this.$store.commit("SET_LEAGUE_ICON", "Home");
+      }
+      this.toolBarIcon = this.league_icon;
     }
   }
 };

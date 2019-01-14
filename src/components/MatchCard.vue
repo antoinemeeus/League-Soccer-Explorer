@@ -1,6 +1,9 @@
 <template>
-
-  <v-card>
+  <v-card
+    :raised="iscurrentMatch"
+    :color="dynamicColor"
+    :to="{ name: 'matchinfo' , params:{ id_match:indvMatch.id, displayed_match:indvMatch }}"
+  >
     <v-container fluid>
       <v-layout
         row
@@ -14,7 +17,10 @@
         <v-layout column>
           <v-flex xs9>
             <v-list-tile>
-              <v-list-tile-avatar color="grey darken-3">
+              <v-list-tile-avatar
+                size="40"
+                color="grey darken-3"
+              >
                 <v-img
                   class="elevation-6"
                   :src="cardTeams.homeTeam.crestUrl"
@@ -40,6 +46,7 @@
               <v-list-tile-avatar color="grey darken-3">
                 <v-img
                   class="elevation-6"
+                  size="40"
                   :src="cardTeams.awayTeam.crestUrl"
                 ></v-img>
               </v-list-tile-avatar>
@@ -90,7 +97,7 @@
 <script>
 export default {
   name: "MatchCard",
-  props: ["indvMatch", "cardTeams"],
+  props: ["indvMatch", "cardTeams", "iscurrentMatch"],
   data: () => ({}),
   methods: {
     getLocalDateAndTime(utcD) {
@@ -123,6 +130,9 @@ export default {
     isSchedule() {
       return this.indvMatch.status === "SCHEDULED";
     },
+    dynamicColor() {
+      return this.iscurrentMatch ? "grey" : "";
+    },
     periodScore() {
       var _score = this.indvMatch.score;
       var obj = { name: "Scheduled", score: _score.halfTime };
@@ -139,4 +149,3 @@ export default {
   }
 };
 </script>
-

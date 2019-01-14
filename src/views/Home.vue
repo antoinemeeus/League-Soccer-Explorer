@@ -35,14 +35,7 @@ export default {
   },
   data() {
     return {
-      jsonFileImported: TempCompetition,
-      leagues: [
-        { name: "Champions League", country: "Europe" },
-        { name: "Primeira Liga", country: "Portugal" },
-        { name: "Premier League", country: "Portugal" },
-        { name: "Eredivisie", country: "Portugal" },
-        { name: "Bundesliga", country: "Portugal" }
-      ]
+      jsonFileImported: TempCompetition
     };
   }
 };

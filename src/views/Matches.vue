@@ -1,32 +1,24 @@
 <template>
 
-  <v-container>
-    <v-tabs fixed-tabs>
-      <v-tab
-        v-for="n in 3"
-        :key="n"
-      >
-        Item {{ n }}
-      </v-tab>
-    </v-tabs>
+  <v-container fluid>
     <v-layout
-      align-center
       justify-center
-      column
-      fill-height
+      pb-2
     >
-      <h1 class="headlines"> {{currentSeasonYears(currentLeagueInfo.currentSeason.startDate,currentLeagueInfo.currentSeason.endDate)}} Season</h1>
-      <h2 class="subheading"> Matchday {{currentMatchDay}}</h2>
+      <v-progress-circular
+        :size="50"
+        color="primary"
+        indeterminate
+      ></v-progress-circular>
     </v-layout>
-
     <v-layout
-      id="scrollContainer"
       column
       v-for="matchDay in sortedMatchDaysDisplayed"
-      :key="matchDay.id"
+      :key="matchDay"
     >
+
       <v-flex>
-        <v-subheader class="title py-3">Matchday {{matchDay}} of {{lastMatchDay}}</v-subheader>
+        <h2 class="title py-3">Matchday {{matchDay}} of {{lastMatchDay}}</h2>
       </v-flex>
 
       <v-layout
@@ -37,16 +29,29 @@
           sm6
           xs12
           class="py-1"
-          v-for="match in matchesInMatchDay(matchDay)"
+          v-for="match in getMatchesInMatchDay(matchDay)"
           :key="match.id"
-          :class="{'scroll_target': isTodayMatch(match)}"
+          :class="{'scroll_target current-match-card': match.id===nextMatch.id}"
         >
+
           <MatchCard
+            :iscurrentMatch="match.id===nextMatch.id"
             :indvMatch="match"
             :cardTeams="getTeamsFromMatch(match)"
           />
         </v-flex>
       </v-layout>
+
+    </v-layout>
+    <v-layout
+      justify-center
+      pt-2
+    >
+      <v-progress-circular
+        :size="50"
+        color="primary"
+        indeterminate
+      ></v-progress-circular>
     </v-layout>
   </v-container>
 
@@ -65,27 +70,33 @@ export default {
   props: ["id_competition"],
   data() {
     return {
-      offsetTop: 10,
-      loading: false,
+      offsetTop: 50,
       lastScrollHeight: 0,
       lastBottomHeight: 0,
       matchDaysDisplayed: [],
       options: {
         duration: 0,
-        offset: -50,
+        offset: -300, //-(document.documentElement.clientHeight / 2),
         easing: "easeInOutCubic"
       }
     };
   },
   beforeMount() {
-    console.log(this.currentMatchDay);
+    //We add current and previous matchday to list
     this.matchDaysDisplayed.push(this.currentMatchDay);
+    this.currentMatchDay - 1 >= 0
+      ? this.matchDaysDisplayed.push(this.currentMatchDay - 1)
+      : null;
   },
 
   mounted() {
+    //Jump to current or nextMatch
+    let self = this;
+    setTimeout(function() {
+      self.$vuetify.goTo(".scroll_target", self.options);
+    }, 500);
     console.log("Inject scroll listener");
     this.onScroll();
-    this.$vuetify.goTo(".scroll_target", this.options);
   },
 
   beforeDestroy() {
@@ -109,6 +120,17 @@ export default {
     currentMatchDay() {
       return this.currentLeagueInfo.currentSeason.currentMatchday;
     },
+    nextMatch() {
+      //Find current or next match by obtaining the next index after the last match with status "FINISHED"
+      var lastIndex = 0;
+      var len = this.league_matches.matches.length;
+      for (let i = 0; i < len - 1; i++) {
+        if (this.league_matches.matches[i].status === "FINISHED") {
+          lastIndex = i;
+        }
+      }
+      return this.league_matches.matches[lastIndex + 1];
+    },
     sortedMatchDaysDisplayed() {
       return this.matchDaysDisplayed.sort((a, b) => a - b);
     }
@@ -117,7 +139,7 @@ export default {
   methods: {
     onScroll() {
       window.onscroll = () => {
-        if (document.documentElement.scrollTop === 0) {
+        if (document.documentElement.scrollTop < this.offsetTop) {
           this.lastScrollHeight = document.documentElement.scrollHeight;
           this.addPrevMatchDay();
         }
@@ -141,52 +163,42 @@ export default {
       return { homeTeam: _homeTeam, awayTeam: _awayTeam };
     },
     addNextMatchDay() {
-      this.loading = true;
       console.log("Adding Next matches...");
 
       let arr = this.matchDaysDisplayed;
       let len = this.matchDaysDisplayed.length;
       let value = arr[len - 1] + 1;
-      //We got the end of the matchDay current list
-      if (value > this.lastMatchDay) return;
-      //Check for duplicates
-      if (arr.includes(value) === false) this.matchDaysDisplayed.push(value);
 
-      this.loading = false;
+      if (value > this.lastMatchDay) return; //We got the end of the matchDay current list
+      //Check for duplicates
+      if (arr.includes(value) === false) {
+        this.matchDaysDisplayed.push(value);
+      }
     },
     addPrevMatchDay() {
-      this.loading = true;
-
       console.log("Adding Previous matches...");
-      //We got the start of the matchDay current list
+
       let arr = this.matchDaysDisplayed;
       let value = arr[0] - 1;
-      if (value < 1) return;
+      if (value < 1) return; //We got the start of the matchDay current list
       //Check for duplicates
-      if (arr.includes(value) === false) this.matchDaysDisplayed.unshift(value);
-
-      this.loading = false;
+      if (arr.includes(value) === false) {
+        this.matchDaysDisplayed.unshift(value);
+      }
     },
 
-    matchesInMatchDay(m_day) {
+    getMatchesInMatchDay(m_day) {
       return this.league_matches.matches.filter(obj => obj.matchday === m_day);
     },
-    isTodayMatch(match) {
-      var date = match.utcDate;
-      var today = new Date().toISOString();
-      if (today < date) return true;
-      return false;
-    },
+
     getYearFromDate(strDate) {
       var d = new Date(strDate);
       return d.getFullYear();
-    },
-    currentSeasonYears(startD, endD) {
-      return this.getYearFromDate(startD) + "-" + this.getYearFromDate(endD);
     }
   },
   watch: {
     matchDaysDisplayed() {
+      //scroll lazy load logic
       if (this.lastBottomHeight <= this.lastScrollHeight)
         document.documentElement.scrollTop +=
           document.documentElement.scrollHeight - this.lastScrollHeight;
@@ -194,3 +206,10 @@ export default {
   }
 };
 </script>
+
+
+<style>
+.v-list__tile {
+  padding-left: 0;
+}
+</style>
