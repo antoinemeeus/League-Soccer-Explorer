@@ -64,7 +64,7 @@
             xs4
             text-xs-center
           >
-            <div class="my-3 title">
+            <div class="my-3 subtitle">
               {{matchHomeTeam.shortName}}
             </div>
           </v-flex>
@@ -73,7 +73,7 @@
             xs4
             text-xs-center
           >
-            <div class=" my-3 title">
+            <div class=" my-3 subtitle">
               {{matchAwayTeam.shortName}}
             </div>
           </v-flex>
@@ -86,31 +86,53 @@
       v-if="currentMatch.status!='SCHEDULED'"
       justify-space-between
     >
-      <v-flex xs4>
-
+      <v-flex xs5>
         <v-list>
-          <div class="text-xs-center">
-            Goaler X 50'
-          </div>
-          <div class="text-xs-center">
-            Goaler Y 10'
-          </div>
+          <v-layout
+            pr-2
+            justify-space-between
+            v-for="goalster in cur_goals_table.homeTeam"
+            :key="goalster.id"
+          >
+            <span class="caption">
+              {{goalster.scorer}}
+            </span>
+            <span class="caption">
+              {{goalster.minute}}'
+            </span>
+
+          </v-layout>
 
         </v-list>
       </v-flex>
 
-      <v-flex xs4>
+      <v-flex
+        xs2
+        align-self-center
+      >
         <v-img
           :src='require("@/assets/goalers.png")'
           contain
         >
         </v-img>
       </v-flex>
-      <v-flex xs4>
+      <v-flex xs5>
         <v-list>
-          <div class="text-xs-center">
-            Goaler Z 6'
-          </div>
+          <v-layout
+            pl-2
+            justify-space-between
+            v-for="goalster in cur_goals_table.awayTeam"
+            :key="goalster.id"
+          >
+            <span class="caption">
+              {{goalster.scorer}}
+            </span>
+            <span class="caption">
+              {{goalster.minute}}'
+            </span>
+
+          </v-layout>
+
         </v-list>
       </v-flex>
 
@@ -118,9 +140,16 @@
     <v-divider></v-divider>
     <v-layout pt-3>
       <v-flex xs12>
-        <v-tabs fixed-tabs>
+        <v-tabs
+          fixed-tabs
+          v-model="tabs"
+          grow
+        >
           <v-tab>
             Lineups
+          </v-tab>
+          <v-tab>
+            Stats
           </v-tab>
           <v-tab>
             Standing
@@ -131,20 +160,67 @@
         </v-tabs>
       </v-flex>
     </v-layout>
+    <v-tabs-items
+      v-model="tabs"
+      class="white elevation-1"
+    >
+      <v-tab-item>
+        <LogoHeader
+          title="Lineups"
+          :homeLogoUrl="matchHomeTeam.crestUrl"
+          :awayLogoUrl="matchAwayTeam.crestUrl"
+        />
+
+        <v-divider></v-divider>
+        <TabLineup :list_="currentMatch_AdditionalInfo.lineup" />
+        <v-divider></v-divider>
+        <LogoHeader
+          title="Substitutes"
+          :homeLogoUrl="matchHomeTeam.crestUrl"
+          :awayLogoUrl="matchAwayTeam.crestUrl"
+        />
+        <v-divider></v-divider>
+        <TabLineup :list_="currentMatch_AdditionalInfo.lineup" />
+      </v-tab-item>
+      <v-tab-item>
+        <LogoHeader
+          title="Team Stats"
+          :homeLogoUrl="matchHomeTeam.crestUrl"
+          :awayLogoUrl="matchAwayTeam.crestUrl"
+        />
+        <v-divider></v-divider>
+        <TabStats :stats="cur_stats" />
+
+      </v-tab-item>
+      <v-tab-item>
+        <v-card>
+          <v-card-text>Tab2</v-card-text>
+        </v-card>
+      </v-tab-item>
+    </v-tabs-items>
   </v-container>
 
 </template>
 
 <script>
 import { mapState } from "vuex";
+import TabStats from "../components/TabStats.vue";
+import TabLineup from "../components/TabLineup.vue";
+import LogoHeader from "../components/LogoHeader.vue";
 
 export default {
   name: "MatchInfo",
 
-  components: {},
+  components: {
+    TabStats,
+    TabLineup,
+    LogoHeader
+  },
   props: ["id_match", "displayed_match"],
   data() {
-    return {};
+    return {
+      tabs: null
+    };
   },
   beforeMount() {},
 
@@ -159,18 +235,47 @@ export default {
       "league_matches_info",
       "league_teams"
     ]),
-
     currentMatch() {
       return (
         this.displayed_match ||
         this.league_matches.matches.find(obj => obj.id == this.id_match)
       );
     },
-    currentMatchLineUp() {
-      //Check if the current match has lineup
-      return this.league_matches_info.filter(
-        obj => obj.matchDay === currentMatch.matchday
-      );
+    currentMatch_AdditionalInfo() {
+      var add_info = this.league_matches_info.find(obj => {
+        var test1 = obj.utcDate === this.currentMatch.utcDate;
+        if (!test1 && obj.matchDay == this.currentMatch.matchday) {
+          var test1 =
+            this.currentMatch.homeTeam.name.includes(
+              obj.homeTeam.name.substring(0, 3)
+            ) &&
+            this.currentMatch.awayTeam.name.includes(
+              obj.awayTeam.name.substring(0, 3)
+            );
+        }
+        return test1;
+      });
+      return add_info;
+    },
+    cur_stats() {
+      //return list of objects
+      return this.currentMatch_AdditionalInfo.stats;
+    },
+    cur_goals_table() {
+      var homeTeamGoalsters = this.currentMatch_AdditionalInfo.goals
+        .filter(obj => obj.tType === "homeTeam")
+        .map((obj, index) => {
+          obj["id"] = index;
+          return obj;
+        });
+      var awayTeamGoalsters = this.currentMatch_AdditionalInfo.goals
+        .filter(obj => obj.tType === "awayTeam")
+        .map((obj, index) => {
+          obj["id"] = index;
+          return obj;
+        });
+
+      return { homeTeam: homeTeamGoalsters, awayTeam: awayTeamGoalsters };
     },
     matchHomeTeam() {
       return this.league_teams.teams.find(
