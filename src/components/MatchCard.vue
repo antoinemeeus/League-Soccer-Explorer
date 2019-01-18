@@ -23,7 +23,7 @@
               >
                 <v-img
                   class="elevation-6"
-                  :src="cardTeams.homeTeam.crestUrl"
+                  :src="indvMatch.homeTeam.crestUrl"
                 ></v-img>
               </v-list-tile-avatar>
 
@@ -47,7 +47,7 @@
                 <v-img
                   class="elevation-6"
                   size="40"
-                  :src="cardTeams.awayTeam.crestUrl"
+                  :src="indvMatch.awayTeam.crestUrl"
                 ></v-img>
               </v-list-tile-avatar>
 
@@ -97,7 +97,7 @@
 <script>
 export default {
   name: "MatchCard",
-  props: ["indvMatch", "cardTeams", "iscurrentMatch"],
+  props: ["indvMatch", "iscurrentMatch"],
   data: () => ({}),
   methods: {
     getLocalDateAndTime(utcD) {

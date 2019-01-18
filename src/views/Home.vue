@@ -8,16 +8,16 @@
       wrap
     >
       <v-flex
-        v-for="i in jsonFileImported.count"
-        :key="i"
+        v-for="competition in league_competition.competitions"
+        :key="competition.id"
         class="pa-2"
         xs6
         sm4
         md3
       >
         <LeagueCard
-          :img_code="jsonFileImported.competitions[i-1].code"
-          :league_properties="jsonFileImported.competitions[i-1]"
+          :img_code="competition.code"
+          :league_properties="competition"
         />
       </v-flex>
 
@@ -26,17 +26,18 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import LeagueCard from "../components/LeagueCard";
-import TempCompetition from "../assets/Competitions.json";
 export default {
   name: "Home",
   components: {
     LeagueCard
   },
   data() {
-    return {
-      jsonFileImported: TempCompetition
-    };
+    return {};
+  },
+  computed: {
+    ...mapState(["league_competition"])
   }
 };
 </script>

@@ -4,6 +4,7 @@ import "@mdi/font/css/materialdesignicons.css"; // Ensure you are using css-load
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import _ from "lodash";
 
 Vue.config.productionTip = false;
 

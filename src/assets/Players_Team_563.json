@@ -1,0 +1,324 @@
+{
+  "id": 563,
+  "area": {
+    "id": 2072,
+    "name": "England"
+  },
+  "activeCompetitions": [
+    {
+      "id": 2021,
+      "area": {
+        "id": 2072,
+        "name": "England"
+      },
+      "name": "Premier League",
+      "code": "PL",
+      "plan": "TIER_ONE",
+      "lastUpdated": "2019-01-18T00:00:21Z"
+    }
+  ],
+  "name": "West Ham United FC",
+  "shortName": "West Ham",
+  "tla": "WHU",
+  "crestUrl": "http://upload.wikimedia.org/wikipedia/de/e/e0/West_Ham_United_FC.svg",
+  "address": "Green Street, Upton Park London E13 9AZ",
+  "phone": "+44 (020) 85482794",
+  "website": "http://www.whufc.com",
+  "email": "yourcomments@westhamunited.co.uk",
+  "founded": 1895,
+  "clubColors": "Claret / Sky Blue",
+  "venue": "London Stadium",
+  "squad": [
+    {
+      "id": 3526,
+      "name": "Łukasz Fabiański",
+      "position": "Goalkeeper",
+      "dateOfBirth": "1985-04-18T00:00:00Z",
+      "countryOfBirth": "Poland",
+      "nationality": "Poland",
+      "shirtNumber": 1,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8197,
+      "name": "Adrián",
+      "position": "Goalkeeper",
+      "dateOfBirth": "1987-01-03T00:00:00Z",
+      "countryOfBirth": "Spain",
+      "nationality": "Spain",
+      "shirtNumber": 13,
+      "role": "PLAYER"
+    },
+    {
+      "id": 1436,
+      "name": "Fabián Balbuena",
+      "position": "Defender",
+      "dateOfBirth": "1991-08-23T00:00:00Z",
+      "countryOfBirth": "Paraguay",
+      "nationality": "Paraguay",
+      "shirtNumber": 4,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8200,
+      "name": "Winston Reid",
+      "position": "Defender",
+      "dateOfBirth": "1988-07-03T00:00:00Z",
+      "countryOfBirth": "New Zealand",
+      "nationality": "New Zealand",
+      "shirtNumber": null,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8201,
+      "name": "Aaron Cresswell",
+      "position": "Defender",
+      "dateOfBirth": "1989-12-15T00:00:00Z",
+      "countryOfBirth": "England",
+      "nationality": "England",
+      "shirtNumber": 3,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8202,
+      "name": "Angelo Ogbonna",
+      "position": "Defender",
+      "dateOfBirth": "1988-05-23T00:00:00Z",
+      "countryOfBirth": "Italy",
+      "nationality": "Italy",
+      "shirtNumber": 21,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8204,
+      "name": "Arthur Masuaku",
+      "position": "Defender",
+      "dateOfBirth": "1993-11-07T00:00:00Z",
+      "countryOfBirth": "France",
+      "nationality": "Congo DR",
+      "shirtNumber": 26,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8205,
+      "name": "Pablo Zabaleta",
+      "position": "Defender",
+      "dateOfBirth": "1985-01-16T00:00:00Z",
+      "countryOfBirth": "Argentina",
+      "nationality": "Argentina",
+      "shirtNumber": 5,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8296,
+      "name": "Issa Diop",
+      "position": "Defender",
+      "dateOfBirth": "1997-01-09T00:00:00Z",
+      "countryOfBirth": "France",
+      "nationality": "France",
+      "shirtNumber": 23,
+      "role": "PLAYER"
+    },
+    {
+      "id": 2060,
+      "name": "Felipe Anderson",
+      "position": "Midfielder",
+      "dateOfBirth": "1993-04-15T00:00:00Z",
+      "countryOfBirth": "Brazil",
+      "nationality": "Brazil",
+      "shirtNumber": 8,
+      "role": "PLAYER"
+    },
+    {
+      "id": 3213,
+      "name": "Manuel Lanzini",
+      "position": "Midfielder",
+      "dateOfBirth": "1993-02-15T00:00:00Z",
+      "countryOfBirth": "Argentina",
+      "nationality": "Argentina",
+      "shirtNumber": null,
+      "role": "PLAYER"
+    },
+    {
+      "id": 3322,
+      "name": "Jack Wilshere",
+      "position": "Midfielder",
+      "dateOfBirth": "1992-01-01T00:00:00Z",
+      "countryOfBirth": "England",
+      "nationality": "England",
+      "shirtNumber": 19,
+      "role": "PLAYER"
+    },
+    {
+      "id": 3729,
+      "name": "Carlos Sánchez",
+      "position": "Midfielder",
+      "dateOfBirth": "1986-02-26T00:00:00Z",
+      "countryOfBirth": "Colombia",
+      "nationality": "Colombia",
+      "shirtNumber": 15,
+      "role": "PLAYER"
+    },
+    {
+      "id": 3908,
+      "name": "Robert Snodgrass",
+      "position": "Midfielder",
+      "dateOfBirth": "1987-09-07T00:00:00Z",
+      "countryOfBirth": "Scotland",
+      "nationality": "Scotland",
+      "shirtNumber": 11,
+      "role": "PLAYER"
+    },
+    {
+      "id": 3966,
+      "name": "Ryan Fredericks",
+      "position": "Midfielder",
+      "dateOfBirth": "1992-10-10T00:00:00Z",
+      "countryOfBirth": "England",
+      "nationality": "England",
+      "shirtNumber": 24,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8209,
+      "name": "Mark Noble",
+      "position": "Midfielder",
+      "dateOfBirth": "1987-05-08T00:00:00Z",
+      "countryOfBirth": "England",
+      "nationality": "England",
+      "shirtNumber": 16,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8210,
+      "name": "Perico",
+      "position": "Midfielder",
+      "dateOfBirth": "1992-03-27T00:00:00Z",
+      "countryOfBirth": "Spain",
+      "nationality": "Equatorial Guinea",
+      "shirtNumber": 14,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8212,
+      "name": "Michail Antonio",
+      "position": "Midfielder",
+      "dateOfBirth": "1990-03-28T00:00:00Z",
+      "countryOfBirth": "England",
+      "nationality": "England",
+      "shirtNumber": 30,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8214,
+      "name": "Grady Diangana",
+      "position": "Midfielder",
+      "dateOfBirth": "1998-04-19T00:00:00Z",
+      "countryOfBirth": "England",
+      "nationality": "England",
+      "shirtNumber": 45,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8215,
+      "name": "Declan Rice",
+      "position": "Midfielder",
+      "dateOfBirth": "1999-01-14T00:00:00Z",
+      "countryOfBirth": "England",
+      "nationality": "Republic of Ireland",
+      "shirtNumber": 41,
+      "role": "PLAYER"
+    },
+    {
+      "id": 92862,
+      "name": "Joe Powell",
+      "position": "Midfielder",
+      "dateOfBirth": "1998-10-30T00:00:00Z",
+      "countryOfBirth": "England",
+      "nationality": "England",
+      "shirtNumber": 50,
+      "role": "PLAYER"
+    },
+    {
+      "id": 92863,
+      "name": "Conor Coventry",
+      "position": "Midfielder",
+      "dateOfBirth": "2000-03-25T00:00:00Z",
+      "countryOfBirth": "Republic of Ireland",
+      "nationality": "Republic of Ireland",
+      "shirtNumber": 54,
+      "role": "PLAYER"
+    },
+    {
+      "id": 93,
+      "name": "Lucas Pérez",
+      "position": "Attacker",
+      "dateOfBirth": "1988-09-10T00:00:00Z",
+      "countryOfBirth": "Spain",
+      "nationality": "Spain",
+      "shirtNumber": 27,
+      "role": "PLAYER"
+    },
+    {
+      "id": 163,
+      "name": "Andriy Yarmolenko",
+      "position": "Attacker",
+      "dateOfBirth": "1989-10-23T00:00:00Z",
+      "countryOfBirth": "Russia",
+      "nationality": "Ukraine",
+      "shirtNumber": 20,
+      "role": "PLAYER"
+    },
+    {
+      "id": 3302,
+      "name": "Javier Hernández",
+      "position": "Attacker",
+      "dateOfBirth": "1988-06-01T00:00:00Z",
+      "countryOfBirth": "Mexico",
+      "nationality": "Mexico",
+      "shirtNumber": 17,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8219,
+      "name": "Andy Carroll",
+      "position": "Attacker",
+      "dateOfBirth": "1989-01-06T00:00:00Z",
+      "countryOfBirth": "England",
+      "nationality": "England",
+      "shirtNumber": 9,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8221,
+      "name": "Nathan Holland",
+      "position": "Attacker",
+      "dateOfBirth": "1998-06-19T00:00:00Z",
+      "countryOfBirth": "England",
+      "nationality": "England",
+      "shirtNumber": null,
+      "role": "PLAYER"
+    },
+    {
+      "id": 8223,
+      "name": "Marko Arnautović",
+      "position": "Attacker",
+      "dateOfBirth": "1989-04-19T00:00:00Z",
+      "countryOfBirth": "Austria",
+      "nationality": "Austria",
+      "shirtNumber": 7,
+      "role": "PLAYER"
+    },
+    {
+      "id": 11630,
+      "name": "Manuel Pellegrini",
+      "position": null,
+      "dateOfBirth": "1953-09-16T00:00:00Z",
+      "countryOfBirth": "Chile",
+      "nationality": "Chile",
+      "shirtNumber": null,
+      "role": "COACH"
+    }
+  ],
+  "lastUpdated": "2018-10-15T15:09:16Z"
+}

@@ -1,51 +1,57 @@
 <template>
 
-  <v-container fluid>
+  <v-container
+    row
+    justify-space-between
+  >
     <v-layout
+      row
       justify-space-between
-      pt-3
-      v-for="index in maxListLenght"
-      :key="index"
     >
-      <v-flex
-        text-xs-center
-        xs1
-      >
-        {{list_.homeTeam[index].shirtNumber}}
+      <v-flex xs5>
+        <v-layout
+          py-1
+          justify-space-between
+          v-for="player in list_.homeTeam"
+          :key="player.shirtNumber"
+        >
+          <v-flex>
+            {{player.shirtNumber}}
+          </v-flex>
+          <v-flex text-xs-right>
+            {{player.name}}
+          </v-flex>
+        </v-layout>
       </v-flex>
-      <v-flex
-        text-xs-left
-        xs3
-      >
-        {{list_.homeTeam[index].name}}
-      </v-flex>
-      <v-spacer></v-spacer>
-      <v-flex
-        text-xs-right
-        xs3
-      >
-        {{list_.awayTeam[index].name}}
-      </v-flex>
-      <v-flex
-        text-xs-center
-        xs1
-      >
-        {{list_.homeTeam[index].shirtNumber}}
+
+      <v-flex xs5>
+        <v-layout
+          py-1
+          justify-space-between
+          v-for="player in list_.awayTeam"
+          :key="player.shirtNumber"
+        >
+          <v-flex text-xs-left>
+            {{player.name}}
+          </v-flex>
+          <v-flex text-xs-right>
+            {{player.shirtNumber}}
+          </v-flex>
+        </v-layout>
       </v-flex>
     </v-layout>
-
   </v-container>
 </template>
 
 <script>
 export default {
-  name: "TabStat",
+  name: "TabLineup",
   props: ["list_"],
   data: () => ({}),
   methods: {},
 
   computed: {
-    maxListLenght() {
+    maxListIndex() {
       return this.list_.homeTeam.length >= this.list_.awayTeam.length
         ? this.list_.homeTeam.length - 1
         : this.list_.awayTeam.lenght - 1;

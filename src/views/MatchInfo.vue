@@ -1,6 +1,15 @@
 <template>
-  <v-container fluid>
-    <v-layout>
+  <v-container
+    column
+    px-0
+  >
+    <v-layout
+      v-touch="{
+      left: () => getNextMatch(), 
+      right: () =>getPreviousMatch(),
+    }"
+      px-2
+    >
       <v-flex xs12>
         <v-layout
           px-2
@@ -29,14 +38,17 @@
             xs4
             text-xs-center
           >
-            <v-img
-              :src="matchHomeTeam.crestUrl"
-              max-height="80px"
-              contain
-            ></v-img>
+            <router-link :to="{name:'teaminfo' , params:{ id_team:matchHomeTeam.id, displayed_team:this.matchHomeTeam }}">
+              <v-img
+                :src="matchHomeTeam.crestUrl"
+                max-height="80px"
+                contain
+              ></v-img>
+            </router-link>
 
           </v-flex>
           <v-layout
+            px-2
             justify-space-between
             align-center
           >
@@ -51,12 +63,13 @@
             xs4
             text-xs-center
           >
-            <v-img
-              :src="matchAwayTeam.crestUrl"
-              max-height="80px"
-              contain
-            ></v-img>
-
+            <router-link :to="{name:'teaminfo' , params:{ id_team:matchAwayTeam.id, displayed_team: matchAwayTeam }}">
+              <v-img
+                :src="matchAwayTeam.crestUrl"
+                max-height="80px"
+                contain
+              ></v-img>
+            </router-link>
           </v-flex>
         </v-layout>
         <v-layout>
@@ -81,29 +94,32 @@
 
       </v-flex>
     </v-layout>
+
     <v-divider></v-divider>
+
     <v-layout
+      px-3
       v-if="currentMatch.status!='SCHEDULED'"
       justify-space-between
     >
       <v-flex xs5>
-        <v-list>
-          <v-layout
-            pr-2
-            justify-space-between
-            v-for="goalster in cur_goals_table.homeTeam"
-            :key="goalster.id"
-          >
-            <span class="caption">
-              {{goalster.scorer}}
-            </span>
-            <span class="caption">
-              {{goalster.minute}}'
-            </span>
 
-          </v-layout>
+        <v-layout
+          pr-2
+          py-1
+          justify-space-between
+          v-for="goalster in cur_goals_table.homeTeam"
+          :key="goalster.id"
+        >
+          <span class="caption grey--text">
+            {{goalster.scorer}}
+          </span>
+          <span class="caption grey--text">
+            {{goalster.minute}}'
+          </span>
 
-        </v-list>
+        </v-layout>
+
       </v-flex>
 
       <v-flex
@@ -117,28 +133,28 @@
         </v-img>
       </v-flex>
       <v-flex xs5>
-        <v-list>
-          <v-layout
-            pl-2
-            justify-space-between
-            v-for="goalster in cur_goals_table.awayTeam"
-            :key="goalster.id"
-          >
-            <span class="caption">
-              {{goalster.scorer}}
-            </span>
-            <span class="caption">
-              {{goalster.minute}}'
-            </span>
 
-          </v-layout>
+        <v-layout
+          pl-2
+          py-1
+          justify-space-between
+          v-for="goalster in cur_goals_table.awayTeam"
+          :key="goalster.id"
+        >
+          <span class="caption grey--text">
+            {{goalster.scorer}}
+          </span>
+          <span class="caption grey--text">
+            {{goalster.minute}}'
+          </span>
 
-        </v-list>
+        </v-layout>
+
       </v-flex>
 
     </v-layout>
     <v-divider></v-divider>
-    <v-layout pt-3>
+    <v-layout pt-2>
       <v-flex xs12>
         <v-tabs
           fixed-tabs
@@ -152,10 +168,7 @@
             Stats
           </v-tab>
           <v-tab>
-            Standing
-          </v-tab>
-          <v-tab>
-            News
+            Events
           </v-tab>
         </v-tabs>
       </v-flex>
@@ -180,8 +193,9 @@
           :awayLogoUrl="matchAwayTeam.crestUrl"
         />
         <v-divider></v-divider>
-        <TabLineup :list_="currentMatch_AdditionalInfo.lineup" />
+        <TabLineup :list_="currentMatch_AdditionalInfo.bench" />
       </v-tab-item>
+
       <v-tab-item>
         <LogoHeader
           title="Team Stats"
@@ -193,9 +207,18 @@
 
       </v-tab-item>
       <v-tab-item>
-        <v-card>
-          <v-card-text>Tab2</v-card-text>
-        </v-card>
+        <LogoHeader
+          title="Events"
+          :homeLogoUrl="matchHomeTeam.crestUrl"
+          :awayLogoUrl="matchAwayTeam.crestUrl"
+        />
+        <v-divider></v-divider>
+        <TabEvents
+          :Tgoals="currentMatch_AdditionalInfo.goals"
+          :Tbookings="currentMatch_AdditionalInfo.bookings"
+          :Tsubstitutions="currentMatch_AdditionalInfo.substitutions"
+        />
+
       </v-tab-item>
     </v-tabs-items>
   </v-container>
@@ -207,6 +230,7 @@ import { mapState } from "vuex";
 import TabStats from "../components/TabStats.vue";
 import TabLineup from "../components/TabLineup.vue";
 import LogoHeader from "../components/LogoHeader.vue";
+import TabEvents from "../components/TabEvents.vue";
 
 export default {
   name: "MatchInfo",
@@ -214,12 +238,15 @@ export default {
   components: {
     TabStats,
     TabLineup,
+    TabEvents,
     LogoHeader
   },
   props: ["id_match", "displayed_match"],
   data() {
     return {
-      tabs: null
+      tabs: null,
+      swipeDirection: "None",
+      match_index: null
     };
   },
   beforeMount() {},
@@ -236,25 +263,27 @@ export default {
       "league_teams"
     ]),
     currentMatch() {
+      var self = this;
+      var firstOccurence = this.league_matches.matches.find((obj, idx) => {
+        self.match_index = idx;
+        return obj.id == this.id_match;
+      });
       return (
         this.displayed_match ||
         this.league_matches.matches.find(obj => obj.id == this.id_match)
       );
     },
     currentMatch_AdditionalInfo() {
-      var add_info = this.league_matches_info.find(obj => {
-        var test1 = obj.utcDate === this.currentMatch.utcDate;
-        if (!test1 && obj.matchDay == this.currentMatch.matchday) {
-          var test1 =
-            this.currentMatch.homeTeam.name.includes(
-              obj.homeTeam.name.substring(0, 3)
-            ) &&
-            this.currentMatch.awayTeam.name.includes(
-              obj.awayTeam.name.substring(0, 3)
-            );
-        }
-        return test1;
-      });
+      var add_info = this.league_matches_info.find(
+        obj =>
+          obj.matchDay == this.currentMatch.matchday &&
+          this.currentMatch.homeTeam.name.includes(
+            obj.homeTeam.name.substring(0, 3)
+          ) &&
+          this.currentMatch.awayTeam.name.includes(
+            obj.awayTeam.name.substring(0, 3)
+          )
+      );
       return add_info;
     },
     cur_stats() {
@@ -296,6 +325,30 @@ export default {
   },
 
   methods: {
+    getPreviousMatch() {
+      var newIndex = this.match_index - 1;
+      //check if no at index 0 or lenght-1
+      if (newIndex < 0) newIndex = this.match_index;
+      var prev_match = this.league_matches.matches[newIndex];
+      var prev_id = prev_match.id;
+      this.$router.push({
+        name: "matchinfo",
+        params: { id_match: prev_id, displayed_match: prev_match }
+      });
+    },
+    getNextMatch() {
+      var newIndex = this.match_index + 1;
+      //check if no at index 0 or lenght-1
+      if (newIndex > this.league_matches.matches.length - 1)
+        newIndex = this.match_index;
+
+      var next_match = this.league_matches.matches[newIndex];
+      var next_id = next_match.id;
+      this.$router.push({
+        name: "matchinfo",
+        params: { id_match: next_id, displayed_match: next_match }
+      });
+    },
     getLocalDateAndTime(utcD) {
       var localDate = new Date(utcD);
       var options = {
@@ -308,7 +361,6 @@ export default {
       };
       return localDate.toLocaleDateString("en-GB", options);
     }
-  },
-  watch: {}
+  }
 };
 </script>

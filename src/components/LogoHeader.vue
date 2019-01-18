@@ -1,7 +1,7 @@
 <template>
 
   <v-layout
-    pb-2
+    py-2
     row
     justify-space-between
     align-center
@@ -11,7 +11,7 @@
       text-xs-center
       xs3
     >
-      <v-avatar>
+      <v-avatar size="30">
         <v-img
           :src="homeLogoUrl"
           contain
@@ -30,7 +30,7 @@
       text-xs-center
       xs3
     >
-      <v-avatar>
+      <v-avatar size="30">
         <v-img
           :src="awayLogoUrl"
           contain
@@ -43,7 +43,7 @@
 
 <script>
 export default {
-  name: "TabStat",
+  name: "LogoHeader",
   props: ["title", "homeLogoUrl", "awayLogoUrl"],
   data: () => ({}),
   methods: {},

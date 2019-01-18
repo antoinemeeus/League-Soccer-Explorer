@@ -2,7 +2,6 @@
   <v-card
     height="250"
     :to="{ name: 'competition' , params:{ id_competition:league_properties.id }}"
-    @click="sendLeagueInfoStore()"
   >
 
     <v-img
