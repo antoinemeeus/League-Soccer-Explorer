@@ -221,7 +221,9 @@ export default {
   },
   beforeMount() {},
 
-  mounted() {},
+  mounted() {
+    this.setToolBarInfo();
+  },
 
   beforeDestroy() {},
 
@@ -262,6 +264,11 @@ export default {
       "fetchPlayers",
       "fetchTeamInfo" // map `this.fetchPlayers(teamStringSearchQuery)` to `this.$store.dispatch('fetchPlayers')`
     ]),
+    setToolBarInfo() {
+      this.$store.commit("SET_LEAGUE_ICON", this.league_teams.competition.code);
+      this.$store.commit("SET_APP_TITLE", this.league_teams.competition.name);
+      this.$store.commit("SET_CURRENT_LEAGUE", this.league_teams.competition);
+    },
     getLocalDateAndTime(utcD) {
       var localDate = new Date(utcD);
       var options = {

@@ -28,31 +28,39 @@
           Substitution
         </h4>
       </v-flex>
-      <v-layout column>
-        <v-flex>
-          PlayerIn: {{(event.playerIn || "")}}
+      <v-layout
+        wrap
+        align-center
+        justify-space-between
+      >
+        <v-flex xs12>
+          <v-icon color="green">mdi-arrow-up</v-icon>
+          <span>{{(event.playerIn || "")}}</span>
         </v-flex>
-        <v-flex>
-          PlayerOut: {{(event.playerOut || "")}}
+        <v-flex xs12>
+          <v-icon color="red">mdi-arrow-down</v-icon>
+          <span>{{(event.playerOut || "")}}</span>
         </v-flex>
       </v-layout>
     </v-card>
 
     <v-card v-if="isCard">
-      <v-flex text-xs-center>
-
-        <h4>
-          <v-icon :color="colorCard().toLowerCase()">mdi-card</v-icon>
-          {{colorCard()}} Card!
-        </h4>
-      </v-flex>
-
-      <v-layout column>
-        <v-flex>
-
-          Player: {{event.player.name}}
+      <v-layout
+        column
+        align-center
+        justify-center
+      >
+        <v-flex
+          xs12
+          text-xs-center
+        >
+          <h4>
+            {{colorCard()}} Card!
+          </h4>
         </v-flex>
-
+        <v-flex xs12>
+          <v-icon :color="colorCard().toLowerCase()">mdi-card</v-icon> {{event.player.name}}
+        </v-flex>
       </v-layout>
     </v-card>
   </v-container>

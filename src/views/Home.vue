@@ -36,6 +36,11 @@ export default {
   data() {
     return {};
   },
+  mounted() {
+    this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
+    this.$store.commit("SET_LEAGUE_ICON", "Home");
+    this.$store.commit("SET_CURRENT_LEAGUE", { name: "Home", id: "" });
+  },
   computed: {
     ...mapState(["league_competition"])
   }

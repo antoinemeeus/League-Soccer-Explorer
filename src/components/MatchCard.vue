@@ -54,7 +54,7 @@
               <v-list-tile-content>
                 <v-list-tile-title
                   class="body-2"
-                  :class="{'grey--text':isHomeWinner}"
+                  :class="{'grey--text text--darken-2':isHomeWinner}"
                 >{{indvMatch.awayTeam.name}}</v-list-tile-title>
               </v-list-tile-content>
 
@@ -131,7 +131,7 @@ export default {
       return this.indvMatch.status === "SCHEDULED";
     },
     dynamicColor() {
-      return this.iscurrentMatch ? "grey" : "";
+      return this.iscurrentMatch ? "blue-grey lighten-3" : "";
     },
     periodScore() {
       var _score = this.indvMatch.score;

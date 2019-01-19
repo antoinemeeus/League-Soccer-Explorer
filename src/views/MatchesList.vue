@@ -63,7 +63,7 @@ import MatchCard from "../components/MatchCard.vue";
 import { mapState } from "vuex";
 
 export default {
-  name: "Matches",
+  name: "MatchesList",
 
   components: {
     MatchCard
@@ -84,7 +84,6 @@ export default {
   },
   beforeMount() {
     //Update League Logo
-    this.updateLeagueLogo();
     //We add current and previous matchday to list
     this.matchDaysDisplayed.push(this.currentMatchDay);
     this.currentMatchDay - 1 >= 0
@@ -95,11 +94,6 @@ export default {
   mounted() {
     //jump to current or nextMatch
     let self = this;
-    //wait some arbitrary time for the page to load and scroll to target class that was included to the current (by datenow())
-    // setTimeout(function() {
-    //   self.$vuetify.goTo(".scroll_target", self.options);
-    //   console.log("JUMPING TO CURRENT MATCH");
-    // }, 1000);
     console.log("Inject scroll listener");
 
     this.onScroll();
@@ -163,9 +157,12 @@ export default {
   },
 
   methods: {
-    updateLeagueLogo() {
-      this.$store.commit("SET_LEAGUE_ICON", this.currentLeagueInfo.code);
-      this.$store.commit("SET_APP_TITLE", this.currentLeagueInfo.name);
+    setToolBarInfo() {
+      if (currentLeagueInfo.code) {
+        this.$store.commit("SET_LEAGUE_ICON", this.currentLeagueInfo.code);
+        this.$store.commit("SET_APP_TITLE", this.currentLeagueInfo.name);
+        this.$store.commit("SET_CURRENT_LEAGUE", this.currentLeagueInfo);
+      }
     },
     onScroll() {
       window.onscroll = _.debounce(() => {
@@ -181,7 +178,6 @@ export default {
             document.documentElement.scrollTop + window.innerHeight;
           this.addNextMatchDay();
         }
-        console.log("Only apply each 800ms");
       }, 800);
     },
     getTeamsFromMatch(_match) {
@@ -233,6 +229,9 @@ export default {
       if (this.lastBottomHeight <= this.lastScrollHeight)
         document.documentElement.scrollTop +=
           document.documentElement.scrollHeight - this.lastScrollHeight;
+    },
+    currentLeagueInfo() {
+      this.setToolBarInfo();
     }
   }
 };

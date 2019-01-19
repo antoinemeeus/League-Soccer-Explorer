@@ -157,6 +157,7 @@
     <v-layout pt-2>
       <v-flex xs12>
         <v-tabs
+          class="sticky-tabs"
           fixed-tabs
           v-model="tabs"
           grow
@@ -251,7 +252,9 @@ export default {
   },
   beforeMount() {},
 
-  mounted() {},
+  mounted() {
+    this.setToolBarInfo();
+  },
 
   beforeDestroy() {},
 
@@ -325,18 +328,28 @@ export default {
   },
 
   methods: {
+    setToolBarInfo() {
+      this.$store.commit(
+        "SET_LEAGUE_ICON",
+        this.league_matches.competition.code
+      );
+      this.$store.commit("SET_APP_TITLE", this.league_matches.competition.name);
+      this.$store.commit("SET_CURRENT_LEAGUE", this.league_matches.competition);
+    },
     getPreviousMatch() {
+      this.$store.commit("ADD_HISTORY_COUNTER");
       var newIndex = this.match_index - 1;
       //check if no at index 0 or lenght-1
       if (newIndex < 0) newIndex = this.match_index;
       var prev_match = this.league_matches.matches[newIndex];
       var prev_id = prev_match.id;
-      this.$router.push({
+      this.$router.replace({
         name: "matchinfo",
         params: { id_match: prev_id, displayed_match: prev_match }
       });
     },
     getNextMatch() {
+      this.$store.commit("ADD_HISTORY_COUNTER");
       var newIndex = this.match_index + 1;
       //check if no at index 0 or lenght-1
       if (newIndex > this.league_matches.matches.length - 1)
@@ -344,7 +357,7 @@ export default {
 
       var next_match = this.league_matches.matches[newIndex];
       var next_id = next_match.id;
-      this.$router.push({
+      this.$router.replace({
         name: "matchinfo",
         params: { id_match: next_id, displayed_match: next_match }
       });
@@ -364,3 +377,9 @@ export default {
   }
 };
 </script>
+<style scoped>
+.sticky-tabs {
+  position: sticky;
+  top: 80px;
+}
+</style>

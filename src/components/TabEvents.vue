@@ -3,6 +3,7 @@
   <v-container fluid>
     <v-layout
       justify-space-around
+      py-2
       v-for="(item,key) in allEvents"
       :key="key"
     >
@@ -17,7 +18,14 @@
         text-xs-center
         align-self-center
         xs2
-      >{{item.minute}}'</v-flex>
+      >
+        <v-avatar
+          color="blue-grey"
+          size="40"
+        >
+          <span class="white--text title">{{item.minute}}'</span>
+        </v-avatar>
+      </v-flex>
 
       <v-flex xs5>
         <EventCard

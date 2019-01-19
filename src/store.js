@@ -18,13 +18,30 @@ export default new Vuex.Store({
     options: {
       headers: { "X-Auth-Token": "018c8c34753848cab1551ae2ecd62ee1" }
     },
+    urlKeys: {
+      league_competition: "competitions?plan=TIER_ONE",
+      league_matches: "",
+      league_matches_info: "",
+      league_teams: "",
+      league_standings: "",
+      team_football_org: "",
+      team_players: ""
+    },
 
     loadingData: false,
 
     league_icon: "Home",
     app_title: "",
+    currentLeague: {},
+    historyCount: 1,
 
-    league_competition: TempCompetition,
+    league_competition: {
+      count: null,
+      filters: {
+        plan: ""
+      },
+      competitions: []
+    },
     league_matches: LeagueMatches,
     league_matches_info: LeagueMatchesInfo,
     league_teams: LeagueTeams,
@@ -35,8 +52,14 @@ export default new Vuex.Store({
     team_players: []
   },
   mutations: {
+    SET_CURRENT_LEAGUE(state, payload) {
+      state.currentLeague = payload;
+    },
     SET_LEAGUE_ICON(state, payload) {
       state.league_icon = payload;
+    },
+    SET_COMPETITION(state, payload) {
+      state.league_competition = payload;
     },
     SET_APP_TITLE(state, payload) {
       state.app_title = payload;
@@ -49,10 +72,76 @@ export default new Vuex.Store({
     },
     SET_TEAM_SQUAD(state, payload) {
       state.team_football_org = payload;
+    },
+    SET_HISTORY_COUNTER(state, payload) {
+      state.historyCount = payload;
+    },
+    ADD_HISTORY_COUNTER(state) {
+      state.historyCount += 1;
     }
   },
   actions: {
-    fetchLeague({ commit }, data_org_url) {},
+    fetchLeague({ commit, state }, key) {
+      commit("SET_LOADING", true);
+      //Check last update in competitions and fetch data if last update is superior to 6hrs.
+      var fetchFlag = true;
+      var nowDate = new Date();
+      var Storagekey = key;
+
+      var lastDataStored = JSON.parse(localStorage.getItem(Storagekey));
+      var minutesSinceLastSave = 180;
+      var minutesSinceLastUpdate = 180;
+      if (lastDataStored) {
+        console.log("There is data in storage:");
+        var array = lastDataStored.competitions;
+        var lastUpdateDate = new Date(
+          Math.max.apply(
+            null,
+            array.map(function(e) {
+              return new Date(e.lastUpdated);
+            })
+          )
+        );
+        console.log(lastUpdateDate);
+
+        minutesSinceLastUpdate =
+          Math.abs(nowDate - lastUpdateDate) / (1000 * 60);
+
+        console.log("Minutes since lastUpdate: ", minutesSinceLastUpdate);
+        console.log("LastStored: ", lastDataStored.fetchLastDate);
+
+        var lastSavedDate = new Date(lastDataStored.fetchLastDate);
+        minutesSinceLastSave = Math.abs(nowDate - lastSavedDate) / (1000 * 60);
+        console.log("Minutes since lastSaved: ", minutesSinceLastSave);
+        if (minutesSinceLastSave < 10) {
+          console.log(
+            "Leagues Data is up to date and in memory, no fetching required"
+          );
+          commit("SET_COMPETITION", lastDataStored);
+          commit("SET_LOADING", false);
+          fetchFlag = false;
+        } else {
+          fetchFlag = true;
+        }
+      }
+      console.log("Need fetch? ", fetchFlag);
+      if (minutesSinceLastUpdate > 120 && fetchFlag) {
+        console.log("Fechting Competitions data from football data org:");
+        axios
+          .get(
+            "http://api.football-data.org/v2/" + state.urlKeys[key],
+            state.options
+          )
+          .then(response => response.data)
+          .then(leagues => {
+            commit("SET_LOADING", false);
+            leagues["fetchLastDate"] = nowDate;
+            commit("SET_COMPETITION", leagues);
+            localStorage.setItem(Storagekey, JSON.stringify(leagues));
+          })
+          .catch(err => console.log(err));
+      }
+    },
 
     fetchMatches({ commit }, leagueId) {},
 
@@ -100,7 +189,7 @@ export default new Vuex.Store({
             console.log("Retry number: " + retryCount);
             console.log("Trying with: " + newTeamName);
 
-            if (retryCount < 2)
+            if (retryCount < 3)
               dispatch("fetchPlayers", {
                 string_query: newTeamName,
                 retryCount: retryCount
