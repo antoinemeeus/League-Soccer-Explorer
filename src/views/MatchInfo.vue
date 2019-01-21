@@ -171,10 +171,24 @@
           <v-tab>
             Events
           </v-tab>
+          <v-tab>
+            Comments
+          </v-tab>
         </v-tabs>
       </v-flex>
     </v-layout>
+    <v-flex v-if="currentMatch.status=='SCHEDULED'">
+      <v-alert
+        :value="true"
+        type="warning"
+      >
+        <h3 class="text-xs-center">
+          Information not available.
+        </h3>
+      </v-alert>
+    </v-flex>
     <v-tabs-items
+      v-if="currentMatch.status!='SCHEDULED'"
       v-model="tabs"
       class="white elevation-1"
     >
@@ -221,6 +235,15 @@
         />
 
       </v-tab-item>
+      <v-tab-item>
+        <LogoHeader
+          title="Comments"
+          :homeLogoUrl="matchHomeTeam.crestUrl"
+          :awayLogoUrl="matchAwayTeam.crestUrl"
+        />
+        <v-divider></v-divider>
+
+      </v-tab-item>
     </v-tabs-items>
   </v-container>
 
@@ -228,6 +251,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { mapActions } from "vuex";
 import TabStats from "../components/TabStats.vue";
 import TabLineup from "../components/TabLineup.vue";
 import LogoHeader from "../components/LogoHeader.vue";
@@ -250,10 +274,17 @@ export default {
       match_index: null
     };
   },
-  beforeMount() {},
+  created() {
+    this.setToolBarInfo();
+  },
 
   mounted() {
     this.setToolBarInfo();
+    // var stringQuery =
+    //   this.displayed_match.homeTeam.name.split(" ").join("_") +
+    //   "_vs_" +
+    //   this.displayed_match.awayTeam.name.split(" ").join("_");
+    // this.fetchEventInfo(stringQuery);
   },
 
   beforeDestroy() {},
@@ -277,7 +308,9 @@ export default {
       );
     },
     currentMatch_AdditionalInfo() {
-      var add_info = this.league_matches_info.find(
+      var add_info = this.league_matches_info[
+        this.league_matches.competition.id
+      ].find(
         obj =>
           obj.matchDay == this.currentMatch.matchday &&
           this.currentMatch.homeTeam.name.includes(
@@ -328,6 +361,13 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      "fetchLeague",
+      "fetchMatches",
+      "fetchEventInfo",
+      "fetchTeams",
+      "fetchTeamInfo"
+    ]),
     setToolBarInfo() {
       this.$store.commit(
         "SET_LEAGUE_ICON",
@@ -337,7 +377,6 @@ export default {
       this.$store.commit("SET_CURRENT_LEAGUE", this.league_matches.competition);
     },
     getPreviousMatch() {
-      this.$store.commit("ADD_HISTORY_COUNTER");
       var newIndex = this.match_index - 1;
       //check if no at index 0 or lenght-1
       if (newIndex < 0) newIndex = this.match_index;
@@ -349,7 +388,6 @@ export default {
       });
     },
     getNextMatch() {
-      this.$store.commit("ADD_HISTORY_COUNTER");
       var newIndex = this.match_index + 1;
       //check if no at index 0 or lenght-1
       if (newIndex > this.league_matches.matches.length - 1)

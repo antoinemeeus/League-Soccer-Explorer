@@ -6,7 +6,7 @@
       pb-2
     >
       <v-progress-circular
-        v-if="isCardInbound"
+        v-show="isLitTop"
         size="50"
         color="primary"
         indeterminate
@@ -19,7 +19,14 @@
     >
 
       <v-flex>
-        <h2 class="title py-3">Matchday {{matchDay}} of {{lastMatchDay}}</h2>
+        <h2
+          v-if="regularSeasonOrCups"
+          class="title py-3"
+        >Matchday {{matchDay}} of {{lastMatchDay}}</h2>
+        <h2
+          v-if="!regularSeasonOrCups"
+          class="title py-3"
+        >Stage {{matchDay}}</h2>
       </v-flex>
 
       <v-layout
@@ -48,7 +55,7 @@
       pt-2
     >
       <v-progress-circular
-        v-if="isCardInbound"
+        v-show="isListBottom"
         size="50"
         color="primary"
         indeterminate
@@ -61,6 +68,7 @@
 <script>
 import MatchCard from "../components/MatchCard.vue";
 import { mapState } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
   name: "MatchesList",
@@ -82,12 +90,27 @@ export default {
       }
     };
   },
+  created() {
+    this.fetchTeams("competitions/" + this.id_competition + "/teams");
+    this.fetchMatches("competitions/" + this.id_competition + "/matches");
+    this.fetchStanding(this.id_competition);
+  },
   beforeMount() {
+    // this.fetchMatches("competitions/" + this.id_competition + "/matches");
+    // this.fetchTeams("competitions/" + this.id_competition + "/teams");
+
+    this.$store.commit("SET_LEAGUE_ICON", this.currentLeagueInfo.code);
+    this.$store.commit("SET_APP_TITLE", this.currentLeagueInfo.name);
+    this.$store.commit("SET_CURRENT_LEAGUE", this.currentLeagueInfo);
     //Update League Logo
-    //We add current and previous matchday to list
+    //We add current, next and previous matchday to list
+    console.log(this.currentMatchDay);
     this.matchDaysDisplayed.push(this.currentMatchDay);
     this.currentMatchDay - 1 >= 0
       ? this.matchDaysDisplayed.push(this.currentMatchDay - 1)
+      : null;
+    this.currentMatchDay + 1 <= this.lastMatchDay
+      ? this.matchDaysDisplayed.push(this.currentMatchDay + 1)
       : null;
   },
 
@@ -106,18 +129,43 @@ export default {
   },
 
   computed: {
-    ...mapState(["league_competition", "league_matches", "league_teams"]),
+    ...mapState([
+      "loadingLeague",
+      "loadingMatches",
+      "loadingTeams",
+      "league_competition",
+      "league_matches",
+      "league_teams"
+    ]),
 
-    lastMatchDay() {
-      var len = this.league_matches.matches.length;
-      return this.league_matches.matches[len - 1].matchday;
+    regularSeasonOrCups() {
+      if (this.league_matches.matches) {
+        var matches_ = this.league_matches.matches;
+        if (matches_.length > 0)
+          if (matches_[0].stage == "REGULAR_SEASON") {
+            return true;
+          }
+      }
+      return false;
     },
-    isCardInbound() {
+    lastMatchDay() {
+      //Have to check if in stage is regular seagon
+      var matches_ = this.league_matches.matches;
+      if (matches_.length > 0) {
+        var len = matches_.length;
+        var lastday = matches_[len - 1].matchday;
+        if (lastday) return lastday;
+        else {
+          return Math.max(this.league_matches.matches.map(obj => obj.matchday));
+        }
+      }
+    },
+    isLitTop() {
+      return this.sortedMatchDaysDisplayed[0] > 1;
+    },
+    isListBottom() {
       var len = this.sortedMatchDaysDisplayed.length;
-      return (
-        this.sortedMatchDaysDisplayed[0] > 1 &&
-        this.sortedMatchDaysDisplayed[len - 1] < this.lastMatchDay
-      );
+      return this.sortedMatchDaysDisplayed[len - 1] < this.lastMatchDay;
     },
     currentLeagueInfo() {
       return this.league_competition.competitions.find(
@@ -126,16 +174,23 @@ export default {
     },
     matchesWithCrest() {
       //Adding crestUrl to each matches homeTeam/awayTeam with information from league_teams
-      return this.league_matches.matches.map(obj => {
-        var Tobj = obj;
-        obj.homeTeam["crestUrl"] = this.league_teams.teams.find(
-          elem => elem.id == Tobj.homeTeam.id
-        ).crestUrl;
-        obj.awayTeam["crestUrl"] = this.league_teams.teams.find(
-          elem => elem.id == Tobj.awayTeam.id
-        ).crestUrl;
-        return obj;
-      });
+      if (this.league_teams.teams.length > 0)
+        return this.league_matches.matches.map(obj => {
+          var Tobj = obj;
+          var _homeTeam = this.league_teams.teams.find(
+            elem => elem.id == Tobj.homeTeam.id
+          );
+          var _awayTeam = this.league_teams.teams.find(
+            elem => elem.id == Tobj.awayTeam.id
+          );
+          obj.homeTeam["crestUrl"] = _homeTeam.crestUrl
+            ? _homeTeam.crestUrl
+            : require("@/assets/placeholdershield.png");
+          obj.awayTeam["crestUrl"] = _awayTeam.crestUrl
+            ? _awayTeam.crestUrl
+            : require("@/assets/placeholdershield.png");
+          return obj;
+        });
     },
     currentMatchDay() {
       return this.currentLeagueInfo.currentSeason.currentMatchday;
@@ -157,6 +212,13 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      "fetchLeague",
+      "fetchMatches",
+      "fetchStanding",
+      "fetchTeams",
+      "fetchTeamInfo"
+    ]),
     setToolBarInfo() {
       if (currentLeagueInfo.code) {
         this.$store.commit("SET_LEAGUE_ICON", this.currentLeagueInfo.code);
@@ -236,10 +298,3 @@ export default {
   }
 };
 </script>
-
-
-<style>
-.v-list__tile {
-  padding-left: 0;
-}
-</style>

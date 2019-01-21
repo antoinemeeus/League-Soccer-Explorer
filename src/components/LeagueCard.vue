@@ -33,6 +33,7 @@ export default {
     sendLeagueInfoStore() {
       this.$store.commit("SET_LEAGUE_ICON", this.league_properties.code);
       this.$store.commit("SET_APP_TITLE", this.league_properties.name);
+      this.$store.comit("SET_CURRENT_LEAGUE", this.league_properties);
     }
   }
 };

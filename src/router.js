@@ -1,34 +1,44 @@
 import Vue from "vue";
 import Router from "vue-router";
+import firebase from "firebase";
 import Home from "./views/Home.vue";
 import MatchesList from "./views/MatchesList.vue";
 import MatchInfo from "./views/MatchInfo.vue";
 import TeamInfo from "./views/TeamInfo.vue";
 import PlayerInfo from "./views/PlayerInfo.vue";
 import ChatRoom from "./views/ChatRoom.vue";
-
+import Login from "./views/Login.vue";
+import NotFound from "./views/NotFound.vue";
 Vue.use(Router);
 
-export default new Router({
-  scrollBehavior(to, from, savedPosition) {
+const router = new Router({
+  mode: "history",
+  scrollBehavior(to) {
     // scroll to anchor by returning the selector
     console.log(to);
     if (to.name === "competition") {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         setTimeout(() => {
           var el = document.querySelector(".scroll_target");
+          if (el) {
+            var rect = el.getBoundingClientRect(),
+              scrollLeft =
+                window.pageXOffset || document.documentElement.scrollLeft,
+              scrollTop =
+                window.pageYOffset || document.documentElement.scrollTop;
+            var halfViewportHeight = window.innerHeight / 2;
 
-          var rect = el.getBoundingClientRect(),
-            scrollLeft =
-              window.pageXOffset || document.documentElement.scrollLeft,
-            scrollTop =
-              window.pageYOffset || document.documentElement.scrollTop;
-          var halfViewportHeight = window.innerHeight / 2;
-          resolve({
-            x: rect.left + scrollLeft,
-            y: rect.top + scrollTop - halfViewportHeight
-          });
-        }, 800);
+            resolve({
+              x: rect.left + scrollLeft,
+              y: rect.top + scrollTop - halfViewportHeight
+            });
+          } else {
+            resolve({
+              x: 0,
+              y: 0
+            });
+          }
+        }, 1200);
       });
     }
     return { x: 0, y: 0 };
@@ -38,6 +48,11 @@ export default new Router({
       path: "/",
       name: "home",
       component: Home
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: Login
     },
     {
       path: "/competition/:id_competition",
@@ -66,13 +81,21 @@ export default new Router({
     {
       path: "/chat",
       name: "chatroom",
-      component: ChatRoom
-    }
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    //   component: () =>
-    //     import(/* webpackChunkName: "about" */ "./views/ChatRoom.vue")
-    // }
+      component: ChatRoom,
+      meta: { requiresAuth: true }
+    },
+    { path: "*", component: NotFound }
   ]
 });
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const isAuthenticated = firebase.auth().currentUser;
+  if (requiresAuth && !isAuthenticated) {
+    next("/login");
+  } else {
+    next();
+  }
+});
+
+export default router;

@@ -4,7 +4,10 @@
     px-0
     pt-2
   >
-    <v-layout px-2>
+    <v-layout
+      px-2
+      :style="clubColorStyle"
+    >
 
       <v-flex xs3>
         <v-img
@@ -219,6 +222,7 @@ export default {
       website_map: false
     };
   },
+  created() {},
   beforeMount() {},
 
   mounted() {
@@ -234,6 +238,14 @@ export default {
       "league_teams",
       "team_football_org"
     ]),
+    clubColorStyle() {
+      var cur_color = "transparent";
+      if (this.currentTeam.clubColors) {
+        var first_color = this.currentTeam.clubColors.split("/")[0];
+        cur_color = first_color;
+      }
+      return { "background-color": cur_color };
+    },
     currentTeam() {
       return (
         this.displayed_team ||
@@ -262,6 +274,7 @@ export default {
   methods: {
     ...mapActions([
       "fetchPlayers",
+      "fetchStanding",
       "fetchTeamInfo" // map `this.fetchPlayers(teamStringSearchQuery)` to `this.$store.dispatch('fetchPlayers')`
     ]),
     setToolBarInfo() {
@@ -284,3 +297,6 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+</style>

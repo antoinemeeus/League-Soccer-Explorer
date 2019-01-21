@@ -4,16 +4,12 @@
     ma-0
   >
     <v-progress-circular
-      v-if="loadingData"
       :size="50"
       color="primary"
       indeterminate
     ></v-progress-circular>
 
-    <v-layout
-      v-if="!loadingData"
-      column
-    >
+    <v-layout column>
       <v-flex xs12>
         <v-card
           flat
@@ -141,7 +137,7 @@ export default {
   beforeDestroy() {},
 
   computed: {
-    ...mapState(["team_football_org", "team_players", "loadingData"]),
+    ...mapState(["team_football_org", "team_players"]),
 
     getPlayer() {
       if (typeof this.displayed_player === "undefined") {

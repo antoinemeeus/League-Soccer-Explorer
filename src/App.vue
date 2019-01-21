@@ -13,7 +13,7 @@
         justify-center
         align-center
       >
-        <v-flex>
+        <v-flex text-xs-center>
           <h2>{{app_title}}</h2>
         </v-flex>
         <v-avatar size="80">
@@ -25,30 +25,58 @@
           </v-img>
         </v-avatar>
       </v-layout>
-      <v-list>
+
+      <v-list px-2>
         <v-list-tile to="/">
           <v-list-tile-action>
-            <v-icon right>mdi-trophy</v-icon>
+            <v-icon>mdi-trophy</v-icon>
           </v-list-tile-action>
           <v-list-tile-title>Leagues</v-list-tile-title>
         </v-list-tile>
+
         <v-list-tile to="/chat">
           <v-list-tile-action>
-            <v-icon right>chat</v-icon>
+            <v-icon>chat</v-icon>
           </v-list-tile-action>
           <v-list-tile-title>Chat</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile>
+        <v-list-tile
+          v-if="!isAuthenticated"
+          @click="logIn"
+        >
           <v-list-tile-action>
-            <v-icon right>search</v-icon>
+            <v-icon>account_circle</v-icon>
           </v-list-tile-action>
-          <v-list-tile-title>Search</v-list-tile-title>
+          <v-list-tile-title>Log In</v-list-tile-title>
         </v-list-tile>
+
+        <v-list-group
+          v-if="isAuthenticated"
+          no-action
+        >
+          <v-list-tile slot="activator">
+            <v-list-tile-action>
+              <v-avatar size="25">
+                <v-img :src="user.photoURL"></v-img>
+              </v-avatar>
+            </v-list-tile-action>
+            <v-list-tile-title>{{user.displayName}}</v-list-tile-title>
+          </v-list-tile>
+
+          <v-list-tile @click="logOut">
+            <v-list-tile-action>
+              <v-icon>mdi-logout</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>Log Out</v-list-tile-title>
+          </v-list-tile>
+        </v-list-group>
+
       </v-list>
 
     </v-navigation-drawer>
 
     <v-toolbar
+      ref="ref_toolbar"
       fixed
       clipped-left
       app
@@ -94,14 +122,14 @@
       </v-layout>
     </v-toolbar>
 
-    <v-content v-if="!loadingData">
+    <v-content v-if="!isLoading">
       <v-fade-transition mode="out-in">
         <router-view></router-view>
       </v-fade-transition>
     </v-content>
     <!-- Loader -->
     <v-dialog
-      v-model="loadingData"
+      :value="isLoading"
       hide-overlay
       persistent
       width="300"
@@ -129,43 +157,12 @@
 
       </v-card>
     </v-dialog>
-    <!-- Loader -->
-    <!-- <v-footer
-      fixed
-      height="40"
-      app
-    >
-      <v-layout justify-space-around>
-        <v-btn
-          :disabled="!leagueSelected"
-          color="teal"
-          flat
-          to="/about"
-        >
-          <v-icon>mdi-trophy</v-icon>
-        </v-btn>
 
-        <v-btn
-          color="teal"
-          flat
-          to="/"
-        >
-          <v-icon>home</v-icon>
-        </v-btn>
-
-        <v-btn
-          color="teal"
-          flat
-          to="/chat"
-        >
-          <v-icon>chat</v-icon>
-        </v-btn>
-      </v-layout>
-    </v-footer> -->
   </v-app>
 </template>
 
 <script>
+import firebase from "firebase";
 import { mapState } from "vuex";
 import { mapActions } from "vuex";
 
@@ -181,10 +178,30 @@ export default {
   methods: {
     ...mapActions([
       "fetchLeague",
-      "fetchPlayers", // map `this.fetchPlayers(teamStringSearchQuery)` to `this.$store.dispatch('fetchPlayers')`
+      "fetchMatches",
+      "fetchPlayers",
       "fetchTeamInfo"
     ]),
-
+    logOut() {
+      this.$store.dispatch("userLogOut");
+      firebase
+        .auth()
+        .signOut()
+        .then(function() {
+          // Sign-out successful.
+        })
+        .catch(function(error) {
+          console.log(error);
+          alert(error);
+          // An error happened.
+        });
+      //this.$router.push("/");
+      this.drawer = false;
+    },
+    logIn() {
+      this.drawer = false;
+      this.$router.push("/login");
+    },
     setTitle(str) {
       this.$store.commit("SET_TITLE", str);
     },
@@ -193,18 +210,7 @@ export default {
     },
     goToCompetition() {
       if (this.$route.name != "home")
-        this.$router.push(`/competition/${currentLeague.id}`);
-    },
-    getYearFromDate(strDate) {
-      var d = new Date(strDate);
-      return d.getFullYear();
-    },
-    currentSeasonYears(seasonObj) {
-      return (
-        this.getYearFromDate(seasonObj.startDate) +
-        "-" +
-        this.getYearFromDate(seasonObj.endDate)
-      );
+        this.$router.push(`/competition/${this.currentLeague.id}`);
     },
 
     getCorrespondingRouteData() {
@@ -218,16 +224,37 @@ export default {
         this.fetchPlayers({ string_query: team_name_query });
         this.fetchTeamInfo(this.$route.params.id_team);
       }
+      // if (this.$route.params.hasOwnProperty("id_match")) {
+      //   console.log("We are in Match Info vue");
+      //   // this.fetchTeams("competitions/" + this.id_competition + "/teams");
+      //   // this.fetchMatches("competitions/" + this.id_competition + "/matches");
+      // }
     }
   },
   computed: {
     ...mapState([
-      "loadingData",
+      "user",
+      "loadingLeague",
+      "loadingTeams",
+      "loadingMatches",
+      "loadingStandings",
       "currentLeague",
       "app_title",
       "league_icon",
       "league_matches"
     ]),
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated;
+    },
+    isLoading() {
+      return (
+        this.loadingLeague ||
+        this.loadingTeams ||
+        this.loadingMatches ||
+        this.loadingStandings
+      );
+    },
+
     leagueSelected() {
       //console.log(this.$router.app._route.name);
       if (this.$router.app._route.name == "home") return false;
@@ -242,12 +269,13 @@ export default {
   },
   created() {
     this.fetchLeague("league_competition");
-    this.getCorrespondingRouteData();
-    this.seasonTitle = this.currentSeasonYears(
-      this.league_matches.matches[0].season
-    );
     this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
     this.$store.commit("SET_LEAGUE_ICON", "Home");
+    if (this.$route.params.hasOwnProperty("id_match")) {
+      console.log("We are in Match Info vue");
+      this.fetchTeams("competitions/" + this.id_competition + "/teams");
+      this.fetchMatches("competitions/" + this.id_competition + "/matches");
+    }
   },
 
   watch: {
@@ -259,8 +287,6 @@ export default {
         console.log("We are in home");
         this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
         this.$store.commit("SET_LEAGUE_ICON", "Home");
-      }
-      if (to.name == "competition") {
       }
     }
   }

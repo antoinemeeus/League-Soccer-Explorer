@@ -23,17 +23,21 @@ firebase.initializeApp(config);
 // Initialize Cloud Firestore through Firebase
 var db = firebase.firestore();
 
-// Disable deprecated features
-db.settings({
-  timestampsInSnapshots: true
-});
-
 window.db = db;
 
 Vue.config.productionTip = false;
 
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount("#app");
+const unsubscribe = firebase.auth().onAuthStateChanged(firebaseUser => {
+  new Vue({
+    el: "#app",
+    router,
+    store,
+    render: h => h(App),
+    created() {
+      if (firebaseUser) {
+        store.dispatch("autoLogIn", firebaseUser);
+      }
+    }
+  });
+  unsubscribe();
+});

@@ -12,7 +12,10 @@
     >
       <tr :active="props.item.team.id==id_team">
         <td class="text-xs-center px-0">{{ props.item.position }}</td>
-        <td class="text-xs-left px-1">
+        <td
+          class="text-xs-left px-1"
+          @click="goToTeam(props.item.team.id,props.item.team)"
+        >
           <v-layout align-center>
             <v-avatar
               size="30"
@@ -86,6 +89,13 @@ export default {
         .table;
     }
   },
-  methods: {}
+  methods: {
+    goToTeam(id_next, next_team) {
+      this.$router.replace({
+        name: "teaminfo",
+        params: { id_team: id_next, displayed_team: next_team }
+      });
+    }
+  }
 };
 </script>
