@@ -242,6 +242,11 @@
           :awayLogoUrl="matchAwayTeam.crestUrl"
         />
         <v-divider></v-divider>
+        <TabComment
+          v-if="isAuthenticated"
+          :match_id="currentMatch.id"
+        />
+        <Login v-if="!isAuthenticated" />
 
       </v-tab-item>
     </v-tabs-items>
@@ -256,7 +261,8 @@ import TabStats from "../components/TabStats.vue";
 import TabLineup from "../components/TabLineup.vue";
 import LogoHeader from "../components/LogoHeader.vue";
 import TabEvents from "../components/TabEvents.vue";
-
+import TabComment from "../components/TabComment.vue";
+import Login from "./Login.vue";
 export default {
   name: "MatchInfo",
 
@@ -264,7 +270,9 @@ export default {
     TabStats,
     TabLineup,
     TabEvents,
-    LogoHeader
+    TabComment,
+    LogoHeader,
+    Login
   },
   props: ["id_match", "displayed_match"],
   data() {
@@ -275,7 +283,10 @@ export default {
     };
   },
   created() {
-    this.setToolBarInfo();
+    // this.setToolBarInfo();
+    // this.fetchMatches();
+    // this.fetchEventInfo();
+    // this.fetchTeams();
   },
 
   mounted() {
@@ -296,6 +307,9 @@ export default {
       "league_matches_info",
       "league_teams"
     ]),
+    isAuthenticated() {
+      return this.$store.getters.isAuthenticated;
+    },
     currentMatch() {
       var self = this;
       var firstOccurence = this.league_matches.matches.find((obj, idx) => {

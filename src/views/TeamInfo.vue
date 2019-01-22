@@ -4,10 +4,8 @@
     px-0
     pt-2
   >
-    <v-layout
-      px-2
-      :style="clubColorStyle"
-    >
+    <!-- :style="clubColorStyle" -->
+    <v-layout px-2>
 
       <v-flex xs3>
         <v-img

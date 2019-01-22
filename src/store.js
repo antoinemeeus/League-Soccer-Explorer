@@ -58,7 +58,7 @@ export default new Vuex.Store({
       teams: []
     },
     league_current_event: {},
-    league_standings: null,
+    league_standings: {},
     team_info: [],
 
     team_football_org: [],
@@ -160,7 +160,9 @@ export default new Vuex.Store({
           commit("setUser", result.user);
           commit("setLoadingUser", false);
           console.log("Correctly logged in!!");
-          router.push("/");
+          console.log("ROUTE QUERY");
+          console.log(router.app._route);
+          router.replace(router.app._route.query.from);
         })
         .catch(function(error) {
           // Handle Errors here.
@@ -183,36 +185,47 @@ export default new Vuex.Store({
     },
     fetchLeague({ commit, state }, key) {
       commit("SET_LOADINGLEAGUE", true);
+
       //Check last update in competitions and fetch data if last update is superior to 6hrs.
       var fetchFlag = true;
       var nowDate = new Date();
       var Storagekey = key;
+      var lastSavedDate = new Date(
+        JSON.parse(localStorage.getItem(Storagekey + "_LastSaved"))
+      );
 
-      var lastDataStored = JSON.parse(localStorage.getItem(Storagekey));
+      console.log("lastSavedDate:");
+      console.log(lastSavedDate);
       var minutesSinceLastSave = 180;
       var minutesSinceLastUpdate = 180;
-      if (lastDataStored) {
-        console.log("There is League data in storage:");
-        var array = lastDataStored.competitions;
-        var lastUpdateDate = new Date(
-          Math.max.apply(
-            null,
-            array.map(function(e) {
-              return new Date(e.lastUpdated);
-            })
-          )
-        );
-        console.log(lastUpdateDate);
+      if (
+        lastSavedDate &&
+        Math.abs(nowDate - lastSavedDate) / (1000 * 60) < state.minutesUpdate
+      ) {
+        var lastDataStored = JSON.parse(localStorage.getItem(Storagekey));
 
-        minutesSinceLastUpdate =
-          Math.abs(nowDate - lastUpdateDate) / (1000 * 60);
+        if (lastDataStored) {
+          console.log("There is League data in storage:");
+          var array = lastDataStored.competitions;
+          var lastUpdateDate = new Date(
+            Math.max.apply(
+              null,
+              array.map(function(e) {
+                return new Date(e.lastUpdated);
+              })
+            )
+          );
 
-        console.log("Minutes since lastUpdate: ", minutesSinceLastUpdate);
-        console.log("LastStored: ", lastDataStored.fetchLastDate);
+          minutesSinceLastUpdate =
+            Math.abs(nowDate - lastUpdateDate) / (1000 * 60);
 
-        var lastSavedDate = new Date(lastDataStored.fetchLastDate);
-        minutesSinceLastSave = Math.abs(nowDate - lastSavedDate) / (1000 * 60);
-        console.log("Minutes since lastSaved: ", minutesSinceLastSave);
+          console.log("Minutes since lastUpdate: ", minutesSinceLastUpdate);
+
+          minutesSinceLastSave =
+            Math.abs(nowDate - lastSavedDate) / (1000 * 60);
+          console.log("Minutes since lastSaved: ", minutesSinceLastSave);
+        }
+
         if (minutesSinceLastSave < state.minutesUpdate) {
           console.log(
             "Leagues Data is up to date and in memory, no fetching required"
@@ -224,7 +237,8 @@ export default new Vuex.Store({
           fetchFlag = true;
         }
       }
-      console.log("Need fetch? ", fetchFlag);
+      console.log("Need fetch? ", minutesSinceLastUpdate > 120 || fetchFlag);
+
       if (minutesSinceLastUpdate > 120 || fetchFlag) {
         console.log("Fechting Competitions data from football data org:");
         axios
@@ -234,9 +248,12 @@ export default new Vuex.Store({
           )
           .then(response => response.data)
           .then(leagues => {
-            leagues["fetchLastDate"] = nowDate;
             commit("SET_COMPETITION", leagues);
             commit("SET_LOADINGLEAGUE", false);
+            localStorage.setItem(
+              Storagekey + "_LastSaved",
+              JSON.stringify(nowDate)
+            );
             localStorage.setItem(Storagekey, JSON.stringify(leagues));
           })
           .catch(err => console.log(err));
@@ -250,32 +267,23 @@ export default new Vuex.Store({
       var nowDate = new Date();
       var Storagekey = searchString;
 
-      var lastDataStored = JSON.parse(localStorage.getItem(Storagekey));
+      var lastSavedDate = new Date(
+        JSON.parse(localStorage.getItem(Storagekey + "_LastSaved"))
+      );
       var minutesSinceLastSave = 180;
-      var minutesSinceLastUpdate = 180;
-      if (lastDataStored) {
-        console.log("There is Match data in storage:");
-        var array = lastDataStored.matches;
-        var lastUpdateDate = new Date(
-          Math.max.apply(
-            null,
-            array.map(function(e) {
-              return new Date(e.lastUpdated);
-            })
-          )
-        );
-        console.log(nowDate, lastUpdateDate);
 
-        minutesSinceLastUpdate = Math.abs(
-          (nowDate - lastUpdateDate) / (1000 * 60)
-        );
+      if (
+        lastSavedDate &&
+        Math.abs(nowDate - lastSavedDate) / (1000 * 60) < state.minutesUpdate
+      ) {
+        var lastDataStored = JSON.parse(localStorage.getItem(Storagekey));
+        if (lastDataStored) {
+          console.log("There is Match data in storage:");
 
-        console.log("Minutes since lastUpdate: ", minutesSinceLastUpdate);
-        console.log("LastStored: ", lastDataStored.fetchLastDate);
-
-        var lastSavedDate = new Date(lastDataStored.fetchLastDate);
-        minutesSinceLastSave = Math.abs(nowDate - lastSavedDate) / (1000 * 60);
-        console.log("Minutes since lastSaved: ", minutesSinceLastSave);
+          minutesSinceLastSave =
+            Math.abs(nowDate - lastSavedDate) / (1000 * 60);
+          console.log("Minutes since lastSaved: ", minutesSinceLastSave);
+        }
         if (minutesSinceLastSave < state.minutesUpdate) {
           console.log(
             "Match Data is up to date and in memory, no fetching required"
@@ -287,17 +295,21 @@ export default new Vuex.Store({
           fetchFlag = true;
         }
       }
-      console.log("Need fetch? ", fetchFlag);
-      if (minutesSinceLastUpdate > 120 || fetchFlag) {
-        console.log("Fechting Matches data from football data org:");
+
+      if (fetchFlag) {
+        console.log("FETCHING");
+        console.log("Fetching Matches data from football data org:");
         axios
           .get("http://api.football-data.org/v2/" + searchString, state.options)
           .then(response => response.data)
           .then(matches => {
-            matches["fetchLastDate"] = nowDate;
+            localStorage.setItem(
+              Storagekey + "_LastSaved",
+              JSON.stringify(nowDate)
+            );
             commit("SET_MATCHES", matches);
-            commit("SET_LOADINGMATCHES", false);
             localStorage.setItem(Storagekey, JSON.stringify(matches));
+            commit("SET_LOADINGMATCHES", false);
           })
           .catch(err => console.log(err));
       }
@@ -309,38 +321,43 @@ export default new Vuex.Store({
       var fetchFlag = true;
       var nowDate = new Date();
       var Storagekey = "standings_" + id_competition;
-
-      var lastDataStored = JSON.parse(localStorage.getItem(Storagekey));
+      var lastSavedDate = new Date(
+        JSON.parse(localStorage.getItem(Storagekey + "_LastSaved"))
+      );
+      console.log(lastSavedDate);
       var minutesSinceLastSave = 180;
       var minutesSinceLastUpdate = 180;
-      if (lastDataStored) {
-        console.log("There is Standing data in storage:");
-        var lastUpdateDate = new Date(lastDataStored.competition.lastUpdated);
+      if (
+        lastSavedDate &&
+        Math.abs(nowDate - lastSavedDate) / (1000 * 60) < state.minutesUpdate
+      ) {
+        var lastDataStored = JSON.parse(localStorage.getItem(Storagekey));
+        if (lastDataStored) {
+          console.log("There is Standing data in storage:");
+          var lastUpdateDate = new Date(lastDataStored.competition.lastUpdated);
 
-        console.log(nowDate, lastUpdateDate);
+          console.log(nowDate, lastUpdateDate);
 
-        minutesSinceLastUpdate = Math.abs(
-          (nowDate - lastUpdateDate) / (1000 * 60)
-        );
-        console.log("Minutes since lastUpdate: ", minutesSinceLastUpdate);
-        console.log("LastStored: ", lastDataStored.fetchLastDate);
-
-        var lastSavedDate = new Date(lastDataStored.fetchLastDate);
-        minutesSinceLastSave = Math.abs(nowDate - lastSavedDate) / (1000 * 60);
-        console.log("Minutes since lastSaved: ", minutesSinceLastSave);
-        if (minutesSinceLastSave < state.minutesUpdate) {
-          console.log(
-            "Standing Data is up to date and in memory, no fetching required"
+          minutesSinceLastUpdate = Math.abs(
+            (nowDate - lastUpdateDate) / (1000 * 60)
           );
+          console.log("Minutes since lastUpdate: ", minutesSinceLastUpdate);
 
-          commit("SET_STANDING", lastDataStored);
-          commit("SET_LOADINGSTANDING", false);
-          fetchFlag = false;
-        } else {
-          fetchFlag = true;
+          console.log("Minutes since lastSaved: ", minutesSinceLastSave);
+          if (minutesSinceLastSave < state.minutesUpdate) {
+            console.log(
+              "Standing Data is up to date and in memory, no fetching required"
+            );
+
+            commit("SET_STANDING", lastDataStored);
+            commit("SET_LOADINGSTANDING", false);
+            fetchFlag = false;
+          } else {
+            fetchFlag = true;
+          }
         }
       }
-      console.log("Need fetch? ", fetchFlag);
+      console.log("Need fetch? ", minutesSinceLastUpdate > 120 || fetchFlag);
       if (minutesSinceLastUpdate > 120 || fetchFlag) {
         console.log("Fechting Matches data from football data org:");
         axios
@@ -352,7 +369,10 @@ export default new Vuex.Store({
           )
           .then(response => response.data)
           .then(standings => {
-            standings["fetchLastDate"] = nowDate;
+            localStorage.setItem(
+              Storagekey + "_LastSaved",
+              JSON.stringify(nowDate)
+            );
             commit("SET_STANDING", standings);
             commit("SET_LOADINGSTANDING", false);
             localStorage.setItem(Storagekey, JSON.stringify(standings));
@@ -417,7 +437,6 @@ export default new Vuex.Store({
           Math.abs(nowDate - lastUpdateDate) / (1000 * 60);
 
         console.log("Minutes since lastUpdate: ", minutesSinceLastUpdate);
-        console.log("LastStored: ", lastDataStored.fetchLastDate);
 
         var lastSavedDate = new Date(lastDataStored.fetchLastDate);
         minutesSinceLastSave = Math.abs(nowDate - lastSavedDate) / (1000 * 60);

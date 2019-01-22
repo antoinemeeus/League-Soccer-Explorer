@@ -3,15 +3,40 @@
     <v-layout
       column
       justify-center
+      align-center
     >
-      Please log in with you google account to continue
-      <v-btn
-        :loading="loadingUser"
-        :disabled="loadingUser"
-        @click="login"
-      >
-        Sign in with google
-      </v-btn>
+      <h2>
+        Sign in with :
+      </h2>
+      <v-flex pa-3>
+        <v-btn
+          xs6
+          :loading="loadingUser"
+          :disabled="loadingUser"
+          @click="login"
+        >
+
+          <v-layout
+            row
+            align-center
+            justify-space-around
+          >
+            <v-flex pr-3>
+              <v-avatar size="30">
+                <img
+                  :src="require(`@/assets/G_logo_64.png`)"
+                  contain
+                >
+              </v-avatar>
+            </v-flex>
+
+            <v-flex>
+              Sign in with google
+            </v-flex>
+
+          </v-layout>
+        </v-btn>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -35,38 +60,10 @@ export default {
     ...mapActions(["userLogIn"]),
     login() {
       this.userLogIn();
-      // var provider = new firebase.auth.GoogleAuthProvider();
-      // provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
-      // //Sign in with pop up
-      // firebase
-      //   .auth()
-      //   .signInWithPopup(provider)
-      //   .then(result => {
-      //     // This gives you a Google Access Token. You can use it to access the Google API.
-      //     var token = result.credential.accessToken;
-      //     // The signed-in user info.
-      //     var user = result.user;
-      //     //this.$store.commit("SET_USER", user);
-      //     // ...
-      //     console.log("Correctly logged in!!");
-      //     this.$router.push("/");
-      //   })
-      //   .catch(function(error) {
-      //     // Handle Errors here.
-      //     var errorCode = error.code;
-      //     var errorMessage = error.message;
-      //     // The email of the user's account used.
-      //     console.error("ERROR!");
-      //     console.error(errorMessage);
-      //     var email = error.email;
-      //     // The firebase.auth.AuthCredential type that was used.
-      //     var credential = error.credential;
-      //     // ...
-      //   });
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
 </style>

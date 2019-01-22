@@ -122,7 +122,7 @@
       </v-layout>
     </v-toolbar>
 
-    <v-content v-if="!isLoading">
+    <v-content>
       <v-fade-transition mode="out-in">
         <router-view></router-view>
       </v-fade-transition>
@@ -287,6 +287,8 @@ export default {
         console.log("We are in home");
         this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
         this.$store.commit("SET_LEAGUE_ICON", "Home");
+      }
+      if (to.name == "matchinfo") {
       }
     }
   }

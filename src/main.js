@@ -5,6 +5,8 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import _ from "lodash";
+import moment from "moment";
+Vue.prototype.moment = moment;
 
 //Firebase init
 import firebase from "firebase";

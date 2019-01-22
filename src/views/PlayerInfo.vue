@@ -3,12 +3,6 @@
     pa-0
     ma-0
   >
-    <v-progress-circular
-      :size="50"
-      color="primary"
-      indeterminate
-    ></v-progress-circular>
-
     <v-layout column>
       <v-flex xs12>
         <v-card
@@ -87,6 +81,7 @@
       <v-flex
         pt-2
         xs12
+        px-2
       >
         <v-layout wrap>
           <v-flex xs12>
