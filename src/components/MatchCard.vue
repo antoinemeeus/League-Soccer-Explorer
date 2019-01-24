@@ -2,7 +2,7 @@
   <v-card
     :raised="iscurrentMatch"
     :color="dynamicColor"
-    :to="{ name: 'matchinfo' , params:{ id_match:indvMatch.id, displayed_match:indvMatch }}"
+    :to="{ name: 'matchinfo' , params:{ id_competition:leagueCompetitionID ,id_match:indvMatch.id, displayed_match:indvMatch }}"
   >
     <v-container fluid>
       <v-layout
@@ -17,12 +17,10 @@
         <v-layout column>
           <v-flex xs9>
             <v-list-tile>
-              <v-list-tile-avatar
-                size="40"
-                color="grey darken-3"
-              >
+              <v-list-tile-avatar size="40">
                 <v-img
                   class="elevation-6"
+                  contain
                   :src="indvMatch.homeTeam.crestUrl"
                 ></v-img>
               </v-list-tile-avatar>
@@ -43,10 +41,10 @@
           </v-flex>
           <v-flex xs9>
             <v-list-tile>
-              <v-list-tile-avatar color="grey darken-3">
+              <v-list-tile-avatar size="40">
                 <v-img
                   class="elevation-6"
-                  size="40"
+                  contain
                   :src="indvMatch.awayTeam.crestUrl"
                 ></v-img>
               </v-list-tile-avatar>
@@ -97,7 +95,7 @@
 <script>
 export default {
   name: "MatchCard",
-  props: ["indvMatch", "iscurrentMatch"],
+  props: ["leagueCompetitionID", "indvMatch", "iscurrentMatch"],
   data: () => ({}),
   methods: {
     getLocalDateAndTime(utcD) {
@@ -118,6 +116,8 @@ export default {
   },
 
   computed: {
+    homeCrest() {},
+    awayCrest() {},
     isHomeWinner() {
       return this.indvMatch.score.winner === "HOME_TEAM";
     },

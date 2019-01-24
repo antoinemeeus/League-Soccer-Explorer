@@ -10,6 +10,7 @@
     }"
       px-2
     >
+      <v-icon @click="getPreviousMatch()">arrow_back_ios</v-icon>
       <v-flex xs12>
         <v-layout
           px-2
@@ -34,11 +35,12 @@
           pt-2
           pa-1
         >
+
           <v-flex
             xs4
             text-xs-center
           >
-            <router-link :to="{name:'teaminfo' , params:{ id_team:matchHomeTeam.id, displayed_team:this.matchHomeTeam }}">
+            <router-link :to="{name:'teaminfo' , params:{ id_competition:this.id_competition ,id_team:matchHomeTeam.id, displayed_team:this.matchHomeTeam }}">
               <v-img
                 :src="matchHomeTeam.crestUrl"
                 max-height="80px"
@@ -63,7 +65,7 @@
             xs4
             text-xs-center
           >
-            <router-link :to="{name:'teaminfo' , params:{ id_team:matchAwayTeam.id, displayed_team: matchAwayTeam }}">
+            <router-link :to="{name:'teaminfo' , params:{ id_competition:this.id_competition,id_team:matchAwayTeam.id, displayed_team: matchAwayTeam }}">
               <v-img
                 :src="matchAwayTeam.crestUrl"
                 max-height="80px"
@@ -93,6 +95,7 @@
         </v-layout>
 
       </v-flex>
+      <v-icon @click="getNextMatch()">arrow_forward_ios</v-icon>
     </v-layout>
 
     <v-divider></v-divider>
@@ -183,7 +186,7 @@
         type="warning"
       >
         <h3 class="text-xs-center">
-          Information not available.
+          Information not available yet.
         </h3>
       </v-alert>
     </v-flex>
@@ -274,7 +277,7 @@ export default {
     LogoHeader,
     Login
   },
-  props: ["id_match", "displayed_match"],
+  props: ["id_competition", "id_match", "displayed_match"],
   data() {
     return {
       tabs: null,
@@ -282,26 +285,18 @@ export default {
       match_index: null
     };
   },
-  created() {
-    // this.setToolBarInfo();
-    // this.fetchMatches();
-    // this.fetchEventInfo();
-    // this.fetchTeams();
-  },
+  created() {},
 
   mounted() {
     this.setToolBarInfo();
-    // var stringQuery =
-    //   this.displayed_match.homeTeam.name.split(" ").join("_") +
-    //   "_vs_" +
-    //   this.displayed_match.awayTeam.name.split(" ").join("_");
-    // this.fetchEventInfo(stringQuery);
   },
 
   beforeDestroy() {},
 
   computed: {
     ...mapState([
+      "loadingMatches",
+      "loadingTeams",
       "league_competition",
       "league_matches",
       "league_matches_info",
@@ -376,7 +371,7 @@ export default {
 
   methods: {
     ...mapActions([
-      "fetchLeague",
+      "fetchAPI",
       "fetchMatches",
       "fetchEventInfo",
       "fetchTeams",
@@ -398,7 +393,11 @@ export default {
       var prev_id = prev_match.id;
       this.$router.replace({
         name: "matchinfo",
-        params: { id_match: prev_id, displayed_match: prev_match }
+        params: {
+          id_competition: this.id_competition,
+          id_match: prev_id,
+          displayed_match: prev_match
+        }
       });
     },
     getNextMatch() {
@@ -411,7 +410,11 @@ export default {
       var next_id = next_match.id;
       this.$router.replace({
         name: "matchinfo",
-        params: { id_match: next_id, displayed_match: next_match }
+        params: {
+          id_competition: this.id_competition,
+          id_match: next_id,
+          displayed_match: next_match
+        }
       });
     },
     getLocalDateAndTime(utcD) {

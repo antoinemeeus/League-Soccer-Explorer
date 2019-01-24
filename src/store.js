@@ -20,17 +20,41 @@ export default new Vuex.Store({
     error: null,
     loadingUser: false,
     minutesUpdate: 20,
+    API_URL: "http://api.football-data.org/v2/",
     options: {
       headers: { "X-Auth-Token": "018c8c34753848cab1551ae2ecd62ee1" }
     },
     urlKeys: {
-      league_competition: "competitions?plan=TIER_ONE"
+      getLeagues: {
+        str1: "competitions",
+        str2: "",
+        commitCmd: "SET_COMPETITION",
+        commitloadingFlag: "SET_LOADINGLEAGUE"
+      },
+      getMatches: {
+        str1: "competitions/",
+        str2: "/matches",
+        commitCmd: "SET_MATCHES",
+        commitloadingFlag: "SET_LOADINGMATCHES"
+      },
+      getTeams: {
+        str1: "competitions/",
+        str2: "/teams",
+        commitCmd: "SET_TEAMS",
+        commitloadingFlag: "SET_LOADINGTEAMS"
+      },
+      getStandings: {
+        str1: "competitions/",
+        str2: "/standings",
+        commitCmd: "SET_STANDING",
+        commitloadingFlag: "SET_LOADINGSTANDING"
+      }
     },
     apiLeaguesID: {
       idLeague: "4328",
       strLeague: "English Premier League"
     },
-
+    loadingAPI: false,
     loadingLeague: false,
     loadingMatches: false,
     loadingTeams: false,
@@ -39,29 +63,17 @@ export default new Vuex.Store({
 
     league_icon: "Home",
     app_title: "",
-    currentLeague: {},
+    currentLeague: null,
 
-    league_competition: {
-      count: null,
-      competitions: []
-    },
-    league_matches: { count: null, matches: [] },
     league_matches_info: {
       2014: LeagueMatchesInfo_2014,
       2021: LeagueMatchesInfo_2021,
       2019: LeagueMatchesInfo_2019
     },
-    league_teams: {
-      count: null,
-      competition: {},
-      season: {},
-      teams: []
-    },
-    league_current_event: {},
-    league_standings: {},
-    team_info: [],
-
-    team_football_org: [],
+    league_competition: null,
+    league_matches: null,
+    league_teams: null,
+    league_standings: null,
     team_players: []
   },
   mutations: {
@@ -92,11 +104,11 @@ export default new Vuex.Store({
     SET_STANDING(state, payload) {
       state.league_standings = payload;
     },
-    SET_CURRENT_EVENT(state, payload) {
-      state.league_current_event = payload;
-    },
     SET_APP_TITLE(state, payload) {
       state.app_title = payload;
+    },
+    SET_LOADING(state, payload) {
+      state.loadingAPI = payload;
     },
     SET_LOADINGLEAGUE(state, payload) {
       state.loadingLeague = payload;
@@ -115,9 +127,6 @@ export default new Vuex.Store({
     },
     SET_TEAM_PLAYERS(state, payload) {
       state.team_players = payload;
-    },
-    SET_TEAM_SQUAD(state, payload) {
-      state.team_football_org = payload;
     }
   },
   getters: {
@@ -161,8 +170,10 @@ export default new Vuex.Store({
           commit("setLoadingUser", false);
           console.log("Correctly logged in!!");
           console.log("ROUTE QUERY");
-          console.log(router.app._route);
-          router.replace(router.app._route.query.from);
+          let _route = router.app._route;
+          console.log(_route);
+          if (_route.query.from) router.replace(_route.query.from);
+          else router.push("/");
         })
         .catch(function(error) {
           // Handle Errors here.
@@ -181,299 +192,67 @@ export default new Vuex.Store({
     userLogOut({ commit }) {
       firebase.auth().signOut();
       commit("setUser", null);
-      router.push("/");
+      //router.push("/");
     },
-    fetchLeague({ commit, state }, key) {
-      commit("SET_LOADINGLEAGUE", true);
-
-      //Check last update in competitions and fetch data if last update is superior to 6hrs.
-      var fetchFlag = true;
-      var nowDate = new Date();
-      var Storagekey = key;
-      var lastSavedDate = new Date(
-        JSON.parse(localStorage.getItem(Storagekey + "_LastSaved"))
+    fetchAPI({ commit, state }, params) {
+      var fetchOptions = state.urlKeys[params.key];
+      var Storagekey = fetchOptions.str1 + params.query + fetchOptions.str2;
+      commit(fetchOptions.commitloadingFlag, true);
+      let now = new Date();
+      let lastFetched = new Date(
+        JSON.parse(localStorage.getItem(Storagekey + "_savedTime"))
       );
-
-      console.log("lastSavedDate:");
-      console.log(lastSavedDate);
-      var minutesSinceLastSave = 180;
-      var minutesSinceLastUpdate = 180;
-      if (
-        lastSavedDate &&
-        Math.abs(nowDate - lastSavedDate) / (1000 * 60) < state.minutesUpdate
-      ) {
-        var lastDataStored = JSON.parse(localStorage.getItem(Storagekey));
-
-        if (lastDataStored) {
-          console.log("There is League data in storage:");
-          var array = lastDataStored.competitions;
-          var lastUpdateDate = new Date(
-            Math.max.apply(
-              null,
-              array.map(function(e) {
-                return new Date(e.lastUpdated);
-              })
-            )
-          );
-
-          minutesSinceLastUpdate =
-            Math.abs(nowDate - lastUpdateDate) / (1000 * 60);
-
-          console.log("Minutes since lastUpdate: ", minutesSinceLastUpdate);
-
-          minutesSinceLastSave =
-            Math.abs(nowDate - lastSavedDate) / (1000 * 60);
-          console.log("Minutes since lastSaved: ", minutesSinceLastSave);
-        }
-
-        if (minutesSinceLastSave < state.minutesUpdate) {
-          console.log(
-            "Leagues Data is up to date and in memory, no fetching required"
-          );
-          commit("SET_COMPETITION", lastDataStored);
-          commit("SET_LOADINGLEAGUE", false);
-          fetchFlag = false;
-        } else {
-          fetchFlag = true;
-        }
-      }
-      console.log("Need fetch? ", minutesSinceLastUpdate > 120 || fetchFlag);
-
-      if (minutesSinceLastUpdate > 120 || fetchFlag) {
-        console.log("Fechting Competitions data from football data org:");
-        axios
-          .get(
-            "http://api.football-data.org/v2/" + state.urlKeys[key],
-            state.options
-          )
-          .then(response => response.data)
-          .then(leagues => {
-            commit("SET_COMPETITION", leagues);
-            commit("SET_LOADINGLEAGUE", false);
-            localStorage.setItem(
-              Storagekey + "_LastSaved",
-              JSON.stringify(nowDate)
-            );
-            localStorage.setItem(Storagekey, JSON.stringify(leagues));
-          })
-          .catch(err => console.log(err));
-      }
-    },
-
-    fetchMatches({ commit, state }, searchString) {
-      commit("SET_LOADINGMATCHES", true);
-      //Check last update in competitions and fetch data if last update is superior to 6hrs.
-      var fetchFlag = true;
-      var nowDate = new Date();
-      var Storagekey = searchString;
-
-      var lastSavedDate = new Date(
-        JSON.parse(localStorage.getItem(Storagekey + "_LastSaved"))
-      );
-      var minutesSinceLastSave = 180;
-
-      if (
-        lastSavedDate &&
-        Math.abs(nowDate - lastSavedDate) / (1000 * 60) < state.minutesUpdate
-      ) {
-        var lastDataStored = JSON.parse(localStorage.getItem(Storagekey));
-        if (lastDataStored) {
-          console.log("There is Match data in storage:");
-
-          minutesSinceLastSave =
-            Math.abs(nowDate - lastSavedDate) / (1000 * 60);
-          console.log("Minutes since lastSaved: ", minutesSinceLastSave);
-        }
-        if (minutesSinceLastSave < state.minutesUpdate) {
-          console.log(
-            "Match Data is up to date and in memory, no fetching required"
-          );
-          commit("SET_MATCHES", lastDataStored);
-          commit("SET_LOADINGMATCHES", false);
-          fetchFlag = false;
-        } else {
-          fetchFlag = true;
-        }
-      }
-
-      if (fetchFlag) {
-        console.log("FETCHING");
-        console.log("Fetching Matches data from football data org:");
-        axios
-          .get("http://api.football-data.org/v2/" + searchString, state.options)
-          .then(response => response.data)
-          .then(matches => {
-            localStorage.setItem(
-              Storagekey + "_LastSaved",
-              JSON.stringify(nowDate)
-            );
-            commit("SET_MATCHES", matches);
-            localStorage.setItem(Storagekey, JSON.stringify(matches));
-            commit("SET_LOADINGMATCHES", false);
-          })
-          .catch(err => console.log(err));
-      }
-    },
-    fetchStanding({ commit, state }, id_competition) {
-      commit("SET_LOADINGSTANDING", true);
-
-      //Check last update in competitions and fetch data if last update is superior to 6hrs.
-      var fetchFlag = true;
-      var nowDate = new Date();
-      var Storagekey = "standings_" + id_competition;
-      var lastSavedDate = new Date(
-        JSON.parse(localStorage.getItem(Storagekey + "_LastSaved"))
-      );
-      console.log(lastSavedDate);
-      var minutesSinceLastSave = 180;
-      var minutesSinceLastUpdate = 180;
-      if (
-        lastSavedDate &&
-        Math.abs(nowDate - lastSavedDate) / (1000 * 60) < state.minutesUpdate
-      ) {
-        var lastDataStored = JSON.parse(localStorage.getItem(Storagekey));
-        if (lastDataStored) {
-          console.log("There is Standing data in storage:");
-          var lastUpdateDate = new Date(lastDataStored.competition.lastUpdated);
-
-          console.log(nowDate, lastUpdateDate);
-
-          minutesSinceLastUpdate = Math.abs(
-            (nowDate - lastUpdateDate) / (1000 * 60)
-          );
-          console.log("Minutes since lastUpdate: ", minutesSinceLastUpdate);
-
-          console.log("Minutes since lastSaved: ", minutesSinceLastSave);
-          if (minutesSinceLastSave < state.minutesUpdate) {
-            console.log(
-              "Standing Data is up to date and in memory, no fetching required"
-            );
-
-            commit("SET_STANDING", lastDataStored);
-            commit("SET_LOADINGSTANDING", false);
-            fetchFlag = false;
-          } else {
-            fetchFlag = true;
-          }
-        }
-      }
-      console.log("Need fetch? ", minutesSinceLastUpdate > 120 || fetchFlag);
-      if (minutesSinceLastUpdate > 120 || fetchFlag) {
-        console.log("Fechting Matches data from football data org:");
-        axios
-          .get(
-            "http://api.football-data.org/v2/competitions/" +
-              id_competition +
-              "/standings",
-            state.options
-          )
-          .then(response => response.data)
-          .then(standings => {
-            localStorage.setItem(
-              Storagekey + "_LastSaved",
-              JSON.stringify(nowDate)
-            );
-            commit("SET_STANDING", standings);
-            commit("SET_LOADINGSTANDING", false);
-            localStorage.setItem(Storagekey, JSON.stringify(standings));
-          })
-          .catch(err => console.log(err));
-      }
-    },
-    fetchEventInfo({ commit }, stringTeamsVs) {
-      //commit("SET_LOADING", true);
-      console.log("Fechting Current MatchInfo event from: " + stringTeamsVs);
-      axios
-        .get(
-          "https://www.thesportsdb.com/api/v1/json/1/searchevents.php?e=" +
-            stringTeamsVs +
-            "&s=1819"
-        )
-        .then(response => response.data)
-        .then(event => {
-          //commit("SET_LOADING", false);
-          commit("SET_CURRENT_EVENT", event);
-        })
-        .catch(err => console.log(err));
-    },
-    fetchTeamInfo({ commit, state }, teamId) {
-      //commit("SET_LOADING", true);
-      console.log(
-        "Fechting Players data from team and football data org: " + teamId
-      );
-      axios
-        .get("http://api.football-data.org/v2/teams/" + teamId, state.options)
-        .then(response => response.data)
-        .then(team => {
-          //commit("SET_LOADING", false);
-          commit("SET_TEAM_SQUAD", team);
-        })
-        .catch(err => console.log(err));
-    },
-    fetchTeams({ commit, state }, searchString) {
-      commit("SET_LOADINGTEAMS", true);
-      //Check last update in competitions and fetch data if last update is superior to 6hrs.
-      var fetchFlag = true;
-      var nowDate = new Date();
-      var Storagekey = searchString;
-
-      var lastDataStored = JSON.parse(localStorage.getItem(Storagekey));
-      var minutesSinceLastSave = 180;
-      var minutesSinceLastUpdate = 180;
-      if (lastDataStored) {
-        console.log("There is Teams data in storage:");
-        var array = lastDataStored.teams;
-        var lastUpdateDate = new Date(
-          Math.max.apply(
-            null,
-            array.map(function(e) {
-              return new Date(e.lastUpdated);
-            })
-          )
+      let timePassedInMinutes = Math.abs(now - lastFetched) / (1000 * 60);
+      if (timePassedInMinutes < state.minutesUpdate) {
+        console.log(
+          "League update time " +
+            timePassedInMinutes +
+            " minutes is less than " +
+            state.minutesUpdate +
+            " minutes"
         );
-        console.log(lastUpdateDate);
-
-        minutesSinceLastUpdate =
-          Math.abs(nowDate - lastUpdateDate) / (1000 * 60);
-
-        console.log("Minutes since lastUpdate: ", minutesSinceLastUpdate);
-
-        var lastSavedDate = new Date(lastDataStored.fetchLastDate);
-        minutesSinceLastSave = Math.abs(nowDate - lastSavedDate) / (1000 * 60);
-        console.log("Minutes since lastSaved: ", minutesSinceLastSave);
-        if (minutesSinceLastSave < state.minutesUpdate) {
-          console.log(
-            "Team Data is up to date and in memory, no fetching required"
-          );
-          commit("SET_TEAMS", lastDataStored);
-          commit("SET_LOADINGTEAMS", false);
-          fetchFlag = false;
+        console.log("Trying to load " + params.key + " data from LocalStorage");
+        let savedLocalData = JSON.parse(localStorage.getItem(Storagekey));
+        if (savedLocalData) {
+          console.log("savedLocalData " + params.key + " is present");
+          commit(fetchOptions.commitCmd, savedLocalData);
+          commit(fetchOptions.commitloadingFlag, false);
+          return;
         } else {
-          fetchFlag = true;
+          console.log("savedLocalData is missing!");
         }
       }
-      console.log("Need fetch? ", fetchFlag);
-      if (minutesSinceLastUpdate > 120 || fetchFlag) {
-        console.log("Fechting Team data from football data org:");
-        axios
-          .get("http://api.football-data.org/v2/" + searchString, state.options)
-          .then(response => response.data)
-          .then(teams => {
-            teams["fetchLastDate"] = nowDate;
-            commit("SET_TEAMS", teams);
-            commit("SET_LOADINGTEAMS", false);
-            localStorage.setItem(Storagekey, JSON.stringify(teams));
-          })
-          .catch(err => console.log(err));
-      }
+
+      let requestURL =
+        state.API_URL + fetchOptions.str1 + params.query + fetchOptions.str2;
+      console.log("Fechting Data  from football data org:", requestURL);
+      axios
+        .get(requestURL, state.options)
+        .then(response => response.data)
+        .then(dataJSON => {
+          commit(fetchOptions.commitCmd, dataJSON);
+          commit(fetchOptions.commitloadingFlag, false);
+          localStorage.setItem(Storagekey, JSON.stringify(dataJSON));
+          localStorage.setItem(
+            Storagekey + "_savedTime",
+            JSON.stringify(new Date())
+          );
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
+
     fetchPlayers({ commit, dispatch }, { string_query, retryCount }) {
       console.log("Count actual:", retryCount);
       if (typeof retryCount === "undefined") {
         retryCount = 0;
         console.log("Count to zero:", retryCount);
       }
-
+      console.log(
+        "Fetching players from thesportsdb with team name query:",
+        string_query
+      );
       commit("SET_LOADINGPLAYERS", true);
       commit("SET_TEAM_PLAYERS", []);
       axios

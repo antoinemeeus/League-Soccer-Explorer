@@ -124,12 +124,15 @@
 
     <v-content>
       <v-fade-transition mode="out-in">
-        <router-view></router-view>
+        <router-view v-if="!loadingMatches && !loadingTeams && !loadingStandings"></router-view>
       </v-fade-transition>
     </v-content>
     <!-- Loader -->
     <v-dialog
-      :value="isLoading"
+      :value="localLoading || loadingPlayers ||
+        loadingLeague ||
+        loadingTeams ||
+        loadingMatches"
       hide-overlay
       persistent
       width="300"
@@ -172,35 +175,23 @@ export default {
   data() {
     return {
       drawer: null,
-      seasonTitle: ""
+      seasonTitle: "",
+      localLoading: false
     };
   },
   methods: {
-    ...mapActions([
-      "fetchLeague",
-      "fetchMatches",
-      "fetchPlayers",
-      "fetchTeamInfo"
-    ]),
+    ...mapActions(["fetchAPI", "fetchPlayers", "fetchTeamInfo"]),
     logOut() {
       this.$store.dispatch("userLogOut");
-      firebase
-        .auth()
-        .signOut()
-        .then(function() {
-          // Sign-out successful.
-        })
-        .catch(function(error) {
-          console.log(error);
-          alert(error);
-          // An error happened.
-        });
-      //this.$router.push("/");
       this.drawer = false;
     },
     logIn() {
-      this.drawer = false;
-      this.$router.push("/login");
+      //this.drawer = false;
+      this.$router.push({
+        name: "login",
+        query: { from: this.$route.fullPath }
+      });
+      //this.$router.push("/login");
     },
     setTitle(str) {
       this.$store.commit("SET_TITLE", str);
@@ -213,22 +204,80 @@ export default {
         this.$router.push(`/competition/${this.currentLeague.id}`);
     },
 
-    getCorrespondingRouteData() {
-      // console.log(this.$route);
-      // console.log(this.$route.name);
-      if (this.$route.params.hasOwnProperty("id_team")) {
-        console.log("We are in Team info, loading data!!");
-        var team_name_query = this.$store.state.league_teams.teams.find(
-          obj => obj.id == this.$route.params.id_team
-        ).shortName;
-        this.fetchPlayers({ string_query: team_name_query });
-        this.fetchTeamInfo(this.$route.params.id_team);
+    routeGetSetData(route_) {
+      //Important method that will decide the fetching logic and data required in function to the route name/path and parameters.
+      this.localLoading = true;
+      if (route_.name == "home") {
+        console.log("We are in home");
+        this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
+        this.$store.commit("SET_LEAGUE_ICON", "Home");
+        this.$store.commit("SET_CURRENT_LEAGUE", { name: "Home", id: "" });
+        if (this.$store.state.league_competition) {
+          //If league is already in store, don't fetch it again.
+          console.log("League is already in store");
+        } else {
+          console.log("League is not in store");
+          this.fetchAPI({ key: "getLeagues", query: "?plan=TIER_ONE" });
+        }
       }
-      // if (this.$route.params.hasOwnProperty("id_match")) {
-      //   console.log("We are in Match Info vue");
-      //   // this.fetchTeams("competitions/" + this.id_competition + "/teams");
-      //   // this.fetchMatches("competitions/" + this.id_competition + "/matches");
-      // }
+      if (route_.name === "competition" || route_.name == "matchinfo") {
+        let cur_id_competition = route_.params.id_competition;
+        if (
+          this.$store.state.league_matches &&
+          this.$store.state.league_matches.competition.id == cur_id_competition
+        ) {
+          console.log("League_matches is already in store");
+        } else {
+          console.log("Fetching league_matches required to render component: ");
+          this.fetchAPI({ key: "getMatches", query: cur_id_competition });
+        }
+        if (
+          this.$store.state.league_teams &&
+          this.$store.state.league_teams.competition.id == cur_id_competition
+        ) {
+          console.log("League_teams is already in store");
+        } else {
+          console.log("Fetching league_teams required to render component: ");
+          this.fetchAPI({ key: "getTeams", query: cur_id_competition });
+        }
+      }
+      if (route_.name === "teaminfo") {
+        let cur_id_competition = route_.params.id_competition;
+
+        if (
+          this.$store.state.league_matches &&
+          this.$store.state.league_matches.competition.id == cur_id_competition
+        ) {
+          console.log("League_matches is already in store");
+        } else {
+          console.log("Fetching league_matches required to render component: ");
+          this.fetchAPI({ key: "getMatches", query: cur_id_competition });
+        }
+
+        if (
+          this.$store.state.league_teams &&
+          this.$store.state.league_teams.competition.id == cur_id_competition
+        ) {
+          console.log("League_teams is already in store");
+        } else {
+          console.log("Fetching league_teams required to render component: ");
+          this.fetchAPI({ key: "getTeams", query: cur_id_competition });
+        }
+
+        if (
+          this.$store.state.league_standings &&
+          this.$store.state.league_standings.competition.id ==
+            cur_id_competition
+        ) {
+          console.log("League_standings is already in store");
+        } else {
+          console.log(
+            "Fetching league_standings required to render component: "
+          );
+          this.fetchAPI({ key: "getStandings", query: cur_id_competition });
+        }
+      }
+      this.localLoading = false;
     }
   },
   computed: {
@@ -238,6 +287,7 @@ export default {
       "loadingTeams",
       "loadingMatches",
       "loadingStandings",
+      "loadingPlayers",
       "currentLeague",
       "app_title",
       "league_icon",
@@ -245,14 +295,6 @@ export default {
     ]),
     isAuthenticated() {
       return this.$store.getters.isAuthenticated;
-    },
-    isLoading() {
-      return (
-        this.loadingLeague ||
-        this.loadingTeams ||
-        this.loadingMatches ||
-        this.loadingStandings
-      );
     },
 
     leagueSelected() {
@@ -268,28 +310,23 @@ export default {
     }
   },
   created() {
-    this.fetchLeague("league_competition");
     this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
     this.$store.commit("SET_LEAGUE_ICON", "Home");
-    if (this.$route.params.hasOwnProperty("id_match")) {
-      console.log("We are in Match Info vue");
-      this.fetchTeams("competitions/" + this.id_competition + "/teams");
-      this.fetchMatches("competitions/" + this.id_competition + "/matches");
-    }
+    //Check route at created moment.
+
+    console.log("ROUTE INFO AT APP CREATED:");
+    console.log("We are refreshing on the " + this.$route.name + " page");
+    console.log(this.$route);
+    this.routeGetSetData(this.$route);
   },
 
   watch: {
     $route(to, from) {
       console.log("Route Was Changed!!!");
-      this.getCorrespondingRouteData();
-
-      if (to.name == "home") {
-        console.log("We are in home");
-        this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
-        this.$store.commit("SET_LEAGUE_ICON", "Home");
-      }
-      if (to.name == "matchinfo") {
-      }
+      console.log(from);
+      console.log(to);
+      console.log("-------------!!!");
+      if (to.name != from.name) this.routeGetSetData(to);
     }
   }
 };

@@ -176,9 +176,31 @@
     >
       <v-tab-item>
         <TabPlayers
+          v-if="!this.loadingPlayers"
           :players="team_players"
           :teamInfo="team_football_org"
         />
+
+        <v-layout
+          v-if="this.loadingPlayers"
+          align-center
+          justify-center
+          row
+          fill-height
+        >
+          <!-- <v-progress-circular          
+            size="50"
+            color="primary"
+            indeterminate
+          ></v-progress-circular> -->
+
+          <v-progress-linear
+            :indeterminate="true"
+            height="5"
+          ></v-progress-linear>
+
+        </v-layout>
+
       </v-tab-item>
 
       <v-tab-item>
@@ -186,7 +208,10 @@
       </v-tab-item>
       <v-tab-item>
 
-        <TabMatches :list_team_matches="teamSeasonMatches" />
+        <TabMatches
+          :competitionID="currentCompetition.id"
+          :list_team_matches="matchesWithCrest"
+        />
 
       </v-tab-item>
     </v-tabs-items>
@@ -210,7 +235,7 @@ export default {
     TabStanding,
     TabPlayers
   },
-  props: ["id_team", "displayed_team"],
+  props: ["id_competition", "id_team", "displayed_team"],
   data() {
     return {
       tabs: null,
@@ -220,9 +245,9 @@ export default {
       website_map: false
     };
   },
-  created() {},
-  beforeMount() {},
-
+  created() {
+    this.fetchPlayers({ string_query: this.currentTeam.shortName });
+  },
   mounted() {
     this.setToolBarInfo();
   },
@@ -231,6 +256,7 @@ export default {
 
   computed: {
     ...mapState([
+      "loadingPlayers",
       "team_players",
       "league_matches",
       "league_teams",
@@ -245,12 +271,16 @@ export default {
       return { "background-color": cur_color };
     },
     currentTeam() {
-      return (
-        this.displayed_team ||
-        this.league_teams.teams.find(obj => obj.id == this.id_team)
-      );
+      if (this.league_teams) {
+        return this.league_teams.teams.find(obj => obj.id == this.id_team);
+      } else {
+        return this.displayed_team;
+      }
     },
-    teamSeasonMatches() {
+    currentCompetition() {
+      return this.league_teams.competition;
+    },
+    matchesWithCrest() {
       var matches = this.league_matches.matches.filter(
         obj =>
           obj.homeTeam.id == this.id_team || obj.awayTeam.id === this.id_team
@@ -270,11 +300,7 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      "fetchPlayers",
-      "fetchStanding",
-      "fetchTeamInfo" // map `this.fetchPlayers(teamStringSearchQuery)` to `this.$store.dispatch('fetchPlayers')`
-    ]),
+    ...mapActions(["fetchPlayers"]),
     setToolBarInfo() {
       this.$store.commit("SET_LEAGUE_ICON", this.league_teams.competition.code);
       this.$store.commit("SET_APP_TITLE", this.league_teams.competition.name);

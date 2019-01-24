@@ -4,7 +4,7 @@
     :to="{ name: 'playerinfo' , params:{ id_player:player.idPlayer,displayed_player:player }}"
   >
     <v-img
-      :src="`${player.strThumb}/preview`"
+      :src="playerImageSrc"
       height="100px"
       contain
     >
@@ -43,10 +43,18 @@
 export default {
   name: "Playercard",
   props: ["player", "player_data_org"],
-  data: () => ({}),
+  data: () => ({
+    failed_image: false
+  }),
   methods: {},
 
-  computed: {}
+  computed: {
+    playerImageSrc() {
+      return this.player.strThumb
+        ? this.player.strThumb + "/preview"
+        : require("@/assets/CutOutPlaceHolder.jpg");
+    }
+  }
 };
 </script>
 

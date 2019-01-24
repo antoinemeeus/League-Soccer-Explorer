@@ -4,6 +4,7 @@
       <h1 class="headlines"> Leagues and Cups</h1>
     </v-layout>
     <v-layout
+      v-if="!loadingLeague"
       row
       wrap
     >
@@ -15,10 +16,7 @@
         sm4
         md3
       >
-        <LeagueCard
-          :img_code="competition.code"
-          :league_properties="competition"
-        />
+        <LeagueCard :currentCompetition="competition" />
       </v-flex>
 
     </v-layout>
@@ -26,7 +24,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import LeagueCard from "../components/LeagueCard";
 export default {
   name: "Home",
@@ -36,13 +34,13 @@ export default {
   data() {
     return {};
   },
-  mounted() {
-    this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
-    this.$store.commit("SET_LEAGUE_ICON", "Home");
-    this.$store.commit("SET_CURRENT_LEAGUE", { name: "Home", id: "" });
-  },
+  created() {},
+  mounted() {},
   computed: {
-    ...mapState(["league_competition"])
+    ...mapState(["loadingLeague", "league_competition"])
+  },
+  methods: {
+    ...mapActions(["fetchAPI"])
   }
 };
 </script>

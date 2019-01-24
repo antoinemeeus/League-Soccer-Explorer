@@ -43,6 +43,7 @@
         >
 
           <MatchCard
+            :leagueCompetitionID="id_competition"
             :iscurrentMatch="match.id===nextMatch.id"
             :indvMatch="match"
           />
@@ -83,28 +84,42 @@ export default {
       lastScrollHeight: 0,
       lastBottomHeight: 0,
       matchDaysDisplayed: [],
-      options: {
-        duration: 0,
-        offset: -300, //-(document.documentElement.clientHeight / 2),
+      scrollOptions: {
+        duration: 300,
+        offset: 0,
         easing: "easeInOutCubic"
       }
     };
   },
-  created() {
-    this.fetchTeams("competitions/" + this.id_competition + "/teams");
-    this.fetchMatches("competitions/" + this.id_competition + "/matches");
-    this.fetchStanding(this.id_competition);
-  },
-  beforeMount() {
-    // this.fetchMatches("competitions/" + this.id_competition + "/matches");
-    // this.fetchTeams("competitions/" + this.id_competition + "/teams");
+  created() {},
+
+  mounted() {
+    //jump to current or nextMatch
+    console.log(document.querySelector(".scroll_target"));
+    this.$nextTick(function() {
+      console.log(document.querySelector(".scroll_target"));
+      // Code that will run only after the
+      // entire view has been rendered
+      var el = document.querySelector(".scroll_target");
+      console.log("Element with target of scroll?", el);
+      var vOffset =
+        // el.getBoundingClientRect().top +
+        // document.documentElement.scrollTop -
+        window.innerHeight / 2;
+      console.log(vOffset);
+      this.$vuetify.goTo(el, {
+        duration: 300,
+        offset: -vOffset,
+        easing: "easeInOutCubic"
+      });
+    });
 
     this.$store.commit("SET_LEAGUE_ICON", this.currentLeagueInfo.code);
     this.$store.commit("SET_APP_TITLE", this.currentLeagueInfo.name);
     this.$store.commit("SET_CURRENT_LEAGUE", this.currentLeagueInfo);
-    //Update League Logo
-    //We add current, next and previous matchday to list
-    console.log(this.currentMatchDay);
+
+    this.onScroll();
+
     this.matchDaysDisplayed.push(this.currentMatchDay);
     this.currentMatchDay - 1 >= 0
       ? this.matchDaysDisplayed.push(this.currentMatchDay - 1)
@@ -112,14 +127,6 @@ export default {
     this.currentMatchDay + 1 <= this.lastMatchDay
       ? this.matchDaysDisplayed.push(this.currentMatchDay + 1)
       : null;
-  },
-
-  mounted() {
-    //jump to current or nextMatch
-    let self = this;
-    console.log("Inject scroll listener");
-
-    this.onScroll();
   },
 
   beforeDestroy() {
@@ -130,7 +137,6 @@ export default {
 
   computed: {
     ...mapState([
-      "loadingLeague",
       "loadingMatches",
       "loadingTeams",
       "league_competition",
@@ -148,6 +154,20 @@ export default {
       }
       return false;
     },
+
+    isLitTop() {
+      return this.sortedMatchDaysDisplayed[0] > 1;
+    },
+    isListBottom() {
+      var len = this.sortedMatchDaysDisplayed.length;
+      return this.sortedMatchDaysDisplayed[len - 1] < this.lastMatchDay;
+    },
+    currentLeagueInfo() {
+      return this.league_matches.competition;
+    },
+    currentMatchDay() {
+      return this.league_matches.matches[0].season.currentMatchday;
+    },
     lastMatchDay() {
       //Have to check if in stage is regular seagon
       var matches_ = this.league_matches.matches;
@@ -159,18 +179,6 @@ export default {
           return Math.max(this.league_matches.matches.map(obj => obj.matchday));
         }
       }
-    },
-    isLitTop() {
-      return this.sortedMatchDaysDisplayed[0] > 1;
-    },
-    isListBottom() {
-      var len = this.sortedMatchDaysDisplayed.length;
-      return this.sortedMatchDaysDisplayed[len - 1] < this.lastMatchDay;
-    },
-    currentLeagueInfo() {
-      return this.league_competition.competitions.find(
-        obj => obj.id == this.id_competition
-      );
     },
     matchesWithCrest() {
       //Adding crestUrl to each matches homeTeam/awayTeam with information from league_teams
@@ -192,9 +200,7 @@ export default {
           return obj;
         });
     },
-    currentMatchDay() {
-      return this.currentLeagueInfo.currentSeason.currentMatchday;
-    },
+
     nextMatch() {
       //Find current or next match by obtaining the next index after the last match with status "FINISHED"
       var lastIndex = 0;
@@ -212,13 +218,7 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      "fetchLeague",
-      "fetchMatches",
-      "fetchStanding",
-      "fetchTeams",
-      "fetchTeamInfo"
-    ]),
+    ...mapActions(["fetchAPI", "fetchTeamInfo"]),
     setToolBarInfo() {
       if (currentLeagueInfo.code) {
         this.$store.commit("SET_LEAGUE_ICON", this.currentLeagueInfo.code);
@@ -286,15 +286,12 @@ export default {
     }
   },
   watch: {
-    matchDaysDisplayed() {
-      //scroll lazy load logic
-      if (this.lastBottomHeight <= this.lastScrollHeight)
-        document.documentElement.scrollTop +=
-          document.documentElement.scrollHeight - this.lastScrollHeight;
-    },
-    currentLeagueInfo() {
-      this.setToolBarInfo();
-    }
+    // matchDaysDisplayed() {
+    //   //scroll lazy load logic
+    //   if (this.lastBottomHeight <= this.lastScrollHeight)
+    //     document.documentElement.scrollTop +=
+    //       document.documentElement.scrollHeight - this.lastScrollHeight;
+    // }
   }
 };
 </script>

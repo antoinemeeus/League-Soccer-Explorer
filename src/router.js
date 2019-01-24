@@ -1,6 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
 import firebase from "firebase";
+import store from "./store";
+
 import Home from "./views/Home.vue";
 import MatchesList from "./views/MatchesList.vue";
 import MatchInfo from "./views/MatchInfo.vue";
@@ -15,7 +17,6 @@ const router = new Router({
   mode: "history",
   scrollBehavior(to) {
     // scroll to anchor by returning the selector
-    console.log(to);
     if (to.name === "competition") {
       return new Promise(resolve => {
         setTimeout(() => {
@@ -61,19 +62,19 @@ const router = new Router({
       props: true
     },
     {
-      path: "/match/:id_match",
+      path: "/competition/:id_competition/match/:id_match",
       name: "matchinfo",
       component: MatchInfo,
       props: true
     },
     {
-      path: "/team/:id_team",
+      path: "/competition/:id_competition/team/:id_team",
       name: "teaminfo",
       component: TeamInfo,
       props: true
     },
     {
-      path: "/team/:id_team/player/:id_player",
+      path: "/competition/:id_competition/team/:id_team/player/:id_player",
       name: "playerinfo",
       component: PlayerInfo,
       props: true
@@ -92,8 +93,6 @@ router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const isAuthenticated = firebase.auth().currentUser;
   if (requiresAuth && !isAuthenticated) {
-    console.log("From naviagtion guard");
-    console.log(to, from, next);
     next({ name: "login", query: { from: to.path } });
   } else {
     next();

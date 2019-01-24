@@ -17,6 +17,7 @@
         :class="{'scroll_target current-match-card': match.id===nextMatch.id}"
       >
         <MatchCard
+          :leagueCompetitionID="competitionID"
           :iscurrentMatch="match.id===nextMatch.id"
           :indvMatch="match"
         />
@@ -30,11 +31,33 @@ import MatchCard from "./MatchCard.vue";
 
 export default {
   name: "TabMatches",
-  props: ["list_team_matches"],
+  props: ["competitionID", "list_team_matches"],
   components: {
     MatchCard
   },
   data: () => ({}),
+
+  mounted() {
+    // setTimeout(() => {
+    //   var el = document.querySelector(".scroll_target");
+    //   if (el) {
+    //     var rect = el.getBoundingClientRect(),
+    //       scrollLeft =
+    //         window.pageXOffset || document.documentElement.scrollLeft,
+    //       scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    //     var halfViewportHeight = window.innerHeight / 2;
+    //     this.$vuetify.goTo(el, {
+    //       duration: 0,
+    //       offset: 0,
+    //       easing: "easeInOutCubic"
+    //     });
+    //     // resolve({
+    //     //   x: rect.left + scrollLeft,
+    //     //   y: rect.top + scrollTop - halfViewportHeight
+    //     // });
+    //   }
+    // }, 1200);
+  },
   methods: {},
 
   computed: {

@@ -118,7 +118,7 @@ import { mapState } from "vuex";
 import { mapActions } from "vuex";
 
 export default {
-  name: "TeamInfo",
+  name: "PlayerInfo",
 
   components: {},
   props: ["id_player", "displayed_player"],

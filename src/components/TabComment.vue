@@ -174,7 +174,6 @@ export default {
     $route(to, from) {
       if (to.name == "matchinfo" && from.name == "matchinfo") {
         this.fetchMessages();
-        console.log("HEre we have to rerender again");
       }
     }
   }
