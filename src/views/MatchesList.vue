@@ -86,8 +86,6 @@ export default {
       matchDaysDisplayed: []
     };
   },
-  created() {},
-
   mounted() {
     //jump to current or nextMatch
     console.log(document.querySelector(".scroll_target"));
@@ -224,6 +222,7 @@ export default {
       window.onscroll = _.debounce(() => {
         if (document.documentElement.scrollTop < this.offsetTop) {
           this.lastScrollHeight = document.documentElement.scrollHeight;
+          console.log("adding previous match");
           this.addPrevMatchDay();
         }
         if (
@@ -273,6 +272,14 @@ export default {
     getYearFromDate(strDate) {
       var d = new Date(strDate);
       return d.getFullYear();
+    }
+  },
+  watch: {
+    matchDaysDisplayed() {
+      //scroll lazy load logic
+      if (this.lastBottomHeight <= this.lastScrollHeight)
+        document.documentElement.scrollTop +=
+          document.documentElement.scrollHeight - this.lastScrollHeight;
     }
   }
 };

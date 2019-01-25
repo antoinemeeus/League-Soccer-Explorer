@@ -2,6 +2,6 @@
   "short_name": "SLE",
   "name": "Soccer League Explorer",
 
-  "start_url": "/index.html",
+  "start_url": "/",
   "display": "fullscreen"
 }
