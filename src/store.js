@@ -20,7 +20,7 @@ export default new Vuex.Store({
     error: null,
     loadingUser: false,
     minutesUpdate: 20,
-    API_URL: "http://api.football-data.org/v2/",
+    API_URL: "https://api.football-data.org/v2/",
     options: {
       headers: { "X-Auth-Token": "018c8c34753848cab1551ae2ecd62ee1" }
     },
@@ -72,6 +72,7 @@ export default new Vuex.Store({
     app_title: "",
     currentLeague: null,
     current_team_id: null,
+
     league_matches_info: {
       2014: LeagueMatchesInfo_2014,
       2021: LeagueMatchesInfo_2021,
