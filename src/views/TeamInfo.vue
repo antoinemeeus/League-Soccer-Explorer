@@ -247,6 +247,7 @@ export default {
   },
   created() {
     if (
+      this.team_players.length > 1 &&
       this.current_team_id &&
       this.current_team_id == this.team_players[0].idTeam
     ) {

@@ -37,7 +37,11 @@ export default {
   created() {},
   mounted() {},
   computed: {
-    ...mapState(["loadingLeague", "league_competition"])
+    ...mapState(["loadingLeague", "league_competition"]),
+
+    validCompetition(){
+      
+    }
   },
   methods: {
     ...mapActions(["fetchAPI"])

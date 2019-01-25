@@ -72,6 +72,7 @@ export default new Vuex.Store({
     app_title: "",
     currentLeague: null,
     current_team_id: null,
+    goToCurrent: false,
 
     league_matches_info: {
       2014: LeagueMatchesInfo_2014,
@@ -94,6 +95,9 @@ export default new Vuex.Store({
     },
     setLoadingUser(state, payload) {
       state.loadingUser = payload;
+    },
+    goToCurrentMut(state) {
+      state.goToCurrent = !state.goToCurrent;
     },
     SET_CURRENT_LEAGUE(state, payload) {
       state.currentLeague = payload;

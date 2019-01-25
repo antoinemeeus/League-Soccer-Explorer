@@ -1,6 +1,7 @@
 <template>
 
   <v-container fluid>
+
     <v-layout
       justify-center
       pb-2
@@ -88,30 +89,17 @@ export default {
   },
   mounted() {
     //jump to current or nextMatch
-    console.log(document.querySelector(".scroll_target"));
+
     this.$nextTick(function() {
-      console.log(document.querySelector(".scroll_target"));
       // Code that will run only after the
       // entire view has been rendered
-      var el = document.querySelector(".scroll_target");
-      console.log("Element with target of scroll?", el);
-      var vOffset =
-        // el.getBoundingClientRect().top +
-        // document.documentElement.scrollTop -
-        window.innerHeight / 2;
-      console.log(vOffset);
-      this.$vuetify.goTo(el, {
-        duration: 300,
-        offset: -vOffset,
-        easing: "easeInOutCubic"
-      });
+      this.goToNextMatch();
+      this.onScroll();
     });
 
     this.$store.commit("SET_LEAGUE_ICON", this.currentLeagueInfo.code);
     this.$store.commit("SET_APP_TITLE", this.currentLeagueInfo.name);
     this.$store.commit("SET_CURRENT_LEAGUE", this.currentLeagueInfo);
-
-    this.onScroll();
 
     this.matchDaysDisplayed.push(this.currentMatchDay);
     this.currentMatchDay - 1 >= 0
@@ -134,7 +122,8 @@ export default {
       "loadingTeams",
       "league_competition",
       "league_matches",
-      "league_teams"
+      "league_teams",
+      "goToCurrent"
     ]),
 
     regularSeasonOrCups() {
@@ -218,6 +207,17 @@ export default {
         this.$store.commit("SET_CURRENT_LEAGUE", this.currentLeagueInfo);
       }
     },
+    goToNextMatch() {
+      var el = document.querySelector(".scroll_target");
+      console.log("Element with target of scroll?", el.clientHeight);
+      var vOffset = window.innerHeight / 2 - el.clientHeight / 2;
+      console.log(vOffset);
+      this.$vuetify.goTo(el, {
+        duration: 0,
+        offset: -vOffset,
+        easing: "easeInOutCubic"
+      });
+    },
     onScroll() {
       window.onscroll = _.debounce(() => {
         if (document.documentElement.scrollTop < this.offsetTop) {
@@ -233,7 +233,7 @@ export default {
             document.documentElement.scrollTop + window.innerHeight;
           this.addNextMatchDay();
         }
-      }, 800);
+      }, 600);
     },
     getTeamsFromMatch(_match) {
       var _homeTeam = this.league_teams.teams.find(
@@ -280,6 +280,9 @@ export default {
       if (this.lastBottomHeight <= this.lastScrollHeight)
         document.documentElement.scrollTop +=
           document.documentElement.scrollHeight - this.lastScrollHeight;
+    },
+    goToCurrent() {
+      this.goToNextMatch();
     }
   }
 };

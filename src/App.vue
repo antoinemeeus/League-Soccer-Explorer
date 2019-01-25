@@ -118,7 +118,17 @@
         >
           {{SearchView}}
         </v-flex>
-        <v-flex xs2></v-flex>
+        <v-flex
+          xs2
+          text-xs-right
+        >
+          <v-icon
+            v-if="$route.name=='competition'"
+            @click="$store.commit('goToCurrentMut')"
+          >
+            vertical_align_center
+          </v-icon>
+        </v-flex>
       </v-layout>
     </v-toolbar>
 
