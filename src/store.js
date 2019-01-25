@@ -48,6 +48,12 @@ export default new Vuex.Store({
         str2: "/standings",
         commitCmd: "SET_STANDING",
         commitloadingFlag: "SET_LOADINGSTANDING"
+      },
+      getPlayers: {
+        str1: "teams/",
+        str2: "",
+        commitCmd: "SET_TEAM_SQUAD",
+        commitloadingFlag: "SET_LOADINGTEAMINFO"
       }
     },
     apiLeaguesID: {
@@ -60,11 +66,12 @@ export default new Vuex.Store({
     loadingTeams: false,
     loadingPlayers: false,
     loadingStandings: false,
+    loadingTeamInfo: false,
 
     league_icon: "Home",
     app_title: "",
     currentLeague: null,
-
+    current_team_id: null,
     league_matches_info: {
       2014: LeagueMatchesInfo_2014,
       2021: LeagueMatchesInfo_2021,
@@ -74,7 +81,8 @@ export default new Vuex.Store({
     league_matches: null,
     league_teams: null,
     league_standings: null,
-    team_players: []
+    team_players: [],
+    team_football_org: null
   },
   mutations: {
     setUser(state, payload) {
@@ -104,6 +112,13 @@ export default new Vuex.Store({
     SET_STANDING(state, payload) {
       state.league_standings = payload;
     },
+    SET_TEAM_PLAYERS(state, payload) {
+      state.team_players = payload;
+    },
+    SET_TEAM_SQUAD(state, payload) {
+      state.team_football_org = payload;
+    },
+
     SET_APP_TITLE(state, payload) {
       state.app_title = payload;
     },
@@ -122,11 +137,14 @@ export default new Vuex.Store({
     SET_LOADINGPLAYERS(state, payload) {
       state.loadingPlayers = payload;
     },
+    SET_LOADINGTEAMINFO(state, payload) {
+      state.loadingTeamInfo = payload;
+    },
     SET_LOADINGSTANDING(state, payload) {
       state.loadingStandings = payload;
     },
-    SET_TEAM_PLAYERS(state, payload) {
-      state.team_players = payload;
+    SET_CURRENT_TEAM_ID(state, payload) {
+      state.current_team_id = payload;
     }
   },
   getters: {
@@ -190,7 +208,15 @@ export default new Vuex.Store({
         });
     },
     userLogOut({ commit }) {
-      firebase.auth().signOut();
+      firebase
+        .auth()
+        .signOut()
+        .then(function() {
+          // Sign-out successful.
+        })
+        .catch(function(error) {
+          // An error happened.;
+        });
       commit("setUser", null);
       //router.push("/");
     },
@@ -284,6 +310,7 @@ export default new Vuex.Store({
             else console.log("Too many retries");
           }
           commit("SET_TEAM_PLAYERS", players.player);
+          commit("SET_CURRENT_TEAM_ID", players.player[0].idTeam);
           commit("SET_LOADINGPLAYERS", false);
         })
         .catch(err => console.log(err));

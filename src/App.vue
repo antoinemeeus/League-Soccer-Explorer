@@ -124,7 +124,7 @@
 
     <v-content>
       <v-fade-transition mode="out-in">
-        <router-view v-if="!loadingMatches && !loadingTeams && !loadingStandings"></router-view>
+        <router-view v-if="!loadingMatches && !loadingTeams && !loadingStandings && !loadingTeamInfo"></router-view>
       </v-fade-transition>
     </v-content>
     <!-- Loader -->
@@ -132,7 +132,7 @@
       :value="localLoading || loadingPlayers ||
         loadingLeague ||
         loadingTeams ||
-        loadingMatches"
+        loadingMatches || loadingTeamInfo"
       hide-overlay
       persistent
       width="300"
@@ -174,7 +174,7 @@ export default {
   components: {},
   data() {
     return {
-      drawer: null,
+      drawer: false,
       seasonTitle: "",
       localLoading: false
     };
@@ -207,6 +207,7 @@ export default {
     routeGetSetData(route_) {
       //Important method that will decide the fetching logic and data required in function to the route name/path and parameters.
       this.localLoading = true;
+
       if (route_.name == "home") {
         console.log("We are in home");
         this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
@@ -243,7 +244,17 @@ export default {
       }
       if (route_.name === "teaminfo") {
         let cur_id_competition = route_.params.id_competition;
-
+        let cur_id_team = route_.params.id_team;
+        if (
+          this.$store.state.team_football_org &&
+          this.$store.state.team_football_org.id == cur_id_team
+        ) {
+          console.log("League_teamInfo is already in store");
+        } else {
+          console.log("League_teamInfo required to render component:");
+          this.$store.commit("SET_CURRENT_TEAM_ID", null);
+          this.fetchAPI({ key: "getPlayers", query: cur_id_team });
+        }
         if (
           this.$store.state.league_matches &&
           this.$store.state.league_matches.competition.id == cur_id_competition
@@ -288,6 +299,7 @@ export default {
       "loadingMatches",
       "loadingStandings",
       "loadingPlayers",
+      "loadingTeamInfo",
       "currentLeague",
       "app_title",
       "league_icon",
@@ -296,14 +308,8 @@ export default {
     isAuthenticated() {
       return this.$store.getters.isAuthenticated;
     },
-
-    leagueSelected() {
-      //console.log(this.$router.app._route.name);
-      if (this.$router.app._route.name == "home") return false;
-      return true;
-    },
     goBackButton() {
-      return this.$router.app._route.name != "home";
+      return this.$route.name != "home";
     },
     SearchView() {
       return this.$route.name;
@@ -314,7 +320,6 @@ export default {
     this.$store.commit("SET_LEAGUE_ICON", "Home");
     //Check route at created moment.
 
-    console.log("ROUTE INFO AT APP CREATED:");
     console.log("We are refreshing on the " + this.$route.name + " page");
     console.log(this.$route);
     this.routeGetSetData(this.$route);
@@ -322,11 +327,10 @@ export default {
 
   watch: {
     $route(to, from) {
-      console.log("Route Was Changed!!!");
-      console.log(from);
-      console.log(to);
-      console.log("-------------!!!");
-      if (to.name != from.name) this.routeGetSetData(to);
+      if (to.name == "matchinfo" && from.name == "matchinfo") return;
+      else {
+        this.routeGetSetData(to);
+      }
     }
   }
 };

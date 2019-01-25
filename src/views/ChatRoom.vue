@@ -22,6 +22,7 @@
         >
 
           <v-layout
+            :class="{'last-msg':index===arrayOfMessages.length-1}"
             pb-1
             :justify-end="msg.displayName===authUser.displayName"
             widht="70%"
@@ -81,14 +82,36 @@
           </v-layout>
         </v-layout>
       </v-flex>
+      <div style="position: relative">
+        <v-btn
+          class="btn-positioning"
+          @click="scrollToEndWithTransition"
+          max="20"
+          color="blue"
+          absolute
+          small
+          bottom
+          right
+          dark
+        >
+          <v-icon>keyboard_arrow_down</v-icon>
+        </v-btn>
+      </div>
     </v-layout>
+
     <v-layout
       id="text-Area"
       ref="textAreaInput"
       pt-1
     >
-      <v-flex xs12>
+
+      <v-flex
+        xs12
+        ref="bottomChat"
+      >
+
         <v-textarea
+          v-resize="onResize"
           v-model="message"
           @keyup.enter="saveMessage()"
           auto-grow
@@ -103,6 +126,7 @@
         ></v-textarea>
       </v-flex>
     </v-layout>
+
   </v-container>
 </template>
 
@@ -175,6 +199,11 @@ export default {
           }, 600);
         });
     },
+    scrollToEndWithTransition() {
+      document.querySelector(".last-msg").scrollIntoView({
+        behavior: "smooth"
+      });
+    },
     scrollToEnd() {
       var container = this.$el.querySelector("#container");
       container.scrollTop = container.scrollHeight;
@@ -184,7 +213,7 @@ export default {
       let toolbar = document.querySelector(".v-toolbar").clientHeight;
 
       let textAH = this.$refs.textAreaInput.clientHeight;
-      this.messageAreaHeight = winH - textAH - toolbar + "px";
+      this.messageAreaHeight = winH - textAH - toolbar - 20 + "px";
     },
     onResize() {
       console.log("RESIZE");
@@ -198,16 +227,15 @@ export default {
 </script>
 
 <style scoped>
-.sent_msg {
-  background-color: #c5cae9;
-}
-.received_msg {
-  background-color: #4db6ac;
-}
 .rounded {
   border-radius: 10px;
 }
 .no_scroll {
   overflow-y: auto;
+}
+.btn-positioning {
+  width: 3em;
+  bottom: 0 !important;
+  right: -10px;
 }
 </style>

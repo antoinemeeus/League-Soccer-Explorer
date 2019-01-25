@@ -317,19 +317,27 @@ export default {
       );
     },
     currentMatch_AdditionalInfo() {
-      var add_info = this.league_matches_info[
-        this.league_matches.competition.id
-      ].find(
-        obj =>
-          obj.matchDay == this.currentMatch.matchday &&
-          this.currentMatch.homeTeam.name.includes(
-            obj.homeTeam.name.substring(0, 3)
-          ) &&
-          this.currentMatch.awayTeam.name.includes(
-            obj.awayTeam.name.substring(0, 3)
-          )
-      );
-      return add_info;
+      if (this.league_matches_info[this.league_matches.competition.id]) {
+        return this.league_matches_info[
+          this.league_matches.competition.id
+        ].find(
+          obj =>
+            obj.matchDay == this.currentMatch.matchday &&
+            this.currentMatch.homeTeam.name.includes(
+              obj.homeTeam.name.substring(0, 3)
+            ) &&
+            this.currentMatch.awayTeam.name.includes(
+              obj.awayTeam.name.substring(0, 3)
+            )
+        );
+      } else
+        return {
+          goals: [],
+          substitutions: [],
+          bookings: [],
+          bench: [],
+          lineup: []
+        };
     },
     cur_stats() {
       //return list of objects

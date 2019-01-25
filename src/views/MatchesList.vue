@@ -83,12 +83,7 @@ export default {
       offsetTop: 50,
       lastScrollHeight: 0,
       lastBottomHeight: 0,
-      matchDaysDisplayed: [],
-      scrollOptions: {
-        duration: 300,
-        offset: 0,
-        easing: "easeInOutCubic"
-      }
+      matchDaysDisplayed: []
     };
   },
   created() {},
@@ -169,7 +164,6 @@ export default {
       return this.league_matches.matches[0].season.currentMatchday;
     },
     lastMatchDay() {
-      //Have to check if in stage is regular seagon
       var matches_ = this.league_matches.matches;
       if (matches_.length > 0) {
         var len = matches_.length;
@@ -252,8 +246,6 @@ export default {
       return { homeTeam: _homeTeam, awayTeam: _awayTeam };
     },
     addNextMatchDay() {
-      console.log("Adding Next matches...");
-
       let arr = this.matchDaysDisplayed;
       let len = this.matchDaysDisplayed.length;
       let value = arr[len - 1] + 1;
@@ -265,8 +257,6 @@ export default {
       }
     },
     addPrevMatchDay() {
-      console.log("Adding Previous matches...");
-
       let arr = this.matchDaysDisplayed;
       let value = arr[0] - 1;
       if (value < 1) return; //We got the start of the matchDay current list
@@ -284,14 +274,6 @@ export default {
       var d = new Date(strDate);
       return d.getFullYear();
     }
-  },
-  watch: {
-    // matchDaysDisplayed() {
-    //   //scroll lazy load logic
-    //   if (this.lastBottomHeight <= this.lastScrollHeight)
-    //     document.documentElement.scrollTop +=
-    //       document.documentElement.scrollHeight - this.lastScrollHeight;
-    // }
   }
 };
 </script>

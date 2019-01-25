@@ -246,7 +246,15 @@ export default {
     };
   },
   created() {
-    this.fetchPlayers({ string_query: this.currentTeam.shortName });
+    if (
+      this.current_team_id &&
+      this.current_team_id == this.team_players[0].idTeam
+    ) {
+      console.log("player image already in store");
+    } else {
+      console.log("CHANGING TEAMS, fetching players images");
+      this.fetchPlayers({ string_query: this.currentTeam.shortName });
+    }
   },
   mounted() {
     this.setToolBarInfo();
@@ -260,6 +268,7 @@ export default {
       "team_players",
       "league_matches",
       "league_teams",
+      "current_team_id",
       "team_football_org"
     ]),
     clubColorStyle() {
