@@ -23,6 +23,7 @@
         solo
         single-line
         hide-details
+        dont-fill-mask-blanks
       >
         <template
           slot="selection"
