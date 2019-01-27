@@ -20,7 +20,7 @@
       <v-select
         :items="matchdayList"
         v-model="selectedMatchDay"
-        solo
+        box
         single-line
         hide-details
         dont-fill-mask-blanks
@@ -42,6 +42,7 @@
           slot-scope="{ item }"
         >
           <v-list
+            class="transparent"
             two-line
             ripple
           >

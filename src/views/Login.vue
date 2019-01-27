@@ -23,10 +23,7 @@
           >
             <v-flex pr-3>
               <v-avatar size="30">
-                <img
-                  :src="require(`@/assets/G_logo_64.png`)"
-                  contain
-                >
+                <img src="@/assets/G_logo_64.png">
               </v-avatar>
             </v-flex>
 
