@@ -12,7 +12,7 @@ Vue.use(VueAxios, axios);
 import LeagueMatchesInfo_2021 from "./assets/MatchesInfo_2021.json";
 import LeagueMatchesInfo_2014 from "./assets/MatchesInfo_2014.json";
 import LeagueMatchesInfo_2019 from "./assets/MatchesInfo_2019.json";
-// import LeagueStanding from "./assets/Standing_2021.json";
+import LeagueMatchesInfo_2002 from "./assets/MatchesInfo_2002.json";
 
 export default new Vuex.Store({
   state: {
@@ -73,11 +73,12 @@ export default new Vuex.Store({
     currentLeague: null,
     current_team_id: null,
     goToCurrent: false,
-
+    selectedMDay: null,
     league_matches_info: {
       2014: LeagueMatchesInfo_2014,
       2021: LeagueMatchesInfo_2021,
-      2019: LeagueMatchesInfo_2019
+      2019: LeagueMatchesInfo_2019,
+      2002: LeagueMatchesInfo_2002
     },
     league_competition: null,
     league_matches: null,
@@ -98,6 +99,9 @@ export default new Vuex.Store({
     },
     goToCurrentMut(state) {
       state.goToCurrent = !state.goToCurrent;
+    },
+    setSelectedMDay(state, payload) {
+      state.selectedMDay = payload;
     },
     SET_CURRENT_LEAGUE(state, payload) {
       state.currentLeague = payload;
@@ -187,14 +191,11 @@ export default new Vuex.Store({
         .signInWithPopup(provider)
         .then(result => {
           // This gives you a Google Access Token. You can use it to access the Google API.
-          var token = result.credential.accessToken;
+          // var token = result.credential.accessToken;
           // The signed-in user info.
           commit("setUser", result.user);
           commit("setLoadingUser", false);
-          console.log("Correctly logged in!!");
-          console.log("ROUTE QUERY");
           let _route = router.app._route;
-          console.log(_route);
           if (_route.query.from) router.replace(_route.query.from);
           else router.push("/");
         })
@@ -218,9 +219,11 @@ export default new Vuex.Store({
         .signOut()
         .then(function() {
           // Sign-out successful.
+          console.log("Successully log out");
         })
         .catch(function(error) {
           // An error happened.;
+          console.error(error);
         });
       commit("setUser", null);
       //router.push("/");
@@ -235,28 +238,28 @@ export default new Vuex.Store({
       );
       let timePassedInMinutes = Math.abs(now - lastFetched) / (1000 * 60);
       if (timePassedInMinutes < state.minutesUpdate) {
-        console.log(
-          "League update time " +
-            timePassedInMinutes +
-            " minutes is less than " +
-            state.minutesUpdate +
-            " minutes"
-        );
-        console.log("Trying to load " + params.key + " data from LocalStorage");
+        // console.log(
+        //   "League update time " +
+        //     timePassedInMinutes +
+        //     " minutes is less than " +
+        //     state.minutesUpdate +
+        //     " minutes"
+        // );
+        // console.log("Trying to load " + params.key + " data from LocalStorage");
         let savedLocalData = JSON.parse(localStorage.getItem(Storagekey));
         if (savedLocalData) {
-          console.log("savedLocalData " + params.key + " is present");
+          // console.log("savedLocalData " + params.key + " is present");
           commit(fetchOptions.commitCmd, savedLocalData);
           commit(fetchOptions.commitloadingFlag, false);
           return;
         } else {
-          console.log("savedLocalData is missing!");
+          // console.log("savedLocalData is missing!");
         }
       }
 
       let requestURL =
         state.API_URL + fetchOptions.str1 + params.query + fetchOptions.str2;
-      console.log("Fechting Data  from football data org:", requestURL);
+      // console.log("Fechting Data  from football data org:", requestURL);
       axios
         .get(requestURL, state.options)
         .then(response => response.data)
@@ -275,15 +278,15 @@ export default new Vuex.Store({
     },
 
     fetchPlayers({ commit, dispatch }, { string_query, retryCount }) {
-      console.log("Count actual:", retryCount);
+      // console.log("Count actual:", retryCount);
       if (typeof retryCount === "undefined") {
         retryCount = 0;
-        console.log("Count to zero:", retryCount);
+        // console.log("Count to zero:", retryCount);
       }
-      console.log(
-        "Fetching players from thesportsdb with team name query:",
-        string_query
-      );
+      // console.log(
+      //   "Fetching players from thesportsdb with team name query:",
+      //   string_query
+      // );
       commit("SET_LOADINGPLAYERS", true);
       commit("SET_TEAM_PLAYERS", []);
       axios
@@ -295,24 +298,21 @@ export default new Vuex.Store({
         .then(players => {
           //console.log(players);
           if (players.player == null) {
-            console.log(
-              "Failed to catch players with team named: " + string_query
-            );
+            // console.log(
+            //   "Failed to catch players with team named: " + string_query
+            // );
             var newTeamName = string_query.split(" ")[0];
 
             if (retryCount == 1) {
               newTeamName = string_query.substring(0, 3);
             }
             retryCount++;
-            console.log("Retry number: " + retryCount);
-            console.log("Trying with: " + newTeamName);
 
             if (retryCount < 3)
               dispatch("fetchPlayers", {
                 string_query: newTeamName,
                 retryCount: retryCount
               });
-            else console.log("Too many retries");
           }
           commit("SET_TEAM_PLAYERS", players.player);
           commit("SET_CURRENT_TEAM_ID", players.player[0].idTeam);

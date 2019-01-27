@@ -13,6 +13,7 @@
     "jquery": "^3.3.1",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
+    "scrollmagic": "^2.0.6",
     "vue": "^2.5.21",
     "vue-axios": "^2.1.4",
     "vue-router": "^3.0.1",

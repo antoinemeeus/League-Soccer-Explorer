@@ -16,7 +16,10 @@
         sm4
         md3
       >
-        <LeagueCard :currentCompetition="competition" />
+        <LeagueCard
+          :isDataAvailable="isDataAvailable(competition.id)"
+          :currentCompetition="competition"
+        />
       </v-flex>
 
     </v-layout>
@@ -37,14 +40,13 @@ export default {
   created() {},
   mounted() {},
   computed: {
-    ...mapState(["loadingLeague", "league_competition"]),
-
-    validCompetition(){
-      
-    }
+    ...mapState(["loadingLeague", "league_competition", "league_matches_info"])
   },
   methods: {
-    ...mapActions(["fetchAPI"])
+    ...mapActions(["fetchAPI"]),
+    isDataAvailable(id_competition) {
+      return this.league_matches_info.hasOwnProperty(id_competition);
+    }
   }
 };
 </script>

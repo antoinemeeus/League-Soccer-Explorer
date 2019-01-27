@@ -1,9 +1,13 @@
 <template>
   <v-card
-    height="250"
+    height="270"
     :to="{ name: 'competition' , params:{ id_competition:currentCompetition.id }}"
   >
-
+    <div
+      v-if="!isDataAvailable"
+      class="font-weight-black caption red--text"
+    >* missing some data.
+    </div>
     <v-img
       :src="
       require(`@/assets/leagues_logo/league_${currentCompetition.code}.png`)"
@@ -12,12 +16,10 @@
       contain
     >
     </v-img>
-
     <v-card-text class=" text-xs-center">
-      <div class="pt-3">
+      <div class="pt-1">
         <div class="subtitle">{{currentCompetition.name}}</div>
-        <span class="grey--text">{{currentCompetition.area.name}}</span>
-        <span class="grey--text">{{currentCompetition.id}}</span>
+        <div class="grey--text">{{currentCompetition.area.name}}</div>
       </div>
     </v-card-text>
 
@@ -27,8 +29,9 @@
 <script>
 export default {
   name: "LeaguesCards",
-  props: ["currentCompetition"],
+  props: ["currentCompetition", "isDataAvailable"],
   data: () => ({}),
+
   methods: {
     sendLeagueInfoStore() {
       this.$store.commit("SET_LEAGUE_ICON", this.currentCompetition.code);

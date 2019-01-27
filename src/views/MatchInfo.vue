@@ -42,7 +42,7 @@
           >
             <router-link :to="{name:'teaminfo' , params:{ id_competition:this.id_competition ,id_team:matchHomeTeam.id, displayed_team:this.matchHomeTeam }}">
               <v-img
-                :src="matchHomeTeam.crestUrl"
+                :src="matchHomeTeam.crestUrl || require(`@/assets/placeholdershield.png`)"
                 max-height="80px"
                 contain
               ></v-img>
@@ -67,7 +67,7 @@
           >
             <router-link :to="{name:'teaminfo' , params:{ id_competition:this.id_competition,id_team:matchAwayTeam.id, displayed_team: matchAwayTeam }}">
               <v-img
-                :src="matchAwayTeam.crestUrl"
+                :src="matchAwayTeam.crestUrl || require(`@/assets/placeholdershield.png`)"
                 max-height="80px"
                 contain
               ></v-img>
@@ -99,160 +99,170 @@
     </v-layout>
 
     <v-divider></v-divider>
-
-    <v-layout
-      px-3
-      v-if="currentMatch.status!='SCHEDULED'"
-      justify-space-between
-    >
-      <v-flex xs5>
-
-        <v-layout
-          pr-2
-          py-1
-          justify-space-between
-          v-for="goalster in cur_goals_table.homeTeam"
-          :key="goalster.id"
-        >
-          <span class="caption grey--text">
-            {{goalster.scorer}}
-          </span>
-          <span class="caption grey--text">
-            {{goalster.minute}}'
-          </span>
-
-        </v-layout>
-
-      </v-flex>
-
-      <v-flex
-        xs2
-        align-self-center
+    <div v-if="isDataAvailable">
+      <v-layout
+        px-3
+        v-if="currentMatch.status!='SCHEDULED'"
+        justify-space-between
       >
-        <v-img
-          :src='require("@/assets/goalers.png")'
-          contain
+        <v-flex xs5>
+
+          <v-layout
+            pr-2
+            py-1
+            justify-space-between
+            v-for="goalster in cur_goals_table.homeTeam"
+            :key="goalster.id"
+          >
+            <span class="caption grey--text">
+              {{goalster.scorer}}
+            </span>
+            <span class="caption grey--text">
+              {{goalster.minute}}'
+            </span>
+
+          </v-layout>
+
+        </v-flex>
+
+        <v-flex
+          xs2
+          align-self-center
         >
-        </v-img>
-      </v-flex>
-      <v-flex xs5>
+          <v-img
+            :src='require("@/assets/goalers.png")'
+            contain
+          >
+          </v-img>
+        </v-flex>
+        <v-flex xs5>
 
-        <v-layout
-          pl-2
-          py-1
-          justify-space-between
-          v-for="goalster in cur_goals_table.awayTeam"
-          :key="goalster.id"
+          <v-layout
+            pl-2
+            py-1
+            justify-space-between
+            v-for="goalster in cur_goals_table.awayTeam"
+            :key="goalster.id"
+          >
+            <span class="caption grey--text">
+              {{goalster.scorer}}
+            </span>
+            <span class="caption grey--text">
+              {{goalster.minute}}'
+            </span>
+
+          </v-layout>
+
+        </v-flex>
+
+      </v-layout>
+      <v-divider></v-divider>
+
+      <v-layout pt-2>
+        <v-flex xs12>
+          <v-tabs
+            class="sticky-tabs"
+            fixed-tabs
+            v-model="tabs"
+            grow
+          >
+            <v-tab>
+              Lineups
+            </v-tab>
+            <v-tab>
+              Stats
+            </v-tab>
+            <v-tab>
+              Events
+            </v-tab>
+            <v-tab>
+              Comments
+            </v-tab>
+          </v-tabs>
+        </v-flex>
+      </v-layout>
+      <v-flex v-if="currentMatch.status=='SCHEDULED'">
+        <v-alert
+          :value="true"
+          type="warning"
         >
-          <span class="caption grey--text">
-            {{goalster.scorer}}
-          </span>
-          <span class="caption grey--text">
-            {{goalster.minute}}'
-          </span>
-
-        </v-layout>
-
+          <h3 class="text-xs-center">
+            Information not available yet.
+          </h3>
+        </v-alert>
       </v-flex>
+      <v-tabs-items
+        v-if="currentMatch.status!='SCHEDULED'"
+        v-model="tabs"
+        class="white elevation-1"
+      >
+        <v-tab-item>
+          <LogoHeader
+            title="Lineups"
+            :homeLogoUrl="matchHomeTeam.crestUrl"
+            :awayLogoUrl="matchAwayTeam.crestUrl"
+          />
 
-    </v-layout>
-    <v-divider></v-divider>
-    <v-layout pt-2>
-      <v-flex xs12>
-        <v-tabs
-          class="sticky-tabs"
-          fixed-tabs
-          v-model="tabs"
-          grow
-        >
-          <v-tab>
-            Lineups
-          </v-tab>
-          <v-tab>
-            Stats
-          </v-tab>
-          <v-tab>
-            Events
-          </v-tab>
-          <v-tab>
-            Comments
-          </v-tab>
-        </v-tabs>
-      </v-flex>
-    </v-layout>
-    <v-flex v-if="currentMatch.status=='SCHEDULED'">
+          <v-divider></v-divider>
+          <TabLineup :list_="currentMatch_AdditionalInfo.lineup" />
+          <v-divider></v-divider>
+          <LogoHeader
+            title="Substitutes"
+            :homeLogoUrl="matchHomeTeam.crestUrl"
+            :awayLogoUrl="matchAwayTeam.crestUrl"
+          />
+          <v-divider></v-divider>
+          <TabLineup :list_="currentMatch_AdditionalInfo.bench" />
+        </v-tab-item>
+
+        <v-tab-item>
+          <LogoHeader
+            title="Team Stats"
+            :homeLogoUrl="matchHomeTeam.crestUrl"
+            :awayLogoUrl="matchAwayTeam.crestUrl"
+          />
+          <v-divider></v-divider>
+          <TabStats :stats="cur_stats" />
+
+        </v-tab-item>
+        <v-tab-item>
+          <LogoHeader
+            title="Events"
+            :homeLogoUrl="matchHomeTeam.crestUrl"
+            :awayLogoUrl="matchAwayTeam.crestUrl"
+          />
+          <v-divider></v-divider>
+          <TabEvents
+            :Tgoals="currentMatch_AdditionalInfo.goals"
+            :Tbookings="currentMatch_AdditionalInfo.bookings"
+            :Tsubstitutions="currentMatch_AdditionalInfo.substitutions"
+          />
+
+        </v-tab-item>
+        <v-tab-item>
+          <LogoHeader
+            title="Comments"
+            :homeLogoUrl="matchHomeTeam.crestUrl"
+            :awayLogoUrl="matchAwayTeam.crestUrl"
+          />
+          <v-divider></v-divider>
+          <TabComment
+            v-if="isAuthenticated"
+            :match_id="currentMatch.id"
+          />
+          <Login v-if="!isAuthenticated" />
+
+        </v-tab-item>
+      </v-tabs-items>
+    </div>
+    <div v-if="!isDataAvailable">
       <v-alert
         :value="true"
-        type="warning"
+        type="error"
       >
-        <h3 class="text-xs-center">
-          Information not available yet.
-        </h3>
+        This competition data is not available yet
       </v-alert>
-    </v-flex>
-    <v-tabs-items
-      v-if="currentMatch.status!='SCHEDULED'"
-      v-model="tabs"
-      class="white elevation-1"
-    >
-      <v-tab-item>
-        <LogoHeader
-          title="Lineups"
-          :homeLogoUrl="matchHomeTeam.crestUrl"
-          :awayLogoUrl="matchAwayTeam.crestUrl"
-        />
-
-        <v-divider></v-divider>
-        <TabLineup :list_="currentMatch_AdditionalInfo.lineup" />
-        <v-divider></v-divider>
-        <LogoHeader
-          title="Substitutes"
-          :homeLogoUrl="matchHomeTeam.crestUrl"
-          :awayLogoUrl="matchAwayTeam.crestUrl"
-        />
-        <v-divider></v-divider>
-        <TabLineup :list_="currentMatch_AdditionalInfo.bench" />
-      </v-tab-item>
-
-      <v-tab-item>
-        <LogoHeader
-          title="Team Stats"
-          :homeLogoUrl="matchHomeTeam.crestUrl"
-          :awayLogoUrl="matchAwayTeam.crestUrl"
-        />
-        <v-divider></v-divider>
-        <TabStats :stats="cur_stats" />
-
-      </v-tab-item>
-      <v-tab-item>
-        <LogoHeader
-          title="Events"
-          :homeLogoUrl="matchHomeTeam.crestUrl"
-          :awayLogoUrl="matchAwayTeam.crestUrl"
-        />
-        <v-divider></v-divider>
-        <TabEvents
-          :Tgoals="currentMatch_AdditionalInfo.goals"
-          :Tbookings="currentMatch_AdditionalInfo.bookings"
-          :Tsubstitutions="currentMatch_AdditionalInfo.substitutions"
-        />
-
-      </v-tab-item>
-      <v-tab-item>
-        <LogoHeader
-          title="Comments"
-          :homeLogoUrl="matchHomeTeam.crestUrl"
-          :awayLogoUrl="matchAwayTeam.crestUrl"
-        />
-        <v-divider></v-divider>
-        <TabComment
-          v-if="isAuthenticated"
-          :match_id="currentMatch.id"
-        />
-        <Login v-if="!isAuthenticated" />
-
-      </v-tab-item>
-    </v-tabs-items>
+    </div>
   </v-container>
 
 </template>
@@ -285,13 +295,10 @@ export default {
       match_index: null
     };
   },
-  created() {},
 
   mounted() {
     this.setToolBarInfo();
   },
-
-  beforeDestroy() {},
 
   computed: {
     ...mapState([
@@ -314,6 +321,11 @@ export default {
       return (
         this.displayed_match ||
         this.league_matches.matches.find(obj => obj.id == this.id_match)
+      );
+    },
+    isDataAvailable() {
+      return this.league_matches_info.hasOwnProperty(
+        this.id_competition || this.league_matches.competition.id
       );
     },
     currentMatch_AdditionalInfo() {

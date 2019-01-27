@@ -21,7 +21,7 @@
                 <v-img
                   class="elevation-6"
                   contain
-                  :src="indvMatch.homeTeam.crestUrl"
+                  :src="getImgSrc(indvMatch.homeTeam.crestUrl)"
                 ></v-img>
               </v-list-tile-avatar>
 
@@ -45,7 +45,7 @@
                 <v-img
                   class="elevation-6"
                   contain
-                  :src="indvMatch.awayTeam.crestUrl"
+                  :src="getImgSrc(indvMatch.awayTeam.crestUrl)"
                 ></v-img>
               </v-list-tile-avatar>
 
@@ -76,7 +76,7 @@
           xs2
           align-self-center
         >
-          <h5 class="text-xs-center">{{getLocalDateAndTime(indvMatch.utcDate)}}</h5>
+          <h5 class="text-xs-center">{{moment(indvMatch.utcDate).calendar()}}</h5>
         </v-flex>
         <v-flex
           v-show="!isSchedule"
@@ -93,6 +93,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   name: "MatchCard",
   props: ["leagueCompetitionID", "indvMatch", "iscurrentMatch"],
@@ -110,14 +111,16 @@ export default {
       };
       return localDate.toLocaleDateString("en-GB", options);
     },
+    getImgSrc(src) {
+      if (src) return src;
+      return require("@/assets/placeholdershield.png");
+    },
     testPeriodScore(obj) {
       return obj.homeTeam != null || obj.awayTeam != null;
     }
   },
 
   computed: {
-    homeCrest() {},
-    awayCrest() {},
     isHomeWinner() {
       return this.indvMatch.score.winner === "HOME_TEAM";
     },

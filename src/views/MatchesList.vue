@@ -1,73 +1,103 @@
 <template>
-
-  <v-container fluid>
-
+  <v-container
+    px-1
+    class="stickyPos elevation-4"
+  >
     <v-layout
-      justify-center
-      pb-2
+      justify-space-between
+      align-center
     >
-      <v-progress-circular
-        v-show="isLitTop"
-        size="50"
-        color="primary"
-        indeterminate
-      ></v-progress-circular>
-    </v-layout>
-    <v-layout
-      column
-      v-for="matchDay in sortedMatchDaysDisplayed"
-      :key="matchDay"
-    >
-
-      <v-flex>
-        <h2
-          v-if="regularSeasonOrCups"
-          class="title py-3"
-        >Matchday {{matchDay}} of {{lastMatchDay}}</h2>
-        <h2
-          v-if="!regularSeasonOrCups"
-          class="title py-3"
-        >Stage {{matchDay}}</h2>
+      <v-flex
+        xs2
+        class="text-xs-center"
+      >
+        <v-icon
+          :disabled="selectedMatchDay<=1"
+          @click="previousMDay"
+        >arrow_back_ios</v-icon>
       </v-flex>
 
-      <v-layout
-        wrap
-        justify-center
+      <v-select
+        :items="matchdayList"
+        v-model="selectedMatchDay"
+        solo
+        single-line
+        hide-details
       >
-        <v-flex
-          sm6
-          xs12
-          class="py-1"
-          v-for="match in getMatchesInMatchDay(matchDay)"
-          :key="match.id"
-          :class="{'scroll_target current-match-card': match.id===nextMatch.id}"
+        <template
+          slot="selection"
+          slot-scope="{ item }"
         >
+          <v-layout justify-space-between>
+            <span>{{item.name}} {{item.value}}</span>
+            <span
+              pb-1
+              class="caption"
+            >{{formatDates(item.startDate,item.endDate)}}</span>
+          </v-layout>
+        </template>
+        <template
+          slot="item"
+          slot-scope="{ item }"
+        >
+          <v-list
+            two-line
+            ripple
+          >
+            <v-list-tile-content>
+              <v-list-tile-title>
+                {{item.name}} {{item.value}}
+              </v-list-tile-title>
+              <v-list-tile-sub-title>
+                {{formatDates(item.startDate,item.endDate)}}
+              </v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list>
+        </template>
 
-          <MatchCard
-            :leagueCompetitionID="id_competition"
-            :iscurrentMatch="match.id===nextMatch.id"
-            :indvMatch="match"
-          />
-        </v-flex>
-      </v-layout>
+      </v-select>
 
+      <v-flex
+        xs2
+        class="text-xs-center"
+      >
+        <v-icon
+          :disabled="selectedMatchDay>=matchdayList.length"
+          @click="nextMDay"
+        >arrow_forward_ios</v-icon>
+      </v-flex>
     </v-layout>
+
+    <v-layout>
+      <h2 class="title py-3">Matchday {{selectedMatchDay}} of {{matchdayList.length}}</h2>
+    </v-layout>
+
     <v-layout
+      wrap
       justify-center
-      pt-2
+      v-for="match in getMatchesInMatchDay(selectedMatchDay)"
+      :key="match.id"
     >
-      <v-progress-circular
-        v-show="isListBottom"
-        size="50"
-        color="primary"
-        indeterminate
-      ></v-progress-circular>
+      <v-flex
+        sm6
+        xs12
+        class="py-1"
+        :class="{'scroll_target current-match-card': match.id===nextMatch.id}"
+      >
+        <MatchCard
+          :leagueCompetitionID="id_competition"
+          :iscurrentMatch="match.id===nextMatch.id"
+          :indvMatch="match"
+        />
+      </v-flex>
+
     </v-layout>
   </v-container>
 
 </template>
 
 <script>
+import moment from "moment";
 import MatchCard from "../components/MatchCard.vue";
 import { mapState } from "vuex";
 import { mapActions } from "vuex";
@@ -81,69 +111,70 @@ export default {
   props: ["id_competition"],
   data() {
     return {
-      offsetTop: 50,
-      lastScrollHeight: 0,
-      lastBottomHeight: 0,
+      selectedMatchDay: 1,
       matchDaysDisplayed: []
     };
   },
   mounted() {
     //jump to current or nextMatch
+    this.setToolBarInfo();
+    //set matchday page if we go back
+    this.selectedMatchDay = this.nextMatch.matchday;
+
+    this.matchDaysDisplayed.push(this.currentMatchDay);
 
     this.$nextTick(function() {
       // Code that will run only after the
       // entire view has been rendered
       this.goToNextMatch();
-      this.onScroll();
     });
-
-    this.$store.commit("SET_LEAGUE_ICON", this.currentLeagueInfo.code);
-    this.$store.commit("SET_APP_TITLE", this.currentLeagueInfo.name);
-    this.$store.commit("SET_CURRENT_LEAGUE", this.currentLeagueInfo);
-
-    this.matchDaysDisplayed.push(this.currentMatchDay);
-    this.currentMatchDay - 1 >= 0
-      ? this.matchDaysDisplayed.push(this.currentMatchDay - 1)
-      : null;
-    this.currentMatchDay + 1 <= this.lastMatchDay
-      ? this.matchDaysDisplayed.push(this.currentMatchDay + 1)
-      : null;
-  },
-
-  beforeDestroy() {
-    //destroy windows scroll listener
-    console.log("Destroy scroll listener");
-    window.onscroll = null;
   },
 
   computed: {
     ...mapState([
-      "loadingMatches",
-      "loadingTeams",
       "league_competition",
       "league_matches",
       "league_teams",
-      "goToCurrent"
+      "goToCurrent",
+      "selectedMDay"
     ]),
 
-    regularSeasonOrCups() {
-      if (this.league_matches.matches) {
-        var matches_ = this.league_matches.matches;
-        if (matches_.length > 0)
-          if (matches_[0].stage == "REGULAR_SEASON") {
-            return true;
+    matchdayList() {
+      //Method to extract the matchday of list of matches and their start and end Dates.
+      let matches = this.league_matches.matches;
+      if (matches) {
+        let previousMDay = matches[0].matchday;
+        let dateStart,
+          dateEnd = moment();
+        let matchDayItems = [];
+        let DateStart = moment(matches[0].utcDate);
+        //Loop trhough array until -1
+        for (let i = 0; i < matches.length - 2; i++) {
+          let curMatchday = matches[i].matchday;
+          let nextMatchday = matches[i + 1].matchday;
+          if (nextMatchday > curMatchday) {
+            matchDayItems.push({
+              name: "Matchday",
+              value: curMatchday,
+              startDate: DateStart,
+              endDate: moment(matches[i].utcDate)
+            });
+            DateStart = moment(matches[i + 1].utcDate);
           }
+        }
+        //Add last item on array because you can't check outside of array bounds
+        let lastMatch = matches[matches.length - 1];
+        matchDayItems.push({
+          name: "Matchday",
+          value: lastMatch.matchday,
+          startDate: DateStart,
+          endDate: moment(lastMatch.utcDate)
+        });
+        return matchDayItems;
       }
-      return false;
+      return [];
     },
 
-    isLitTop() {
-      return this.sortedMatchDaysDisplayed[0] > 1;
-    },
-    isListBottom() {
-      var len = this.sortedMatchDaysDisplayed.length;
-      return this.sortedMatchDaysDisplayed[len - 1] < this.lastMatchDay;
-    },
     currentLeagueInfo() {
       return this.league_matches.competition;
     },
@@ -200,90 +231,50 @@ export default {
 
   methods: {
     ...mapActions(["fetchAPI", "fetchTeamInfo"]),
-    setToolBarInfo() {
-      if (currentLeagueInfo.code) {
-        this.$store.commit("SET_LEAGUE_ICON", this.currentLeagueInfo.code);
-        this.$store.commit("SET_APP_TITLE", this.currentLeagueInfo.name);
-        this.$store.commit("SET_CURRENT_LEAGUE", this.currentLeagueInfo);
+
+    formatDates(startD, endD) {
+      if (moment(startD).isSame(endD, "month")) {
+        return startD.format("DD") + " - " + endD.format("DD MMM");
       }
+      return startD.format("DD MMM") + " - " + endD.format("DD MMM");
+    },
+    setToolBarInfo() {
+      this.$store.commit("SET_LEAGUE_ICON", this.currentLeagueInfo.code);
+      this.$store.commit("SET_APP_TITLE", this.currentLeagueInfo.name);
+      this.$store.commit("SET_CURRENT_LEAGUE", this.currentLeagueInfo);
     },
     goToNextMatch() {
       var el = document.querySelector(".scroll_target");
-      console.log("Element with target of scroll?", el.clientHeight);
-      var vOffset = window.innerHeight / 2 - el.clientHeight / 2;
-      console.log(vOffset);
-      this.$vuetify.goTo(el, {
-        duration: 0,
-        offset: -vOffset,
-        easing: "easeInOutCubic"
-      });
-    },
-    onScroll() {
-      window.onscroll = _.debounce(() => {
-        if (document.documentElement.scrollTop < this.offsetTop) {
-          this.lastScrollHeight = document.documentElement.scrollHeight;
-          console.log("adding previous match");
-          this.addPrevMatchDay();
-        }
-        if (
-          document.documentElement.scrollTop + window.innerHeight ===
-          document.documentElement.offsetHeight
-        ) {
-          this.lastBottomHeight =
-            document.documentElement.scrollTop + window.innerHeight;
-          this.addNextMatchDay();
-        }
-      }, 600);
-    },
-    getTeamsFromMatch(_match) {
-      var _homeTeam = this.league_teams.teams.find(
-        obj => obj.id === _match.homeTeam.id
-      );
-      var _awayTeam = this.league_teams.teams.find(
-        obj => obj.id === _match.awayTeam.id
-      );
-      return { homeTeam: _homeTeam, awayTeam: _awayTeam };
-    },
-    addNextMatchDay() {
-      let arr = this.matchDaysDisplayed;
-      let len = this.matchDaysDisplayed.length;
-      let value = arr[len - 1] + 1;
-
-      if (value > this.lastMatchDay) return; //We got the end of the matchDay current list
-      //Check for duplicates
-      if (arr.includes(value) === false) {
-        this.matchDaysDisplayed.push(value);
+      if (el) {
+        var vOffset = window.innerHeight / 2 - el.clientHeight / 2;
+        this.$vuetify.goTo(el, {
+          duration: 0,
+          offset: -vOffset,
+          easing: "easeInOutCubic"
+        });
       }
     },
-    addPrevMatchDay() {
-      let arr = this.matchDaysDisplayed;
-      let value = arr[0] - 1;
-      if (value < 1) return; //We got the start of the matchDay current list
-      //Check for duplicates
-      if (arr.includes(value) === false) {
-        this.matchDaysDisplayed.unshift(value);
-      }
+    previousMDay() {
+      if (this.selectedMatchDay > 1) this.selectedMatchDay -= 1;
     },
-
+    nextMDay() {
+      if (this.selectedMatchDay < this.matchdayList.length)
+        this.selectedMatchDay += 1;
+    },
     getMatchesInMatchDay(m_day) {
       return this.matchesWithCrest.filter(obj => obj.matchday === m_day);
-    },
-
-    getYearFromDate(strDate) {
-      var d = new Date(strDate);
-      return d.getFullYear();
     }
   },
+  updated() {},
   watch: {
-    matchDaysDisplayed() {
-      //scroll lazy load logic
-      if (this.lastBottomHeight <= this.lastScrollHeight)
-        document.documentElement.scrollTop +=
-          document.documentElement.scrollHeight - this.lastScrollHeight;
-    },
     goToCurrent() {
+      this.selectedMatchDay = this.nextMatch.matchday;
       this.goToNextMatch();
+    },
+    selectedMatchDay() {
+      this.$store.commit("setSelectedMDay", this.selectedMatchDay);
     }
   }
 };
 </script>
+

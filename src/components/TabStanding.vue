@@ -22,7 +22,7 @@
               tile
             >
               <v-img
-                :src="props.item.team.crestUrl"
+                :src="getImgSrc(props.item.team.crestUrl)"
                 contain
                 max-height="30"
               ></v-img>
@@ -90,6 +90,10 @@ export default {
     }
   },
   methods: {
+    getImgSrc(src) {
+      if (src) return src;
+      return require("@/assets/placeholdershield.png");
+    },
     goToTeam(id_next, next_team) {
       this.$router.replace({
         name: "teaminfo",
