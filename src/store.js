@@ -22,7 +22,7 @@ export default new Vuex.Store({
     minutesUpdate: 20,
     API_URL: "https://api.football-data.org/v2/",
     options: {
-      headers: { "X-Auth-Token": "018c8c34753848cab1551ae2ecd62ee1" }
+      headers: { "X-Auth-Token": process.env.VUE_APP_API_TOKEN }
     },
     urlKeys: {
       getLeagues: {
