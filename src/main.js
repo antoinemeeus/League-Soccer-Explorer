@@ -12,8 +12,8 @@ Vue.prototype.moment = moment;
 import firebase from "firebase";
 require("firebase/firestore");
 
-var config = {
-  apiKey: "AIzaSyCXMYKs5xwQxePtAJPKAIcIEb5ud99pQwA",
+var config = {  
+  apiKey: process.env.VUE_APP_FIRESTORE_TOKEN,
   authDomain: "soccerleagueexplorer.firebaseapp.com",
   databaseURL: "https://soccerleagueexplorer.firebaseio.com",
   projectId: "soccerleagueexplorer",
