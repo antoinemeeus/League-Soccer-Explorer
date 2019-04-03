@@ -4,7 +4,6 @@ import "@mdi/font/css/materialdesignicons.css"; // Ensure you are using css-load
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import _ from "lodash";
 import moment from "moment";
 Vue.prototype.moment = moment;
 
@@ -12,8 +11,8 @@ Vue.prototype.moment = moment;
 import firebase from "firebase";
 require("firebase/firestore");
 
-var config = {  
-  apiKey: process.env.VUE_APP_FIRESTORE_TOKEN,
+var config = {
+  apiKey: "AIzaSyCXMYKs5xwQxePtAJPKAIcIEb5ud99pQwA",
   authDomain: "soccerleagueexplorer.firebaseapp.com",
   databaseURL: "https://soccerleagueexplorer.firebaseio.com",
   projectId: "soccerleagueexplorer",
@@ -22,6 +21,8 @@ var config = {
 };
 firebase.initializeApp(config);
 
+console.log("API KEY:" + config.apiKey);
+console.log(process.env.VUE_APP_FIRESTORE_TOKEN);
 // Initialize Cloud Firestore through Firebase
 var db = firebase.firestore();
 

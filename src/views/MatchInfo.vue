@@ -314,7 +314,7 @@ export default {
     },
     currentMatch() {
       var self = this;
-      var firstOccurence = this.league_matches.matches.find((obj, idx) => {
+      this.league_matches.matches.find((obj, idx) => {
         self.match_index = idx;
         return obj.id == this.id_match;
       });
@@ -356,19 +356,23 @@ export default {
       return this.currentMatch_AdditionalInfo.stats;
     },
     cur_goals_table() {
-      var homeTeamGoalsters = this.currentMatch_AdditionalInfo.goals
-        .filter(obj => obj.tType === "homeTeam")
-        .map((obj, index) => {
-          obj["id"] = index;
-          return obj;
-        });
-      var awayTeamGoalsters = this.currentMatch_AdditionalInfo.goals
-        .filter(obj => obj.tType === "awayTeam")
-        .map((obj, index) => {
-          obj["id"] = index;
-          return obj;
-        });
+      var homeTeamGoalsters = [];
+      var awayTeamGoalsters = [];
 
+      if (this.currentMatch_AdditionalInfo != undefined) {
+        homeTeamGoalsters = this.currentMatch_AdditionalInfo.goals
+          .filter(obj => obj.tType === "homeTeam")
+          .map((obj, index) => {
+            obj["id"] = index;
+            return obj;
+          });
+        awayTeamGoalsters = this.currentMatch_AdditionalInfo.goals
+          .filter(obj => obj.tType === "awayTeam")
+          .map((obj, index) => {
+            obj["id"] = index;
+            return obj;
+          });
+      }
       return { homeTeam: homeTeamGoalsters, awayTeam: awayTeamGoalsters };
     },
     matchHomeTeam() {

@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
 import firebase from "firebase";
-import store from "./store";
 
 import Home from "./views/Home.vue";
 import MatchesList from "./views/MatchesList.vue";

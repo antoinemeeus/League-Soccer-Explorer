@@ -45,7 +45,7 @@
           @click="logIn"
         >
           <v-list-tile-action>
-            <v-icon>account_circle</v-icon>
+            <v-icon :style="{ cursor: 'pointer'}">account_circle</v-icon>
           </v-list-tile-action>
           <v-list-tile-title>Log In</v-list-tile-title>
         </v-list-tile>
@@ -86,6 +86,7 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer></v-spacer>
       <v-toolbar-title
+        :style="{ cursor: 'pointer'}"
         @click="goToCompetition"
         class="px-2 text-xs-center "
       >
@@ -106,6 +107,7 @@
       >
         <v-flex xs2>
           <v-icon
+            :style="{ cursor: 'pointer'}"
             v-if="goBackButton"
             icon
             @click="$router.go(-1)"
@@ -123,6 +125,7 @@
           text-xs-right
         >
           <v-icon
+            :style="{ cursor: 'pointer'}"
             v-if="$route.name=='competition'"
             @click="$store.commit('goToCurrentMut')"
           >
