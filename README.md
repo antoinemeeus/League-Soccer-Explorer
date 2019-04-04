@@ -23,7 +23,7 @@ _The messages are all public and can be change or erased anytime due to expositi
 To succesfully deploy and run this app you will need the 2 following API KEYS/TOKEN put inside a .env file or set as environement variables:
 
 ```
-VUE_APP_API_TOKEN = YOUR_OWN_FIRESTORE_TOKEN
+VUE_APP_API_TOKEN = YOUR_OWN_FOOTBALL-DATA_API_KEY
 VUE_APP_FIRESTORE_TOKEN = YOUR_OWN_FIRESTORE_TOKEN
 
 ```
