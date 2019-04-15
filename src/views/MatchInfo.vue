@@ -330,7 +330,7 @@ export default {
     },
     currentMatch_AdditionalInfo() {
       if (this.league_matches_info[this.league_matches.competition.id]) {
-        return this.league_matches_info[
+        var cMatch_AddInfo= this.league_matches_info[
           this.league_matches.competition.id
         ].find(
           obj =>
@@ -342,7 +342,10 @@ export default {
               obj.awayTeam.name.substring(0, 3)
             )
         );
-      } else
+        if(cMatch_AddInfo!=null)
+        return cMatch_AddInfo;
+
+      }
         return {
           goals: [],
           substitutions: [],
