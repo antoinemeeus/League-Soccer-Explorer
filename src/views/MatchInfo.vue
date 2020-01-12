@@ -330,7 +330,7 @@ export default {
     },
     currentMatch_AdditionalInfo() {
       if (this.league_matches_info[this.league_matches.competition.id]) {
-        var cMatch_AddInfo= this.league_matches_info[
+        var cMatch_AddInfo = this.league_matches_info[
           this.league_matches.competition.id
         ].find(
           obj =>
@@ -342,17 +342,15 @@ export default {
               obj.awayTeam.name.substring(0, 3)
             )
         );
-        if(cMatch_AddInfo!=null)
-        return cMatch_AddInfo;
-
+        if (cMatch_AddInfo != null) return cMatch_AddInfo;
       }
-        return {
-          goals: [],
-          substitutions: [],
-          bookings: [],
-          bench: [],
-          lineup: []
-        };
+      return {
+        goals: [],
+        substitutions: [],
+        bookings: [],
+        bench: [],
+        lineup: []
+      };
     },
     cur_stats() {
       //return list of objects

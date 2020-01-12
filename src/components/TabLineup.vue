@@ -3,8 +3,8 @@
   <v-container
     row
     justify-space-between
-  >
-    <v-layout
+  >    
+    <v-layout      
       row
       justify-space-between
     >
@@ -12,7 +12,7 @@
         <v-layout
           py-1
           justify-space-between
-          v-for="player in list_.homeTeam"
+          v-for="player in list.homeTeam"
           :key="player.shirtNumber"
         >
           <v-flex>
@@ -28,7 +28,7 @@
         <v-layout
           py-1
           justify-space-between
-          v-for="player in list_.awayTeam"
+          v-for="player in list.awayTeam"
           :key="player.shirtNumber"
         >
           <v-flex text-xs-left>
@@ -51,10 +51,15 @@ export default {
   methods: {},
 
   computed: {
+    list() {
+      if (list_) return list_;
+    },
     maxListIndex() {
-      return this.list_.homeTeam.length >= this.list_.awayTeam.length
-        ? this.list_.homeTeam.length - 1
-        : this.list_.awayTeam.lenght - 1;
+      if (list_) {
+        return this.list_.homeTeam.length >= this.list_.awayTeam.length
+          ? this.list_.homeTeam.length - 1
+          : this.list_.awayTeam.lenght - 1;
+      }
     }
   }
 };
