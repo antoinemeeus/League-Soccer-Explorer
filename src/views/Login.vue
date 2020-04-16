@@ -15,7 +15,6 @@
           :disabled="loadingUser"
           @click="login"
         >
-
           <v-layout
             row
             align-center
@@ -30,7 +29,6 @@
             <v-flex>
               Sign in with google
             </v-flex>
-
           </v-layout>
         </v-btn>
       </v-flex>
@@ -62,5 +60,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

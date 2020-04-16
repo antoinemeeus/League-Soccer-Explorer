@@ -1,7 +1,9 @@
 <template>
   <v-container column>
     <v-layout justify-center>
-      <h1 class="headlines"> Leagues and Cups</h1>
+      <h1 class="headlines">
+        Leagues and Cups
+      </h1>
     </v-layout>
     <v-layout
       v-if="!loadingLeague"
@@ -17,11 +19,10 @@
         md3
       >
         <LeagueCard
-          :isDataAvailable="isDataAvailable(competition.id)"
-          :currentCompetition="competition"
+          :is-data-available="isDataAvailable(competition.id)"
+          :current-competition="competition"
         />
       </v-flex>
-
     </v-layout>
   </v-container>
 </template>

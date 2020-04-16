@@ -13,27 +13,27 @@
       <v-flex xs12>
         <v-text-field
           v-model="message"
-          @keyup.enter="saveMessage()"
           auto-grow
           clearable
           color="blue-grey"
+          @keyup.enter="saveMessage()"
         >
           <v-avatar
             slot="prepend"
             size="35"
           >
-
             <v-img
               :src="this.$store.getters.user.photoURL"
               contain
-            >
-            </v-img>
+            />
           </v-avatar>
 
           <v-btn
             slot="append-outer"
             @click="saveMessage()"
-          >Post</v-btn>
+          >
+            Post
+          </v-btn>
         </v-text-field>
       </v-flex>
     </v-layout>
@@ -46,10 +46,10 @@
         xs12
       >
         <v-layout
-          py-2
-          column
           v-for="msg in arrayOfMessages"
           :key="msg.id"
+          py-2
+          column
         >
           <v-layout pb-1>
             <v-flex
@@ -60,31 +60,33 @@
                 <v-img
                   :src="msg.data.photoURL"
                   contain
-                >
-                </v-img>
+                />
               </v-avatar>
             </v-flex>
             <v-flex xs10>
               <v-layout column>
                 <v-flex>
-                  <div class="blue--text subheading">{{msg.data.displayName}}</div>
+                  <div class="blue--text subheading">
+                    {{ msg.data.displayName }}
+                  </div>
                 </v-flex>
                 <v-flex style="word-break:break-all;">
                   <div>
-                    {{msg.data.message}}
+                    {{ msg.data.message }}
                   </div>
                 </v-flex>
                 <v-flex>
-                  <span class="grey--text caption">{{ moment(msg.data.createdAt).from(new Date())}}</span>
+                  <span class="grey--text caption">{{
+                    moment(msg.data.createdAt).from(new Date())
+                  }}</span>
                 </v-flex>
               </v-layout>
             </v-flex>
           </v-layout>
-          <v-divider></v-divider>
+          <v-divider />
         </v-layout>
       </v-flex>
     </v-layout>
-
   </v-container>
 </template>
 
@@ -93,7 +95,7 @@ import firebase from "firebase";
 
 export default {
   name: "Comments",
-  props: ["id_match"],
+  props: ["idMatch"],
   data() {
     return {
       messageAreaHeight: "300px",
@@ -101,14 +103,6 @@ export default {
       message: "",
       authUser: {}
     };
-  },
-  created() {
-    this.authUser = this.$store.getters.user;
-    this.fetchMessages();
-  },
-  mounted() {
-    this.setMessageAreaHeight();
-    //this.fetchMessages();
   },
   computed: {
     isAuthenticated() {
@@ -119,6 +113,21 @@ export default {
         return "commentMatch" + this.id_match;
       return "commentMatch" + this.$route.params.id_match;
     }
+  },
+  watch: {
+    $route(to, from) {
+      if (to.name == "matchinfo" && from.name == "matchinfo") {
+        this.fetchMessages();
+      }
+    }
+  },
+  created() {
+    this.authUser = this.$store.getters.user;
+    this.fetchMessages();
+  },
+  mounted() {
+    this.setMessageAreaHeight();
+    //this.fetchMessages();
   },
   methods: {
     saveMessage() {
@@ -168,13 +177,6 @@ export default {
       let winH = container.clientHeight;
       let textAH = this.$refs.textAreaInput.clientHeight;
       this.messageAreaHeight = winH - textAH + "px";
-    }
-  },
-  watch: {
-    $route(to, from) {
-      if (to.name == "matchinfo" && from.name == "matchinfo") {
-        this.fetchMessages();
-      }
     }
   }
 };

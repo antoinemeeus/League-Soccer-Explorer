@@ -1,5 +1,4 @@
 <template>
-
   <v-container
     row
     justify-space-between
@@ -9,17 +8,19 @@
       wrap
     >
       <v-flex
+        v-for="match in list_team_matches"
+        :key="match.id"
         sm6
         xs12
         class="py-1"
-        v-for="match in list_team_matches"
-        :key="match.id"
-        :class="{'scroll_target current-match-card': match.id===nextMatch.id}"
+        :class="{
+          'scroll_target current-match-card': match.id === nextMatch.id
+        }"
       >
         <MatchCard
-          :leagueCompetitionID="competitionID"
-          :iscurrentMatch="match.id===nextMatch.id"
-          :indvMatch="match"
+          :league-competition-i-d="competitionID"
+          :iscurrent-match="match.id === nextMatch.id"
+          :indv-match="match"
         />
       </v-flex>
     </v-layout>
@@ -31,11 +32,26 @@ import MatchCard from "./MatchCard.vue";
 
 export default {
   name: "TabMatches",
-  props: ["competitionID", "list_team_matches"],
   components: {
     MatchCard
   },
+  props: ["competitionID", "listTeamMatches"],
   data: () => ({}),
+
+  computed: {
+    nextMatch() {
+      //Find current or next match by obtaining the next index after the last match with status "FINISHED"
+      var lastIndex = 0;
+      var len = this.list_team_matches.length;
+      for (let i = 0; i < len - 1; i++) {
+        if (this.list_team_matches[i].status === "FINISHED") {
+          lastIndex = i;
+        }
+      }
+      if (lastIndex + 1 < len) return this.list_team_matches[lastIndex + 1];
+      return this.list_team_matches[len - 1];
+    }
+  },
 
   mounted() {
     // setTimeout(() => {
@@ -58,21 +74,6 @@ export default {
     //   }
     // }, 1200);
   },
-  methods: {},
-
-  computed: {
-    nextMatch() {
-      //Find current or next match by obtaining the next index after the last match with status "FINISHED"
-      var lastIndex = 0;
-      var len = this.list_team_matches.length;
-      for (let i = 0; i < len - 1; i++) {
-        if (this.list_team_matches[i].status === "FINISHED") {
-          lastIndex = i;
-        }
-      }
-      if (lastIndex + 1 < len) return this.list_team_matches[lastIndex + 1];
-      return this.list_team_matches[len - 1];
-    }
-  }
+  methods: {}
 };
 </script>

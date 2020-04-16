@@ -1,10 +1,10 @@
 <template>
   <v-app>
     <v-navigation-drawer
+      v-model="drawer"
       app
       dark
       clipped
-      v-model="drawer"
       width="220"
     >
       <v-layout
@@ -14,15 +14,15 @@
         align-center
       >
         <v-flex text-xs-center>
-          <h2>{{app_title}}</h2>
+          <h2>{{ app_title }}</h2>
         </v-flex>
         <v-avatar size="80">
           <v-img
-            :src="require(`@/assets/leagues_logo/league_${this.league_icon}.png`)"
+            :src="
+              require(`@/assets/leagues_logo/league_${this.league_icon}.png`)
+            "
             contain
-          >
-
-          </v-img>
+          />
         </v-avatar>
       </v-layout>
 
@@ -45,7 +45,9 @@
           @click="logIn"
         >
           <v-list-tile-action>
-            <v-icon :style="{ cursor: 'pointer'}">account_circle</v-icon>
+            <v-icon :style="{ cursor: 'pointer' }">
+              account_circle
+            </v-icon>
           </v-list-tile-action>
           <v-list-tile-title>Log In</v-list-tile-title>
         </v-list-tile>
@@ -57,10 +59,10 @@
           <v-list-tile slot="activator">
             <v-list-tile-action>
               <v-avatar size="25">
-                <v-img :src="user.photoURL"></v-img>
+                <v-img :src="user.photoURL" />
               </v-avatar>
             </v-list-tile-action>
-            <v-list-tile-title>{{user.displayName}}</v-list-tile-title>
+            <v-list-tile-title>{{ user.displayName }}</v-list-tile-title>
           </v-list-tile>
 
           <v-list-tile @click="logOut">
@@ -70,9 +72,7 @@
             <v-list-tile-title>Log Out</v-list-tile-title>
           </v-list-tile>
         </v-list-group>
-
       </v-list>
-
     </v-navigation-drawer>
 
     <v-toolbar
@@ -83,16 +83,18 @@
       tabs
       dark
     >
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-spacer></v-spacer>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer" />
+      <v-spacer />
       <v-toolbar-title
-        :style="{ cursor: 'pointer'}"
-        @click="goToCompetition"
+        :style="{ cursor: 'pointer' }"
         class="px-2 text-xs-center "
+        @click="goToCompetition"
       >
-        <h2 class="subheading">{{app_title}}</h2>
+        <h2 class="subheading">
+          {{ app_title }}
+        </h2>
       </v-toolbar-title>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-img
         class="pr-2"
         :src="require(`@/assets/leagues_logo/league_${league_icon}.png`)"
@@ -107,26 +109,28 @@
       >
         <v-flex xs2>
           <v-icon
-            :style="{ cursor: 'pointer'}"
             v-if="goBackButton"
+            :style="{ cursor: 'pointer' }"
             icon
             @click="$router.go(-1)"
-          >arrow_back</v-icon>
+          >
+            arrow_back
+          </v-icon>
         </v-flex>
         <v-flex
           xs8
           text-xs-center
           class="title text-capitalize"
         >
-          {{SearchView}}
+          {{ SearchView }}
         </v-flex>
         <v-flex
           xs2
           text-xs-right
         >
           <v-icon
-            :style="{ cursor: 'pointer'}"
-            v-if="$route.name=='competition'"
+            v-if="$route.name == 'competition'"
+            :style="{ cursor: 'pointer' }"
             @click="$store.commit('goToCurrentMut')"
           >
             vertical_align_center
@@ -137,15 +141,26 @@
 
     <v-content>
       <v-fade-transition mode="out-in">
-        <router-view v-if="!loadingMatches && !loadingTeams && !loadingStandings && !loadingTeamInfo"></router-view>
+        <router-view
+          v-if="
+            !loadingMatches &&
+              !loadingTeams &&
+              !loadingStandings &&
+              !loadingTeamInfo
+          "
+        />
       </v-fade-transition>
     </v-content>
     <!-- Loader -->
     <v-dialog
-      :value="localLoading || loadingPlayers ||
-        loadingLeague ||
-        loadingTeams ||
-        loadingMatches || loadingTeamInfo"
+      :value="
+        localLoading ||
+          loadingPlayers ||
+          loadingLeague ||
+          loadingTeams ||
+          loadingMatches ||
+          loadingTeamInfo
+      "
       hide-overlay
       persistent
       width="300"
@@ -168,12 +183,10 @@
             :width="7"
             color="red"
             indeterminate
-          ></v-progress-circular>
+          />
         </v-layout>
-
       </v-card>
     </v-dialog>
-
   </v-app>
 </template>
 
@@ -328,15 +341,6 @@ export default {
       return this.$route.name;
     }
   },
-  created() {
-    this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
-    this.$store.commit("SET_LEAGUE_ICON", "Home");
-    //Check route at created moment.
-
-    console.log("We are refreshing on the " + this.$route.name + " page");
-    console.log(this.$route);
-    this.routeGetSetData(this.$route);
-  },
 
   watch: {
     $route(to, from) {
@@ -345,6 +349,15 @@ export default {
         this.routeGetSetData(to);
       }
     }
+  },
+  created() {
+    this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
+    this.$store.commit("SET_LEAGUE_ICON", "Home");
+    //Check route at created moment.
+
+    console.log("We are refreshing on the " + this.$route.name + " page");
+    console.log(this.$route);
+    this.routeGetSetData(this.$route);
   }
 };
 </script>

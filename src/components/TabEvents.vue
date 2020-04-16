@@ -1,11 +1,10 @@
 <template>
-
   <v-container fluid>
     <v-layout
+      v-for="(item, key) in allEvents"
+      :key="key"
       justify-space-around
       py-2
-      v-for="(item,key) in allEvents"
-      :key="key"
     >
       <v-flex xs5>
         <EventCard
@@ -23,7 +22,7 @@
           color="blue-grey"
           size="40"
         >
-          <span class="white--text title">{{item.minute}}'</span>
+          <span class="white--text title">{{ item.minute }}'</span>
         </v-avatar>
       </v-flex>
 
@@ -41,12 +40,11 @@
 import EventCard from "./EventCard.vue";
 export default {
   name: "TabEvent",
-  props: ["Tgoals", "Tbookings", "Tsubstitutions"],
   components: {
     EventCard
   },
+  props: ["tgoals", "tbookings", "tsubstitutions"],
   data: () => ({}),
-  methods: {},
 
   computed: {
     allEvents() {
@@ -56,6 +54,7 @@ export default {
         .reverse();
     }
   },
+  methods: {},
 
   methods: {
     colorCard(str) {

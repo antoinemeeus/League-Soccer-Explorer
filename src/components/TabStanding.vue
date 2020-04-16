@@ -1,5 +1,4 @@
 <template>
-
   <v-data-table
     :headers="headers"
     :items="stadingTable"
@@ -10,11 +9,13 @@
       slot="items"
       slot-scope="props"
     >
-      <tr :active="props.item.team.id==id_team">
-        <td class="text-xs-center px-0">{{ props.item.position }}</td>
+      <tr :active="props.item.team.id == id_team">
+        <td class="text-xs-center px-0">
+          {{ props.item.position }}
+        </td>
         <td
           class="text-xs-left px-1"
-          @click="goToTeam(props.item.team.id,props.item.team)"
+          @click="goToTeam(props.item.team.id, props.item.team)"
         >
           <v-layout align-center>
             <v-avatar
@@ -25,35 +26,47 @@
                 :src="getImgSrc(props.item.team.crestUrl)"
                 contain
                 max-height="30"
-              ></v-img>
+              />
             </v-avatar>
             <v-flex px-2>
               {{ props.item.team.name }}
             </v-flex>
           </v-layout>
         </td>
-        <td class="text-xs-left px-1">{{ props.item.playedGames }}</td>
-        <td class="text-xs-left px-1">{{ props.item.won }}</td>
-        <td class="text-xs-left px-1">{{ props.item.draw }}</td>
-        <td class="text-xs-left px-1">{{ props.item.lost }}</td>
-        <td class="text-xs-left px-1">{{ props.item.points }}</td>
-        <td class="text-xs-left px-1">{{ props.item.goalsFor }}</td>
-        <td class="text-xs-left px-1">{{ props.item.goalsAgainst }}</td>
-        <td class="text-xs-left px-1">{{ props.item.goalDifference }}</td>
+        <td class="text-xs-left px-1">
+          {{ props.item.playedGames }}
+        </td>
+        <td class="text-xs-left px-1">
+          {{ props.item.won }}
+        </td>
+        <td class="text-xs-left px-1">
+          {{ props.item.draw }}
+        </td>
+        <td class="text-xs-left px-1">
+          {{ props.item.lost }}
+        </td>
+        <td class="text-xs-left px-1">
+          {{ props.item.points }}
+        </td>
+        <td class="text-xs-left px-1">
+          {{ props.item.goalsFor }}
+        </td>
+        <td class="text-xs-left px-1">
+          {{ props.item.goalsAgainst }}
+        </td>
+        <td class="text-xs-left px-1">
+          {{ props.item.goalDifference }}
+        </td>
       </tr>
     </template>
   </v-data-table>
 </template>
 
 <script>
-import MatchCard from "./MatchCard.vue";
 import { mapState } from "vuex";
 export default {
   name: "TabMatches",
-  props: ["id_team"],
-  components: {
-    MatchCard
-  },
+  props: ["idTeam"],
   data: () => ({
     headers: [
       {

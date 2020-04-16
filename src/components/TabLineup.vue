@@ -1,41 +1,40 @@
 <template>
-
   <v-container
     row
     justify-space-between
-  >    
-    <v-layout      
+  >
+    <v-layout
       row
       justify-space-between
     >
       <v-flex xs5>
         <v-layout
+          v-for="player in nonEmptyList.homeTeam"
+          :key="player.shirtNumber"
           py-1
           justify-space-between
-          v-for="player in list.homeTeam"
-          :key="player.shirtNumber"
         >
           <v-flex>
-            {{player.shirtNumber}}
+            {{ player.shirtNumber }}
           </v-flex>
           <v-flex text-xs-right>
-            {{player.name}}
+            {{ player.name }}
           </v-flex>
         </v-layout>
       </v-flex>
 
       <v-flex xs5>
         <v-layout
+          v-for="player in nonEmptyList.awayTeam"
+          :key="player.shirtNumber"
           py-1
           justify-space-between
-          v-for="player in list.awayTeam"
-          :key="player.shirtNumber"
         >
           <v-flex text-xs-left>
-            {{player.name}}
+            {{ player.name }}
           </v-flex>
           <v-flex text-xs-right>
-            {{player.shirtNumber}}
+            {{ player.shirtNumber }}
           </v-flex>
         </v-layout>
       </v-flex>
@@ -46,21 +45,23 @@
 <script>
 export default {
   name: "TabLineup",
-  props: ["list_"],
+  props: ["list"],
   data: () => ({}),
-  methods: {},
 
   computed: {
-    list() {
-      if (list_) return list_;
+    nonEmptyList() {
+      if (list) return list;
+      return [];
     },
     maxListIndex() {
-      if (list_) {
-        return this.list_.homeTeam.length >= this.list_.awayTeam.length
-          ? this.list_.homeTeam.length - 1
-          : this.list_.awayTeam.lenght - 1;
+      if (list) {
+        return this.list.homeTeam.length >= this.list.awayTeam.length
+          ? this.list.homeTeam.length - 1
+          : this.list.awayTeam.lenght - 1;
       }
+      return 0;
     }
-  }
+  },
+  methods: {}
 };
 </script>

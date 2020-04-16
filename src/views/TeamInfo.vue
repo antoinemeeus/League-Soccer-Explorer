@@ -6,13 +6,12 @@
   >
     <!-- :style="clubColorStyle" -->
     <v-layout px-2>
-
       <v-flex xs3>
         <v-img
           :src="currentTeam.crestUrl"
           max-height="80px"
           contain
-        ></v-img>
+        />
       </v-flex>
       <v-flex
         xs9
@@ -25,16 +24,15 @@
         >
           <v-flex xs12>
             <h2>
-              {{currentTeam.name}}
+              {{ currentTeam.name }}
             </h2>
           </v-flex>
           <v-flex xs12>
             <h6 class="caption grey--text">
-              Team fonded in {{currentTeam.founded}}
+              Team fonded in {{ currentTeam.founded }}
             </h6>
           </v-flex>
           <v-layout justify-space-between>
-
             <v-flex xs3>
               <v-menu
                 v-model="website_menu"
@@ -53,11 +51,14 @@
                 </v-btn>
                 <v-card>
                   <v-card-title color="primary">
-                    <h4>Website:
+                    <h4>
+                      Website:
                       <a
                         :href="currentTeam.website"
                         target="_blank"
-                      >{{currentTeam.website}}</a>
+                      >{{
+                        currentTeam.website
+                      }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -82,8 +83,11 @@
                 </v-btn>
                 <v-card>
                   <v-card-title color="primary">
-                    <h4>Email:
-                      <a :href="`mailto:${currentTeam.email}`">{{currentTeam.email}}</a>
+                    <h4>
+                      Email:
+                      <a :href="`mailto:${currentTeam.email}`">{{
+                        currentTeam.email
+                      }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -107,8 +111,11 @@
                 </v-btn>
                 <v-card>
                   <v-card-title color="primary">
-                    <h4>Phone number:
-                      <a :href="`tel://${currentTeam.phone}`">{{currentTeam.phone}}</a>
+                    <h4>
+                      Phone number:
+                      <a :href="`tel://${currentTeam.phone}`">{{
+                        currentTeam.phone
+                      }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -133,28 +140,30 @@
                 </v-btn>
                 <v-card>
                   <v-card-title color="primary">
-                    <h4>Stadium:
+                    <h4>
+                      Stadium:
                       <a
                         target="_blank"
-                        :href="`https://www.google.com/maps/search/?api=1&query=${currentTeam.venue}`"
-                      >{{currentTeam.venue}}</a>
+                        :href="
+                          `https://www.google.com/maps/search/?api=1&query=${currentTeam.venue}`
+                        "
+                      >{{ currentTeam.venue }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
               </v-menu>
             </v-flex>
-
           </v-layout>
         </v-layout>
       </v-flex>
     </v-layout>
 
-    <v-divider></v-divider>
+    <v-divider />
     <v-layout pt-2>
       <v-flex xs12>
         <v-tabs
-          fixed-tabs
           v-model="tabs"
+          fixed-tabs
           grow
         >
           <v-tab>
@@ -171,14 +180,14 @@
     </v-layout>
     <v-tabs-items
       v-model="tabs"
-      :touchless="tabs==1"
+      :touchless="tabs == 1"
       class="white elevation-1"
     >
       <v-tab-item>
         <TabPlayers
           v-if="!this.loadingPlayers"
           :players="team_players"
-          :teamInfo="team_football_org"
+          :team-info="team_football_org"
         />
 
         <v-layout
@@ -188,7 +197,7 @@
           row
           fill-height
         >
-          <!-- <v-progress-circular          
+          <!-- <v-progress-circular
             size="50"
             color="primary"
             indeterminate
@@ -197,26 +206,21 @@
           <v-progress-linear
             :indeterminate="true"
             height="5"
-          ></v-progress-linear>
-
+          />
         </v-layout>
-
       </v-tab-item>
 
       <v-tab-item>
         <TabStanding :id_team="id_team" />
       </v-tab-item>
       <v-tab-item>
-
         <TabMatches
-          :competitionID="currentCompetition.id"
+          :competition-i-d="currentCompetition.id"
           :list_team_matches="matchesWithCrest"
         />
-
       </v-tab-item>
     </v-tabs-items>
   </v-container>
-
 </template>
 
 <script>
@@ -235,7 +239,7 @@ export default {
     TabStanding,
     TabPlayers
   },
-  props: ["id_competition", "id_team", "displayed_team"],
+  props: ["idCompetition", "idTeam", "displayedTeam"],
   data() {
     return {
       tabs: null,
@@ -248,12 +252,9 @@ export default {
   created() {
     if (
       this.team_players.length > 1 &&
-      this.current_team_id &&
-      this.current_team_id == this.team_players[0].idTeam
+      !this.current_team_id &&
+      this.current_team_id != this.team_players[0].idTeam
     ) {
-      console.log("player image already in store");
-    } else {
-      console.log("CHANGING TEAMS, fetching players images");
       this.fetchPlayers({ string_query: this.currentTeam.shortName });
     }
   },
@@ -332,5 +333,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

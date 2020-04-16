@@ -12,14 +12,16 @@
         class="text-xs-center"
       >
         <v-icon
-          :disabled="selectedMatchDay<=1"
+          :disabled="selectedMatchDay <= 1"
           @click="previousMDay"
-        >arrow_back_ios</v-icon>
+        >
+          arrow_back_ios
+        </v-icon>
       </v-flex>
 
       <v-select
-        :items="matchdayList"
         v-model="selectedMatchDay"
+        :items="matchdayList"
         box
         single-line
         hide-details
@@ -30,11 +32,15 @@
           slot-scope="{ item }"
         >
           <v-layout justify-space-between>
-            <span>{{item.name}} {{item.value}}</span>
+            <span>{{ item.name }} {{ item.value }}</span>
             <span
               pb-1
               class="caption"
-            >{{formatDates(item.startDate,item.endDate)}}</span>
+            >
+              {{
+                formatDates(item.startDate, item.endDate)
+              }}
+            </span>
           </v-layout>
         </template>
         <template
@@ -47,16 +53,11 @@
             ripple
           >
             <v-list-tile-content>
-              <v-list-tile-title>
-                {{item.name}} {{item.value}}
-              </v-list-tile-title>
-              <v-list-tile-sub-title>
-                {{formatDates(item.startDate,item.endDate)}}
-              </v-list-tile-sub-title>
+              <v-list-tile-title>{{ item.name }} {{ item.value }}</v-list-tile-title>
+              <v-list-tile-sub-title>{{ formatDates(item.startDate, item.endDate) }}</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list>
         </template>
-
       </v-select>
 
       <v-flex
@@ -64,38 +65,42 @@
         class="text-xs-center"
       >
         <v-icon
-          :disabled="selectedMatchDay>=matchdayList.length"
+          :disabled="selectedMatchDay >= matchdayList.length"
           @click="nextMDay"
-        >arrow_forward_ios</v-icon>
+        >
+          arrow_forward_ios
+        </v-icon>
       </v-flex>
     </v-layout>
 
     <v-layout>
-      <h2 class="title py-3">Matchday {{selectedMatchDay}} of {{matchdayList.length}}</h2>
+      <h2 class="title py-3">
+        Matchday {{ selectedMatchDay }} of {{ matchdayList.length }}
+      </h2>
     </v-layout>
 
     <v-layout
-      wrap
-      justify-center
       v-for="match in getMatchesInMatchDay(selectedMatchDay)"
       :key="match.id"
+      wrap
+      justify-center
     >
       <v-flex
         sm6
         xs12
         class="py-1"
-        :class="{'scroll_target current-match-card': match.id===nextMatch.id}"
+        :class="{
+          'scroll_target current-match-card': match.id === nextMatch.id
+        }"
       >
         <MatchCard
-          :leagueCompetitionID="id_competition"
-          :iscurrentMatch="match.id===nextMatch.id"
-          :indvMatch="match"
+          :league-competition-i-d="id_competition"
+          :iscurrent-match="match.id === nextMatch.id"
+          :indv-match="match"
         />
       </v-flex>
-
     </v-layout>
   </v-container>
-
 </template>
 
 <script>
@@ -110,7 +115,7 @@ export default {
   components: {
     MatchCard
   },
-  props: ["id_competition"],
+  props: ["idCompetition"],
   data() {
     return {
       selectedMatchDay: 1,
@@ -189,30 +194,30 @@ export default {
         var len = matches_.length;
         var lastday = matches_[len - 1].matchday;
         if (lastday) return lastday;
-        else {
-          return Math.max(this.league_matches.matches.map(obj => obj.matchday));
-        }
       }
+      return Math.max(matches_.map(obj => obj.matchday));
     },
     matchesWithCrest() {
       //Adding crestUrl to each matches homeTeam/awayTeam with information from league_teams
-      if (this.league_teams.teams.length > 0)
-        return this.league_matches.matches.map(obj => {
-          var Tobj = obj;
-          var _homeTeam = this.league_teams.teams.find(
-            elem => elem.id == Tobj.homeTeam.id
-          );
-          var _awayTeam = this.league_teams.teams.find(
-            elem => elem.id == Tobj.awayTeam.id
-          );
-          obj.homeTeam["crestUrl"] = _homeTeam.crestUrl
-            ? _homeTeam.crestUrl
-            : require("@/assets/placeholdershield.png");
-          obj.awayTeam["crestUrl"] = _awayTeam.crestUrl
-            ? _awayTeam.crestUrl
-            : require("@/assets/placeholdershield.png");
-          return obj;
-        });
+      if (this.league_teams.teams.length == 0) {
+        return {};
+      }
+      return this.league_matches.matches.map(obj => {
+        var Tobj = obj;
+        var _homeTeam = this.league_teams.teams.find(
+          elem => elem.id == Tobj.homeTeam.id
+        );
+        var _awayTeam = this.league_teams.teams.find(
+          elem => elem.id == Tobj.awayTeam.id
+        );
+        obj.homeTeam["crestUrl"] = _homeTeam.crestUrl
+          ? _homeTeam.crestUrl
+          : require("@/assets/placeholdershield.png");
+        obj.awayTeam["crestUrl"] = _awayTeam.crestUrl
+          ? _awayTeam.crestUrl
+          : require("@/assets/placeholdershield.png");
+        return obj;
+      });
     },
 
     nextMatch() {
@@ -279,4 +284,3 @@ export default {
   }
 };
 </script>
-

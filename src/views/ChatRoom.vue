@@ -1,11 +1,11 @@
 <template>
   <v-container
+    v-resize="onResize"
     py-0
     my-0
     column
     justify-space-between
     class="no_scroll"
-    v-resize="onResize"
   >
     <v-layout>
       <v-flex
@@ -15,42 +15,39 @@
         xs12
       >
         <v-layout
-          py-2
-          column
           v-for="(msg, index) in arrayOfMessages"
           :key="index"
+          py-2
+          column
         >
-
           <v-layout
-            :class="{'last-msg':index===arrayOfMessages.length-1}"
+            :class="{ 'last-msg': index === arrayOfMessages.length - 1 }"
             pb-1
-            :justify-end="msg.displayName===authUser.displayName"
+            :justify-end="msg.displayName === authUser.displayName"
             widht="70%"
           >
             <v-flex
               align-self-start
               shrink
-              :order-xs2="msg.displayName===authUser.displayName"
+              :order-xs2="msg.displayName === authUser.displayName"
             >
               <v-avatar size="35">
                 <v-img
                   :src="msg.photoURL"
                   contain
-                >
-                </v-img>
+                />
               </v-avatar>
             </v-flex>
             <v-flex
               shrink
               px-1
-              :order-xs1="msg.displayName===authUser.displayName"
+              :order-xs1="msg.displayName === authUser.displayName"
             >
               <v-card
                 class="rounded"
                 min-width="120"
                 max-width="250"
               >
-
                 <v-layout column>
                   <v-flex
                     px-1
@@ -58,8 +55,14 @@
                   >
                     <div
                       class="blue--text subheading"
-                      :class="[msg.displayName===authUser.displayName ? 'text-xs-right' : '']"
-                    >{{msg.displayName}}</div>
+                      :class="[
+                        msg.displayName === authUser.displayName
+                          ? 'text-xs-right'
+                          : ''
+                      ]"
+                    >
+                      {{ msg.displayName }}
+                    </div>
                   </v-flex>
                   <div pa-1>
                     <v-flex
@@ -67,16 +70,16 @@
                       style="word-break:break-word;"
                     >
                       <div>
-                        {{msg.message}}
+                        {{ msg.message }}
                       </div>
                     </v-flex>
                   </div>
                   <v-flex px-2>
-                    <div class="grey--text caption text-xs-right">{{ moment(msg.createdAt).from(new Date())}}</div>
+                    <div class="grey--text caption text-xs-right">
+                      {{ moment(msg.createdAt).from(new Date()) }}
+                    </div>
                   </v-flex>
-
                 </v-layout>
-
               </v-card>
             </v-flex>
           </v-layout>
@@ -85,7 +88,6 @@
       <div style="position: relative">
         <v-btn
           class="btn-positioning"
-          @click="scrollToEndWithTransition"
           max="20"
           color="blue"
           absolute
@@ -93,6 +95,7 @@
           bottom
           right
           dark
+          @click="scrollToEndWithTransition"
         >
           <v-icon>keyboard_arrow_down</v-icon>
         </v-btn>
@@ -104,16 +107,13 @@
       ref="textAreaInput"
       pt-1
     >
-
       <v-flex
-        xs12
         ref="bottomChat"
+        xs12
       >
-
         <v-textarea
-          v-resize="onResize"
           v-model="message"
-          @keyup.enter="saveMessage()"
+          v-resize="onResize"
           auto-grow
           :rows="texAreaRows"
           autofocus
@@ -122,11 +122,11 @@
           color="blue-grey"
           placeholder="Type your message here..."
           :append-outer-icon="'mdi-send'"
+          @keyup.enter="saveMessage()"
           @click:append-outer="saveMessage()"
-        ></v-textarea>
+        />
       </v-flex>
     </v-layout>
-
   </v-container>
 </template>
 
@@ -146,6 +146,7 @@ export default {
       authUser: {}
     };
   },
+  computed: {},
   created() {
     this.authUser = this.$store.getters.user;
     console.log("USER ID:", this.authUser.uid);
@@ -157,7 +158,6 @@ export default {
     this.$store.commit("SET_LEAGUE_ICON", "Home");
     this.$store.commit("SET_CURRENT_LEAGUE", { name: "Home", id: "" });
   },
-  computed: {},
   methods: {
     saveMessage() {
       var dateFromUI = new Date();

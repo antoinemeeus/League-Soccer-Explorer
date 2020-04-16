@@ -1,7 +1,10 @@
 <template>
   <v-card
     height="100%"
-    :to="{ name: 'playerinfo' , params:{ id_player:player.idPlayer,displayed_player:player }}"
+    :to="{
+      name: 'playerinfo',
+      params: { id_player: player.idPlayer, displayed_player: player }
+    }"
   >
     <v-img
       :src="playerImageSrc"
@@ -18,7 +21,7 @@
         <v-progress-circular
           indeterminate
           color="grey"
-        ></v-progress-circular>
+        />
       </v-layout>
     </v-img>
 
@@ -28,25 +31,26 @@
       py-1
     >
       <v-flex>
-        <div class="body-1">{{player.strPlayer}}</div>
+        <div class="body-1">
+          {{ player.strPlayer }}
+        </div>
       </v-flex>
       <v-flex>
-        <div class="font-italic caption">{{player.strPosition}}</div>
+        <div class="font-italic caption">
+          {{ player.strPosition }}
+        </div>
       </v-flex>
     </v-layout>
-
   </v-card>
-
 </template>
 
 <script>
 export default {
   name: "Playercard",
-  props: ["player", "player_data_org"],
+  props: ["player", "playerDataOrg"],
   data: () => ({
     failed_image: false
   }),
-  methods: {},
 
   computed: {
     playerImageSrc() {
@@ -54,7 +58,8 @@ export default {
         ? this.player.strThumb + "/preview"
         : require("@/assets/CutOutPlaceHolder.jpg");
     }
-  }
+  },
+  methods: {}
 };
 </script>
 

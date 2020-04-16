@@ -23,7 +23,7 @@
                 <v-img
                   :src="getImageUrl"
                   contain
-                ></v-img>
+                />
               </v-avatar>
             </v-flex>
             <v-flex xs8>
@@ -35,13 +35,13 @@
                   xs12
                   class="text-xs-center display-1"
                 >
-                  {{getPlayer.strPlayer}}
+                  {{ getPlayer.strPlayer }}
                 </v-flex>
                 <v-flex
                   align-self-center
                   class="title text-grey"
                 >
-                  {{getPlayer.strPosition}}, {{getAge(getPlayer.dateBorn)}}
+                  {{ getPlayer.strPosition }}, {{ getAge(getPlayer.dateBorn) }}
                 </v-flex>
               </v-layout>
             </v-flex>
@@ -56,28 +56,27 @@
               column
             >
               <v-flex class="display-1">
-                {{getPlayer.strTeam}}
+                {{ getPlayer.strTeam }}
               </v-flex>
               <v-flex class="header">
                 <div class="orange--text">
-                  Started in: {{getPlayer.dateSigned}}
+                  Started in: {{ getPlayer.dateSigned }}
                 </div>
               </v-flex>
             </v-layout>
           </v-flex>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-flex>
             <v-avatar>
               <v-img
                 :src="team_football_org.crestUrl"
                 contain
-              >
-              </v-img>
+              />
             </v-avatar>
           </v-flex>
         </v-layout>
       </v-flex>
-      <v-divider></v-divider>
+      <v-divider />
       <v-flex
         pt-2
         xs12
@@ -90,18 +89,17 @@
             </h4>
           </v-flex>
           <v-flex xs12>
-            Nationality: {{getPlayer.strNationality}}
+            Nationality: {{ getPlayer.strNationality }}
           </v-flex>
           <v-flex xs12>
-            Height: {{getPlayer.strHeight}} m
+            Height: {{ getPlayer.strHeight }} m
           </v-flex>
           <v-flex xs12>
-            Weight: {{getPlayer.strWeight}} kg
+            Weight: {{ getPlayer.strWeight }} kg
           </v-flex>
           <v-flex xs12>
-            Signing price tag: {{getPlayer.strSigning}}
+            Signing price tag: {{ getPlayer.strSigning }}
           </v-flex>
-
         </v-layout>
       </v-flex>
 
@@ -110,7 +108,6 @@
       </v-layout>
     </v-layout>
   </v-container>
-
 </template>
 
 <script>
@@ -121,7 +118,7 @@ export default {
   name: "PlayerInfo",
 
   components: {},
-  props: ["id_player", "displayed_player"],
+  props: ["idPlayer", "displayedPlayer"],
   data() {
     return {};
   },

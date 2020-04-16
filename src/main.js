@@ -35,12 +35,12 @@ const unsubscribe = firebase.auth().onAuthStateChanged(firebaseUser => {
     el: "#app",
     router,
     store,
-    render: h => h(App),
     created() {
       if (firebaseUser) {
         store.dispatch("autoLogIn", firebaseUser);
       }
-    }
+    },
+    render: h => h(App)
   });
   unsubscribe();
 });

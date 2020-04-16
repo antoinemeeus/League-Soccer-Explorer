@@ -1,5 +1,4 @@
 <template>
-
   <v-container
     row
     fluid
@@ -8,15 +7,15 @@
   >
     <v-layout wrap>
       <v-flex
+        v-for="player in players"
+        :key="player.idPlayer"
         md3
         xs4
         class="pa-1"
-        v-for="player in players"
-        :key="player.idPlayer"
       >
         <PlayerCard
           :player="player"
-          :busteamInfo="teamInfo"
+          :busteam-info="teamInfo"
         />
       </v-flex>
     </v-layout>
@@ -28,13 +27,13 @@ import PlayerCard from "./PlayerCard.vue";
 
 export default {
   name: "Tabplayers",
-  props: ["players", "teamInfo"],
   components: {
     PlayerCard
   },
+  props: ["players", "teamInfo"],
   data: () => ({}),
-  methods: {},
 
-  computed: {}
+  computed: {},
+  methods: {}
 };
 </script>

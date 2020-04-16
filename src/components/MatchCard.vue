@@ -2,16 +2,25 @@
   <v-card
     :raised="iscurrentMatch"
     :color="dynamicColor"
-    :to="{ name: 'matchinfo' , params:{ id_competition:leagueCompetitionID ,id_match:indvMatch.id, displayed_match:indvMatch }}"
+    :to="{
+      name: 'matchinfo',
+      params: {
+        id_competition: leagueCompetitionID,
+        id_match: indvMatch.id,
+        displayed_match: indvMatch
+      }
+    }"
   >
     <v-container fluid>
       <v-layout
         row
         justify-space-between
       >
-        <v-flex>{{getLocalDateAndTime(indvMatch.utcDate)}} </v-flex>
-        <v-spacer></v-spacer>
-        <v-flex class="text-xs-right">{{indvMatch.status}} </v-flex>
+        <v-flex>{{ getLocalDateAndTime(indvMatch.utcDate) }} </v-flex>
+        <v-spacer />
+        <v-flex class="text-xs-right">
+          {{ indvMatch.status }}
+        </v-flex>
       </v-layout>
       <v-layout row>
         <v-layout column>
@@ -22,20 +31,22 @@
                   class="elevation-6"
                   contain
                   :src="getImgSrc(indvMatch.homeTeam.crestUrl)"
-                ></v-img>
+                />
               </v-list-tile-avatar>
 
               <v-list-tile-content>
                 <v-list-tile-title
                   class="body-2"
-                  :class="{'grey--text': isAwayWinner}"
-                >{{indvMatch.homeTeam.name}}</v-list-tile-title>
+                  :class="{ 'grey--text': isAwayWinner }"
+                >
+                  {{ indvMatch.homeTeam.name }}
+                </v-list-tile-title>
               </v-list-tile-content>
               <v-layout
                 align-center
                 justify-end
               >
-                <h4>{{periodScore.score.homeTeam}}</h4>
+                <h4>{{ periodScore.score.homeTeam }}</h4>
               </v-layout>
             </v-list-tile>
           </v-flex>
@@ -46,23 +57,24 @@
                   class="elevation-6"
                   contain
                   :src="getImgSrc(indvMatch.awayTeam.crestUrl)"
-                ></v-img>
+                />
               </v-list-tile-avatar>
 
               <v-list-tile-content>
                 <v-list-tile-title
                   class="body-2"
-                  :class="{'grey--text text--darken-2':isHomeWinner}"
-                >{{indvMatch.awayTeam.name}}</v-list-tile-title>
+                  :class="{ 'grey--text text--darken-2': isHomeWinner }"
+                >
+                  {{ indvMatch.awayTeam.name }}
+                </v-list-tile-title>
               </v-list-tile-content>
 
               <v-layout
                 align-center
                 justify-end
               >
-                <h4>{{periodScore.score.awayTeam}}</h4>
+                <h4>{{ periodScore.score.awayTeam }}</h4>
               </v-layout>
-
             </v-list-tile>
           </v-flex>
         </v-layout>
@@ -70,26 +82,28 @@
           class="mx-1"
           inset
           vertical
-        ></v-divider>
+        />
         <v-flex
           v-show="isSchedule"
           xs2
           align-self-center
         >
-          <h5 class="text-xs-center">{{moment(indvMatch.utcDate).calendar()}}</h5>
+          <h5 class="text-xs-center">
+            {{ moment(indvMatch.utcDate).calendar() }}
+          </h5>
         </v-flex>
         <v-flex
           v-show="!isSchedule"
           xs2
           align-self-center
         >
-          <h5 class="text-xs-center">{{periodScore.name}}</h5>
+          <h5 class="text-xs-center">
+            {{ periodScore.name }}
+          </h5>
         </v-flex>
       </v-layout>
     </v-container>
-
   </v-card>
-
 </template>
 
 <script>
@@ -98,27 +112,6 @@ export default {
   name: "MatchCard",
   props: ["leagueCompetitionID", "indvMatch", "iscurrentMatch"],
   data: () => ({}),
-  methods: {
-    getLocalDateAndTime(utcD) {
-      var localDate = new Date(utcD);
-      var options = {
-        weekday: "short",
-        year: "2-digit",
-        month: "numeric",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric"
-      };
-      return localDate.toLocaleDateString("en-GB", options);
-    },
-    getImgSrc(src) {
-      if (src) return src;
-      return require("@/assets/placeholdershield.png");
-    },
-    testPeriodScore(obj) {
-      return obj.homeTeam != null || obj.awayTeam != null;
-    }
-  },
 
   computed: {
     isHomeWinner() {
@@ -148,6 +141,27 @@ export default {
         obj.score = _score.fullTime;
       }
       return obj;
+    }
+  },
+  methods: {
+    getLocalDateAndTime(utcD) {
+      var localDate = new Date(utcD);
+      var options = {
+        weekday: "short",
+        year: "2-digit",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric"
+      };
+      return localDate.toLocaleDateString("en-GB", options);
+    },
+    getImgSrc(src) {
+      if (src) return src;
+      return require("@/assets/placeholdershield.png");
+    },
+    testPeriodScore(obj) {
+      return obj.homeTeam != null || obj.awayTeam != null;
     }
   }
 };
