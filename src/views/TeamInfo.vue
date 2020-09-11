@@ -57,8 +57,8 @@
                         :href="currentTeam.website"
                         target="_blank"
                       >{{
-                          currentTeam.website
-                        }}</a>
+                        currentTeam.website
+                      }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -67,7 +67,7 @@
 
             <v-flex xs3>
               <v-menu
-                v-model="website_eamil"
+                v-model="website_email"
                 :close-on-content-click="false"
                 auto
                 offset-x
@@ -86,8 +86,8 @@
                     <h4>
                       Email:
                       <a :href="`mailto:${currentTeam.email}`">{{
-                          currentTeam.email
-                        }}</a>
+                        currentTeam.email
+                      }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -114,8 +114,8 @@
                     <h4>
                       Phone number:
                       <a :href="`tel://${currentTeam.phone}`">{{
-                          currentTeam.phone
-                        }}</a>
+                        currentTeam.phone
+                      }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -158,7 +158,7 @@
       </v-flex>
     </v-layout>
 
-    <v-divider/>
+    <v-divider />
     <v-layout pt-2>
       <v-flex xs12>
         <v-tabs
@@ -211,7 +211,7 @@
       </v-tab-item>
 
       <v-tab-item>
-        <TabStanding :id_team="id_team"/>
+        <TabStanding :id_team="id_team" />
       </v-tab-item>
       <v-tab-item>
         <TabMatches
@@ -243,27 +243,11 @@ export default {
     return {
       tabs: null,
       website_menu: false,
-      website_eamil: false,
+      website_email: false,
       website_phone: false,
       website_map: false
     };
   },
-  created() {
-    if (
-      this.team_players.length > 1 &&
-      !this.current_team_id &&
-      this.current_team_id != this.team_players[0].idTeam
-    ) {
-      this.fetchPlayers({string_query: this.currentTeam.shortName});
-    }
-  },
-  mounted() {
-    this.setToolBarInfo();
-  },
-
-  beforeDestroy() {
-  },
-
   computed: {
     ...mapState([
       "loadingPlayers",
@@ -308,7 +292,20 @@ export default {
       });
     }
   },
-
+  created() {
+    if (
+      this.team_players.length > 1 &&
+      !this.current_team_id &&
+      this.current_team_id != this.team_players[0].idTeam
+    ) {
+      this.fetchPlayers({string_query: this.currentTeam.shortName});
+    }
+  },
+  mounted() {
+    this.setToolBarInfo();
+  },
+  beforeDestroy() {
+  },
   methods: {
     ...mapActions(["fetchPlayers"]),
     setToolBarInfo() {

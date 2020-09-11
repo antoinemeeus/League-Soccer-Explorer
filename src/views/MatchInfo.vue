@@ -112,7 +112,7 @@
               {{ matchHomeTeam.shortName }}
             </div>
           </v-flex>
-          <v-spacer/>
+          <v-spacer />
           <v-flex
             text-xs-center
             xs4
@@ -128,10 +128,10 @@
       </v-icon>
     </v-layout>
 
-    <v-divider/>
+    <v-divider />
     <div v-if="isDataAvailable">
       <v-layout
-        v-if="currentMatch.status != 'SCHEDULED'"
+        v-if="currentMatch.status !== 'SCHEDULED'"
         justify-space-between
         px-3
       >
@@ -174,7 +174,7 @@
           </v-layout>
         </v-flex>
       </v-layout>
-      <v-divider/>
+      <v-divider />
 
       <v-layout pt-2>
         <v-flex xs12>
@@ -199,7 +199,7 @@
           </v-tabs>
         </v-flex>
       </v-layout>
-      <v-flex v-if="currentMatch.status == 'SCHEDULED'">
+      <v-flex v-if="currentMatch.status === 'SCHEDULED'">
         <v-alert
           :value="true"
           type="warning"
@@ -210,7 +210,7 @@
         </v-alert>
       </v-flex>
       <v-tabs-items
-        v-if="currentMatch.status != 'SCHEDULED'"
+        v-if="currentMatch.status !== 'SCHEDULED'"
         v-model="tabs"
         class="white elevation-1"
       >
@@ -221,16 +221,16 @@
             title="Lineups"
           />
 
-          <v-divider/>
-          <TabLineup :list_="currentMatch_AdditionalInfo.lineup"/>
-          <v-divider/>
+          <v-divider />
+          <TabLineup :list_="currentMatch_AdditionalInfo.lineup" />
+          <v-divider />
           <LogoHeader
             :away-logo-url="matchAwayTeam.crestUrl"
             :home-logo-url="matchHomeTeam.crestUrl"
             title="Substitutes"
           />
-          <v-divider/>
-          <TabLineup :list_="currentMatch_AdditionalInfo.bench"/>
+          <v-divider />
+          <TabLineup :list_="currentMatch_AdditionalInfo.bench" />
         </v-tab-item>
 
         <v-tab-item>
@@ -239,8 +239,8 @@
             :home-logo-url="matchHomeTeam.crestUrl"
             title="Team Stats"
           />
-          <v-divider/>
-          <TabStats :stats="cur_stats"/>
+          <v-divider />
+          <TabStats :stats="cur_stats" />
         </v-tab-item>
         <v-tab-item>
           <LogoHeader
@@ -248,7 +248,7 @@
             :home-logo-url="matchHomeTeam.crestUrl"
             title="Events"
           />
-          <v-divider/>
+          <v-divider />
           <TabEvents
             :tbookings="currentMatch_AdditionalInfo.bookings"
             :tgoals="currentMatch_AdditionalInfo.goals"
@@ -261,12 +261,12 @@
             :home-logo-url="matchHomeTeam.crestUrl"
             title="Comments"
           />
-          <v-divider/>
+          <v-divider />
           <TabComment
             v-if="isAuthenticated"
             :match_id="currentMatch.id"
           />
-          <Login v-if="!isAuthenticated"/>
+          <Login v-if="!isAuthenticated" />
         </v-tab-item>
       </v-tabs-items>
     </div>
@@ -309,11 +309,6 @@ export default {
       match_index: null
     };
   },
-
-  mounted() {
-    this.setToolBarInfo();
-  },
-
   computed: {
     ...mapState([
       "loadingMatches",
@@ -407,7 +402,9 @@ export default {
       else return _score.halfTime;
     }
   },
-
+  mounted() {
+    this.setToolBarInfo();
+  },
   methods: {
     ...mapActions([
       "fetchAPI",
@@ -426,7 +423,7 @@ export default {
     },
     getPreviousMatch() {
       var newIndex = this.match_index - 1;
-      //check if no at index 0 or lenght-1
+      //check if no at index 0 or length-1
       if (newIndex < 0) newIndex = this.match_index;
       var prev_match = this.league_matches.matches[newIndex];
       var prev_id = prev_match.id;
@@ -441,7 +438,7 @@ export default {
     },
     getNextMatch() {
       var newIndex = this.match_index + 1;
-      //check if no at index 0 or lenght-1
+      //check if no at index 0 or length-1
       if (newIndex > this.league_matches.matches.length - 1)
         newIndex = this.match_index;
 

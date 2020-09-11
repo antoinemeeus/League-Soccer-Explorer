@@ -17,7 +17,7 @@
         justify-space-between
       >
         <v-flex>{{ getLocalDateAndTime(indvMatch.utcDate) }}</v-flex>
-        <v-spacer/>
+        <v-spacer />
         <v-flex class="text-xs-right">
           {{ indvMatch.status }}
         </v-flex>

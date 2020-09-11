@@ -59,7 +59,7 @@
           <v-list-tile slot="activator">
             <v-list-tile-action>
               <v-avatar size="25">
-                <v-img :src="user.photoURL"/>
+                <v-img :src="user.photoURL" />
               </v-avatar>
             </v-list-tile-action>
             <v-list-tile-title>{{ user.displayName }}</v-list-tile-title>
@@ -83,8 +83,8 @@
       tabs
       dark
     >
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"/>
-      <v-spacer/>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer" />
+      <v-spacer />
       <v-toolbar-title
         :style="{ cursor: 'pointer' }"
         class="px-2 text-xs-center "
@@ -94,7 +94,7 @@
           {{ app_title }}
         </h2>
       </v-toolbar-title>
-      <v-spacer/>
+      <v-spacer />
       <v-img
         class="pr-2"
         :src="require(`@/assets/leagues_logo/league_${league_icon}.png`)"
@@ -129,7 +129,7 @@
           text-xs-right
         >
           <v-icon
-            v-if="$route.name == 'competition'"
+            v-if="$route.name === 'competition'"
             :style="{ cursor: 'pointer' }"
             @click="$store.commit('goToCurrentMut')"
           >
@@ -221,7 +221,7 @@ export default {
       return this.$store.getters.isAuthenticated;
     },
     goBackButton() {
-      return this.$route.name != "home";
+      return this.$route.name !== "home";
     },
     SearchView() {
       return this.$route.name;
@@ -264,7 +264,7 @@ export default {
       this.$store.commit("SET_ICON", newSrc);
     },
     goToCompetition() {
-      if (this.$route.name != "home")
+      if (this.$route.name !== "home")
         this.$router.push(`/competition/${this.currentLeague.id}`);
     },
 
@@ -272,7 +272,7 @@ export default {
       //Important method that will decide the fetching logic and data required in function to the route name/path and parameters.
       this.localLoading = true;
 
-      if (route_.name == "home") {
+      if (route_.name === "home") {
         console.log("We are in home");
         this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
         this.$store.commit("SET_LEAGUE_ICON", "Home");
@@ -285,7 +285,7 @@ export default {
           this.fetchAPI({key: "getLeagues", query: "?plan=TIER_ONE"});
         }
       }
-      if (route_.name === "competition" || route_.name == "matchinfo") {
+      if (route_.name === "competition" || route_.name === "matchinfo") {
         let cur_id_competition = route_.params.id_competition;
         if (
           this.$store.state.league_matches &&
@@ -341,8 +341,7 @@ export default {
 
         if (
           this.$store.state.league_standings &&
-          this.$store.state.league_standings.competition.id ==
-          cur_id_competition
+          this.$store.state.league_standings.competition.id == cur_id_competition
         ) {
           console.log("League_standings is already in store");
         } else {

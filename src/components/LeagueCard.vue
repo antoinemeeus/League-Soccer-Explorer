@@ -43,7 +43,7 @@ export default {
     sendLeagueInfoStore() {
       this.$store.commit("SET_LEAGUE_ICON", this.currentCompetition.code);
       this.$store.commit("SET_APP_TITLE", this.currentCompetition.name);
-      this.$store.comit("SET_CURRENT_LEAGUE", this.currentCompetition);
+      this.$store.commit("SET_CURRENT_LEAGUE", this.currentCompetition);
     }
   }
 };

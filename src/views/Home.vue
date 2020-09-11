@@ -39,12 +39,12 @@ export default {
   data() {
     return {};
   },
+  computed: {
+    ...mapState(["loadingLeague", "league_competition", "league_matches_info"])
+  },
   created() {
   },
   mounted() {
-  },
-  computed: {
-    ...mapState(["loadingLeague", "league_competition", "league_matches_info"])
   },
   methods: {
     ...mapActions(["fetchAPI"]),

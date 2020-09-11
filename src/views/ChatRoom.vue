@@ -215,7 +215,7 @@ export default {
     },
     onResize() {
       console.log("RESIZE");
-      this.setMessageAreaHeight;
+      this.setMessageAreaHeight();
     }
   }
   // updated: function() {

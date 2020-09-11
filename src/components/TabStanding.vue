@@ -99,7 +99,7 @@ export default {
     ...mapState(["league_standings", "league_teams"]),
 
     stadingTable() {
-      return this.league_standings.standings.find(obj => obj.type == "TOTAL")
+      return this.league_standings.standings.find(obj => obj.type === "TOTAL")
         .table;
     }
   },

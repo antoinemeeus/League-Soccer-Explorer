@@ -65,7 +65,7 @@
               </v-flex>
             </v-layout>
           </v-flex>
-          <v-spacer/>
+          <v-spacer />
           <v-flex>
             <v-avatar>
               <v-img
@@ -76,7 +76,7 @@
           </v-flex>
         </v-layout>
       </v-flex>
-      <v-divider/>
+      <v-divider />
       <v-flex
         pt-2
         px-2
@@ -121,15 +121,6 @@ export default {
   data() {
     return {};
   },
-  beforeMount() {
-  },
-
-  mounted() {
-  },
-
-  beforeDestroy() {
-  },
-
   computed: {
     ...mapState(["team_football_org", "team_players"]),
 
@@ -152,6 +143,12 @@ export default {
       return require("@/assets/CutOutPlaceHolder.jpg");
     }
   },
+  beforeMount() {
+  },
+  mounted() {
+  },
+  beforeDestroy() {
+  },
   methods: {
     getAge(dateString) {
       var birthDate = new Date(dateString);
@@ -160,6 +157,5 @@ export default {
       return Math.abs(ageDate.getUTCFullYear() - 1970);
     }
   },
-  watch: {}
 };
 </script>

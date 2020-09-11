@@ -77,13 +77,13 @@
                 </v-flex>
                 <v-flex>
                   <span class="grey--text caption">{{
-                      moment(msg.data.createdAt).from(new Date())
-                    }}</span>
+                    moment(msg.data.createdAt).from(new Date())
+                  }}</span>
                 </v-flex>
               </v-layout>
             </v-flex>
           </v-layout>
-          <v-divider/>
+          <v-divider />
         </v-layout>
       </v-flex>
     </v-layout>
@@ -91,7 +91,6 @@
 </template>
 
 <script>
-import firebase from "firebase";
 
 export default {
   name: "Comments",
@@ -116,7 +115,7 @@ export default {
   },
   watch: {
     $route(to, from) {
-      if (to.name == "matchinfo" && from.name == "matchinfo") {
+      if (to.name === "matchinfo" && from.name === "matchinfo") {
         this.fetchMessages();
       }
     }

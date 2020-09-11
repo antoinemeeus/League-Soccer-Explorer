@@ -45,10 +45,10 @@ export default {
   data() {
     return {};
   },
-  created() {
-  },
   computed: {
     ...mapState(["loadingUser"])
+  },
+  created() {
   },
   methods: {
     ...mapActions(["userLogIn"]),

@@ -139,7 +139,7 @@ export default {
           dateEnd = moment();
         let matchDayItems = [];
         let DateStart = moment(matches[0].utcDate);
-        //Loop trhough array until -1
+        //Loop trough array until -1
         for (let i = 0; i < matches.length - 2; i++) {
           let curMatchday = matches[i].matchday;
           let nextMatchday = matches[i + 1].matchday;
@@ -172,18 +172,9 @@ export default {
     currentMatchDay() {
       return this.league_matches.matches[0].season.currentMatchday;
     },
-    lastMatchDay() {
-      var matches_ = this.league_matches.matches;
-      if (matches_.length > 0) {
-        var len = matches_.length;
-        var lastday = matches_[len - 1].matchday;
-        if (lastday) return lastday;
-      }
-      return Math.max(matches_.map(obj => obj.matchday));
-    },
     matchesWithCrest() {
       //Adding crestUrl to each matches homeTeam/awayTeam with information from league_teams
-      if (this.league_teams.teams.length == 0) {
+      if (this.league_teams.teams.length === 0) {
         return {};
       }
       return this.league_matches.matches.map(obj => {

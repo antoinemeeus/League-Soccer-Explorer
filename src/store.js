@@ -302,7 +302,7 @@ export default new Vuex.Store({
                         // );
                         var newTeamName = string_query.split(" ")[0];
 
-                        if (retryCount == 1) {
+                        if (retryCount === 1) {
                             newTeamName = string_query.substring(0, 3);
                         }
                         retryCount++;
