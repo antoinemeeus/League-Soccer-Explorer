@@ -182,7 +182,7 @@ export default new Vuex.Store({
         },
         userLogIn({commit}) {
             commit("setLoadingUser", true);
-            var provider = new firebase.auth.GoogleAuthProvider();
+            const provider = new firebase.auth.GoogleAuthProvider();
             provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
             //Sign in with pop up
             firebase
@@ -201,7 +201,7 @@ export default new Vuex.Store({
                 .catch(function (error) {
                     // Handle Errors here.
                     //var errorCode = error.code;
-                    var errorMessage = error.message;
+                    let errorMessage = error.message;
                     // The email of the user's account used.
                     console.error("ERROR!");
                     console.error(errorMessage);
@@ -276,7 +276,6 @@ export default new Vuex.Store({
                     commit(fetchOptions.commitCmd, "{}");
                 });
         },
-
         fetchPlayers({commit, dispatch}, {string_query, retryCount}) {
             // console.log("Count actual:", retryCount);
             if (typeof retryCount === "undefined") {
@@ -301,7 +300,7 @@ export default new Vuex.Store({
                         // console.log(
                         //   "Failed to catch players with team named: " + string_query
                         // );
-                        var newTeamName = string_query.split(" ")[0];
+                        let newTeamName = string_query.split(" ")[0];
 
                         if (retryCount === 1) {
                             newTeamName = string_query.substring(0, 3);

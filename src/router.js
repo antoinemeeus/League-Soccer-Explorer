@@ -20,14 +20,14 @@ const router = new Router({
         if (to.name === "competition") {
             return new Promise(resolve => {
                 setTimeout(() => {
-                    var el = document.querySelector(".scroll_target");
+                    let el = document.querySelector(".scroll_target");
                     if (el) {
-                        var rect = el.getBoundingClientRect(),
+                        let rect = el.getBoundingClientRect(),
                             scrollLeft =
                                 window.pageXOffset || document.documentElement.scrollLeft,
                             scrollTop =
                                 window.pageYOffset || document.documentElement.scrollTop;
-                        var halfViewportHeight = window.innerHeight / 2;
+                        let halfViewportHeight = window.innerHeight / 2;
 
                         resolve({
                             x: rect.left + scrollLeft,

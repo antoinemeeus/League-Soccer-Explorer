@@ -257,7 +257,7 @@ export default {
       "team_football_org"
     ]),
     clubColorStyle() {
-      var cur_color = "transparent";
+      let cur_color = "transparent";
       if (this.currentTeam.clubColors) {
         cur_color = this.currentTeam.clubColors.split("/")[0];
       }
@@ -274,13 +274,13 @@ export default {
       return this.league_teams.competition;
     },
     matchesWithCrest() {
-      var matches = this.league_matches.matches.filter(
+      let matches = this.league_matches.matches.filter(
         obj =>
           obj.homeTeam.id == this.idTeam || obj.awayTeam.id === this.idTeam
       );
       //Adding crestUrl to each matches homeTeam/awayTeam with information from league_teams
       return matches.map(obj => {
-        var Tobj = obj;
+        let Tobj = obj;
         obj.homeTeam["crestUrl"] = this.league_teams.teams.find(
           elem => elem.id == Tobj.homeTeam.id
         ).crestUrl;

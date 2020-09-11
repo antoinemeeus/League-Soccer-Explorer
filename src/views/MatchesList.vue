@@ -133,8 +133,6 @@ export default {
       //Method to extract the matchday of list of matches and their start and end Dates.
       let matches = this.league_matches.matches;
       if (matches) {
-        let previousMDay = matches[0].matchday;
-        let dateStart, dateEnd = moment();
         let matchDayItems = [];
         let DateStart = moment(matches[0].utcDate);
         //Loop trough array until -1
@@ -175,11 +173,11 @@ export default {
         return {};
       }
       return this.league_matches.matches.map(obj => {
-        var Tobj = obj;
-        var _homeTeam = this.league_teams.teams.find(
+        let Tobj = obj;
+        let _homeTeam = this.league_teams.teams.find(
           elem => elem.id == Tobj.homeTeam.id
         );
-        var _awayTeam = this.league_teams.teams.find(
+        let _awayTeam = this.league_teams.teams.find(
           elem => elem.id == Tobj.awayTeam.id
         );
         obj.homeTeam["crestUrl"] = _homeTeam.crestUrl
@@ -244,9 +242,9 @@ export default {
       this.$store.commit("SET_CURRENT_LEAGUE", this.currentLeagueInfo);
     },
     goToNextMatch() {
-      var el = document.querySelector(".scroll_target");
+      let el = document.querySelector(".scroll_target");
       if (el) {
-        var vOffset = window.innerHeight / 2 - el.clientHeight / 2;
+        let vOffset = window.innerHeight / 2 - el.clientHeight / 2;
         this.$vuetify.goTo(el, {
           duration: 0,
           offset: -vOffset,

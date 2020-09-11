@@ -3,7 +3,7 @@
     height="100%"
     :to="{
       name: 'playerinfo',
-      params: { id_player: player.idPlayer, displayed_player: player }
+      params: { idPlayer: player.idPlayer, displayed_player: player }
     }"
   >
     <v-img

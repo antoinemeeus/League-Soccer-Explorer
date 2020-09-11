@@ -151,9 +151,9 @@ export default {
   },
   methods: {
     getAge(dateString) {
-      var birthDate = new Date(dateString);
-      var ageDifMs = Date.now() - birthDate.getTime();
-      var ageDate = new Date(ageDifMs); // miliseconds from epoch
+      let birthDate = new Date(dateString);
+      let ageDifMs = Date.now() - birthDate.getTime();
+      let ageDate = new Date(ageDifMs); // miliseconds from epoch
       return Math.abs(ageDate.getUTCFullYear() - 1970);
     }
   },

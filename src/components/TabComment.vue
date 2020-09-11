@@ -130,8 +130,8 @@ export default {
   },
   methods: {
     saveMessage() {
-      var dateFromUI = new Date();
-      var dateUTC = dateFromUI.toISOString();
+      let dateFromUI = new Date();
+      let dateUTC = dateFromUI.toISOString();
 
       db.collection(this.getMatchCollectionId)
         .add({
@@ -167,7 +167,7 @@ export default {
         });
     },
     scrollToTop() {
-      var container = this.$el.querySelector("#container");
+      let container = this.$el.querySelector("#container");
       container.scrollTop = 0;
     },
     setMessageAreaHeight() {

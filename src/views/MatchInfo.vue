@@ -322,7 +322,7 @@ export default {
       return this.$store.getters.isAuthenticated;
     },
     currentMatch() {
-      var self = this;
+      let self = this;
       this.league_matches.matches.find((obj, idx) => {
         self.match_index = idx;
         return obj.id == this.idMatch;
@@ -339,7 +339,7 @@ export default {
     },
     currentMatch_AdditionalInfo() {
       if (this.league_matches_info[this.league_matches.competition.id]) {
-        var cMatch_AddInfo = this.league_matches_info[
+        let cMatch_AddInfo = this.league_matches_info[
           this.league_matches.competition.id
           ].find(
           obj =>
@@ -366,8 +366,8 @@ export default {
       return this.currentMatch_AdditionalInfo.stats;
     },
     cur_goals_table() {
-      var homeTeamGoalsters = [];
-      var awayTeamGoalsters = [];
+      let homeTeamGoalsters = [];
+      let awayTeamGoalsters = [];
 
       if (this.currentMatch_AdditionalInfo != undefined) {
         homeTeamGoalsters = this.currentMatch_AdditionalInfo.goals
@@ -396,7 +396,7 @@ export default {
       );
     },
     currentPeriodScore() {
-      var _score = this.currentMatch.score;
+      let _score = this.currentMatch.score;
       if (_score.fullTime.homeTeam != null || _score.fullTime.awayTeam != null)
         return _score.fullTime;
       else return _score.halfTime;
@@ -418,11 +418,11 @@ export default {
       this.$store.commit("SET_CURRENT_LEAGUE", this.league_matches.competition);
     },
     getPreviousMatch() {
-      var newIndex = this.match_index - 1;
+      let newIndex = this.match_index - 1;
       //check if no at index 0 or length-1
       if (newIndex < 0) newIndex = this.match_index;
-      var prev_match = this.league_matches.matches[newIndex];
-      var prev_id = prev_match.id;
+      let prev_match = this.league_matches.matches[newIndex];
+      let prev_id = prev_match.id;
       this.$router.replace({
         name: "matchinfo",
         params: {
@@ -433,13 +433,13 @@ export default {
       });
     },
     getNextMatch() {
-      var newIndex = this.match_index + 1;
+      let newIndex = this.match_index + 1;
       //check if no at index 0 or length-1
       if (newIndex > this.league_matches.matches.length - 1)
         newIndex = this.match_index;
 
-      var next_match = this.league_matches.matches[newIndex];
-      var next_id = next_match.id;
+      let next_match = this.league_matches.matches[newIndex];
+      let next_id = next_match.id;
       this.$router.replace({
         name: "matchinfo",
         params: {
@@ -450,8 +450,8 @@ export default {
       });
     },
     getLocalDateAndTime(utcD) {
-      var localDate = new Date(utcD);
-      var options = {
+      let localDate = new Date(utcD);
+      let options = {
         weekday: "short",
         year: "2-digit",
         month: "numeric",
