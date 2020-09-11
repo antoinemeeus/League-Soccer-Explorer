@@ -224,8 +224,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { mapActions } from "vuex";
+import {mapActions, mapState} from "vuex";
 
 import TabMatches from "../components/TabMatches.vue";
 import TabStanding from "../components/TabStanding.vue";
@@ -276,8 +275,7 @@ export default {
     clubColorStyle() {
       var cur_color = "transparent";
       if (this.currentTeam.clubColors) {
-        var first_color = this.currentTeam.clubColors.split("/")[0];
-        cur_color = first_color;
+        cur_color = this.currentTeam.clubColors.split("/")[0];
       }
       return { "background-color": cur_color };
     },

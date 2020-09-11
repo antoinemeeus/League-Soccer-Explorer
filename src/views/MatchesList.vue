@@ -122,21 +122,6 @@ export default {
       matchDaysDisplayed: []
     };
   },
-  mounted() {
-    //jump to current or nextMatch
-    this.setToolBarInfo();
-    //set matchday page if we go back
-    this.selectedMatchDay = this.nextMatch.matchday;
-
-    this.matchDaysDisplayed.push(this.currentMatchDay);
-
-    this.$nextTick(function() {
-      // Code that will run only after the
-      // entire view has been rendered
-      this.goToNextMatch();
-    });
-  },
-
   computed: {
     ...mapState([
       "league_competition",
@@ -235,7 +220,30 @@ export default {
       return this.matchDaysDisplayed.sort((a, b) => a - b);
     }
   },
+  watch: {
+    goToCurrent() {
+      this.selectedMatchDay = this.nextMatch.matchday;
+      this.goToNextMatch();
+    },
+    selectedMatchDay() {
+      this.$store.commit("setSelectedMDay", this.selectedMatchDay);
+    }
+  },
+  mounted() {
+    //jump to current or nextMatch
+    this.setToolBarInfo();
+    //set matchday page if we go back
+    this.selectedMatchDay = this.nextMatch.matchday;
 
+    this.matchDaysDisplayed.push(this.currentMatchDay);
+
+    this.$nextTick(function() {
+      // Code that will run only after the
+      // entire view has been rendered
+      this.goToNextMatch();
+    });
+  },
+  updated() {},
   methods: {
     ...mapActions(["fetchAPI", "fetchTeamInfo"]),
 
@@ -270,16 +278,6 @@ export default {
     },
     getMatchesInMatchDay(m_day) {
       return this.matchesWithCrest.filter(obj => obj.matchday === m_day);
-    }
-  },
-  updated() {},
-  watch: {
-    goToCurrent() {
-      this.selectedMatchDay = this.nextMatch.matchday;
-      this.goToNextMatch();
-    },
-    selectedMatchDay() {
-      this.$store.commit("setSelectedMDay", this.selectedMatchDay);
     }
   }
 };

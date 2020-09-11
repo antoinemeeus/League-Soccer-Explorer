@@ -127,7 +127,6 @@ export default new Vuex.Store({
     SET_TEAM_SQUAD(state, payload) {
       state.team_football_org = payload;
     },
-
     SET_APP_TITLE(state, payload) {
       state.app_title = payload;
     },
@@ -256,7 +255,7 @@ export default new Vuex.Store({
           // console.log("savedLocalData is missing!");
         }
       }
-
+      console.log(params.query);
       let requestURL =
         state.API_URL + fetchOptions.str1 + params.query + fetchOptions.str2;
       // console.log("Fechting Data  from football data org:", requestURL);

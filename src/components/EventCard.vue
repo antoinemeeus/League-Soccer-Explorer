@@ -75,20 +75,18 @@ export default {
 
   computed: {
     isGoal() {
-      if (typeof this.event.scorer == "undefined") return false;
-      return true;
+      return typeof this.event.scorer != "undefined";
+
     },
     isSubs() {
-      if (typeof this.event.playerIn == "undefined") return false;
-      return true;
+      return typeof this.event.playerIn != "undefined";
+
     },
     isCard() {
-      if (typeof this.event.card == "undefined") return false;
-      return true;
+      return typeof this.event.card != "undefined";
+
     }
   },
-  methods: {},
-
   methods: {
     colorCard() {
       var str = this.event.card;

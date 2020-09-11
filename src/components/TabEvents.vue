@@ -54,8 +54,6 @@ export default {
         .reverse();
     }
   },
-  methods: {},
-
   methods: {
     colorCard(str) {
       if (str.includes("yellow")) return "yellow";
