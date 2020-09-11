@@ -32,8 +32,5 @@ export default {
   },
   props: ["players", "teamInfo"],
   data: () => ({}),
-
-  computed: {},
-  methods: {}
 };
 </script>

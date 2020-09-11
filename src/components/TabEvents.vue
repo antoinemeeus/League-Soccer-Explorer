@@ -38,6 +38,7 @@
 
 <script>
 import EventCard from "./EventCard.vue";
+
 export default {
   name: "TabEvent",
   components: {
@@ -54,8 +55,6 @@ export default {
         .reverse();
     }
   },
-  methods: {},
-
   methods: {
     colorCard(str) {
       if (str.includes("yellow")) return "yellow";
@@ -63,10 +62,10 @@ export default {
       return "white";
     },
     isHome(evt) {
-      return evt.team.tType == "homeTeam" || evt.tType == "homeTeam";
+      return evt.team.tType === "homeTeam" || evt.tType === "homeTeam";
     },
     isAway(evt) {
-      return evt.team.tType == "awayTeam" || evt.tType == "awayTeam";
+      return evt.team.tType === "awayTeam" || evt.tType === "awayTeam";
     }
   }
 };

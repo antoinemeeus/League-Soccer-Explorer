@@ -3,7 +3,7 @@
 ## Welcome to my mobile web app.
 
 This web app let you explore different matches for different European Leagues!
-See here the [demo link](https://soccer-league-explorer-webapp.netlify.com/)
+See here the [demo link](https://soccer-league-explorer-webapp.netlify.com/).
 
 _Works best on mobile size screens. Not optimise for desktop_
 
@@ -13,7 +13,7 @@ you can also see some information on the team and players.
 
 ## Chat
 
-This application has a Firebase based realtime chat! You need a Google account to authentificate and you can let comments on matches and post messages on the general chat!
+This application has a Firebase based realtime chat! You need a Google account to authenticate, and you can let comments on matches and post messages on the general chat!
 _The messages are all public and can be change or erased anytime due to exposition of fireStore config_
 
 ## Project setup

@@ -1,19 +1,19 @@
 <template>
   <v-container
-    pa-0
     ma-0
+    pa-0
   >
     <v-layout column>
       <v-flex xs12>
         <v-card
-          flat
           color="green"
+          flat
         >
           <v-layout
-            px-1
-            py-3
             align-center
             justify-space-around
+            px-1
+            py-3
           >
             <v-flex xs4>
               <v-avatar
@@ -32,8 +32,8 @@
                 justify-space-around
               >
                 <v-flex
-                  xs12
                   class="text-xs-center display-1"
+                  xs12
                 >
                   {{ getPlayer.strPlayer }}
                 </v-flex>
@@ -79,8 +79,8 @@
       <v-divider />
       <v-flex
         pt-2
-        xs12
         px-2
+        xs12
       >
         <v-layout wrap>
           <v-flex xs12>
@@ -111,8 +111,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { mapActions } from "vuex";
+import {mapState} from "vuex";
 
 export default {
   name: "PlayerInfo",
@@ -122,19 +121,13 @@ export default {
   data() {
     return {};
   },
-  beforeMount() {},
-
-  mounted() {},
-
-  beforeDestroy() {},
-
   computed: {
     ...mapState(["team_football_org", "team_players"]),
 
     getPlayer() {
       if (typeof this.displayed_player === "undefined") {
         console.log("Displayed player was undefined");
-        return this.team_players.find(obj => obj.idPlayer == this.id_player);
+        return this.team_players.find(obj => obj.idPlayer == this.idPlayer);
       } else return this.displayed_player;
     },
     getImageUrl() {
@@ -150,14 +143,19 @@ export default {
       return require("@/assets/CutOutPlaceHolder.jpg");
     }
   },
+  beforeMount() {
+  },
+  mounted() {
+  },
+  beforeDestroy() {
+  },
   methods: {
     getAge(dateString) {
-      var birthDate = new Date(dateString);
-      var ageDifMs = Date.now() - birthDate.getTime();
-      var ageDate = new Date(ageDifMs); // miliseconds from epoch
+      let birthDate = new Date(dateString);
+      let ageDifMs = Date.now() - birthDate.getTime();
+      let ageDate = new Date(ageDifMs); // miliseconds from epoch
       return Math.abs(ageDate.getUTCFullYear() - 1970);
     }
   },
-  watch: {}
 };
 </script>

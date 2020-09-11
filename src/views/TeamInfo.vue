@@ -1,26 +1,26 @@
 <template>
   <v-container
     column
-    px-0
     pt-2
+    px-0
   >
     <!-- :style="clubColorStyle" -->
     <v-layout px-2>
       <v-flex xs3>
         <v-img
           :src="currentTeam.crestUrl"
-          max-height="80px"
           contain
+          max-height="80px"
         />
       </v-flex>
       <v-flex
-        xs9
         pa-1
+        xs9
       >
         <v-layout
           align-center
-          wrap
           fill-height
+          wrap
         >
           <v-flex xs12>
             <h2>
@@ -67,7 +67,7 @@
 
             <v-flex xs3>
               <v-menu
-                v-model="website_eamil"
+                v-model="website_email"
                 :close-on-content-click="false"
                 auto
                 offset-x
@@ -143,10 +143,10 @@
                     <h4>
                       Stadium:
                       <a
-                        target="_blank"
                         :href="
                           `https://www.google.com/maps/search/?api=1&query=${currentTeam.venue}`
                         "
+                        target="_blank"
                       >{{ currentTeam.venue }}</a>
                     </h4>
                   </v-card-title>
@@ -185,17 +185,17 @@
     >
       <v-tab-item>
         <TabPlayers
-          v-if="!this.loadingPlayers"
+          v-if="!loadingPlayers"
           :players="team_players"
           :team-info="team_football_org"
         />
 
         <v-layout
-          v-if="this.loadingPlayers"
+          v-if="loadingPlayers"
           align-center
+          fill-height
           justify-center
           row
-          fill-height
         >
           <!-- <v-progress-circular
             size="50"
@@ -211,12 +211,12 @@
       </v-tab-item>
 
       <v-tab-item>
-        <TabStanding :id_team="id_team" />
+        <TabStanding :id-team="idTeam" />
       </v-tab-item>
       <v-tab-item>
         <TabMatches
-          :competition-i-d="currentCompetition.id"
-          :list_team_matches="matchesWithCrest"
+          :competition-id="currentCompetition.id"
+          :list-team-matches="matchesWithCrest"
         />
       </v-tab-item>
     </v-tabs-items>
@@ -224,8 +224,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { mapActions } from "vuex";
+import {mapActions, mapState} from "vuex";
 
 import TabMatches from "../components/TabMatches.vue";
 import TabStanding from "../components/TabStanding.vue";
@@ -233,7 +232,6 @@ import TabPlayers from "../components/TabPlayers.vue";
 
 export default {
   name: "TeamInfo",
-
   components: {
     TabMatches,
     TabStanding,
@@ -244,26 +242,11 @@ export default {
     return {
       tabs: null,
       website_menu: false,
-      website_eamil: false,
+      website_email: false,
       website_phone: false,
       website_map: false
     };
   },
-  created() {
-    if (
-      this.team_players.length > 1 &&
-      !this.current_team_id &&
-      this.current_team_id != this.team_players[0].idTeam
-    ) {
-      this.fetchPlayers({ string_query: this.currentTeam.shortName });
-    }
-  },
-  mounted() {
-    this.setToolBarInfo();
-  },
-
-  beforeDestroy() {},
-
   computed: {
     ...mapState([
       "loadingPlayers",
@@ -274,31 +257,30 @@ export default {
       "team_football_org"
     ]),
     clubColorStyle() {
-      var cur_color = "transparent";
+      let cur_color = "transparent";
       if (this.currentTeam.clubColors) {
-        var first_color = this.currentTeam.clubColors.split("/")[0];
-        cur_color = first_color;
+        cur_color = this.currentTeam.clubColors.split("/")[0];
       }
-      return { "background-color": cur_color };
+      return {"background-color": cur_color};
     },
     currentTeam() {
       if (this.league_teams) {
-        return this.league_teams.teams.find(obj => obj.id == this.id_team);
+        return this.league_teams.teams.find(obj => obj.id == this.idTeam);
       } else {
-        return this.displayed_team;
+        return this.displayedTeam;
       }
     },
     currentCompetition() {
       return this.league_teams.competition;
     },
     matchesWithCrest() {
-      var matches = this.league_matches.matches.filter(
+      let matches = this.league_matches.matches.filter(
         obj =>
-          obj.homeTeam.id == this.id_team || obj.awayTeam.id === this.id_team
+          obj.homeTeam.id == this.idTeam || obj.awayTeam.id === this.idTeam
       );
       //Adding crestUrl to each matches homeTeam/awayTeam with information from league_teams
       return matches.map(obj => {
-        var Tobj = obj;
+        let Tobj = obj;
         obj.homeTeam["crestUrl"] = this.league_teams.teams.find(
           elem => elem.id == Tobj.homeTeam.id
         ).crestUrl;
@@ -309,7 +291,20 @@ export default {
       });
     }
   },
-
+  created() {
+    if (
+      this.team_players.length > 1 &&
+      !this.current_team_id &&
+      this.current_team_id != this.team_players[0].id_team
+    ) {
+      this.fetchPlayers({string_query: this.currentTeam.shortName});
+    }
+  },
+  mounted() {
+    this.setToolBarInfo();
+  },
+  beforeDestroy() {
+  },
   methods: {
     ...mapActions(["fetchPlayers"]),
     setToolBarInfo() {
@@ -318,8 +313,8 @@ export default {
       this.$store.commit("SET_CURRENT_LEAGUE", this.league_teams.competition);
     },
     getLocalDateAndTime(utcD) {
-      var localDate = new Date(utcD);
-      var options = {
+      let localDate = new Date(utcD);
+      let options = {
         weekday: "short",
         year: "2-digit",
         month: "numeric",

@@ -1,11 +1,11 @@
 <template>
   <v-container
     v-resize="onResize"
-    py-0
-    my-0
+    class="no_scroll"
     column
     justify-space-between
-    class="no_scroll"
+    my-0
+    py-0
   >
     <v-layout>
       <v-flex
@@ -17,19 +17,19 @@
         <v-layout
           v-for="(msg, index) in arrayOfMessages"
           :key="index"
-          py-2
           column
+          py-2
         >
           <v-layout
             :class="{ 'last-msg': index === arrayOfMessages.length - 1 }"
-            pb-1
             :justify-end="msg.displayName === authUser.displayName"
+            pb-1
             widht="70%"
           >
             <v-flex
+              :order-xs2="msg.displayName === authUser.displayName"
               align-self-start
               shrink
-              :order-xs2="msg.displayName === authUser.displayName"
             >
               <v-avatar size="35">
                 <v-img
@@ -39,27 +39,27 @@
               </v-avatar>
             </v-flex>
             <v-flex
-              shrink
-              px-1
               :order-xs1="msg.displayName === authUser.displayName"
+              px-1
+              shrink
             >
               <v-card
                 class="rounded"
-                min-width="120"
                 max-width="250"
+                min-width="120"
               >
                 <v-layout column>
                   <v-flex
-                    px-1
                     pb-1
+                    px-1
                   >
                     <div
-                      class="blue--text subheading"
                       :class="[
                         msg.displayName === authUser.displayName
                           ? 'text-xs-right'
                           : ''
                       ]"
+                      class="blue--text subheading"
                     >
                       {{ msg.displayName }}
                     </div>
@@ -87,14 +87,14 @@
       </v-flex>
       <div style="position: relative">
         <v-btn
-          class="btn-positioning"
-          max="20"
-          color="blue"
           absolute
-          small
           bottom
-          right
+          class="btn-positioning"
+          color="blue"
           dark
+          max="20"
+          right
+          small
           @click="scrollToEndWithTransition"
         >
           <v-icon>keyboard_arrow_down</v-icon>
@@ -114,14 +114,14 @@
         <v-textarea
           v-model="message"
           v-resize="onResize"
-          auto-grow
+          :append-outer-icon="'mdi-send'"
           :rows="texAreaRows"
+          auto-grow
           autofocus
+          color="blue-grey"
           counter="300"
           maxlength="300"
-          color="blue-grey"
           placeholder="Type your message here..."
-          :append-outer-icon="'mdi-send'"
           @keyup.enter="saveMessage()"
           @click:append-outer="saveMessage()"
         />
@@ -131,8 +131,6 @@
 </template>
 
 <script>
-import firebase from "firebase";
-import moment from "moment";
 
 export default {
   name: "ChatRoom",
@@ -156,12 +154,12 @@ export default {
     this.setMessageAreaHeight();
     this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
     this.$store.commit("SET_LEAGUE_ICON", "Home");
-    this.$store.commit("SET_CURRENT_LEAGUE", { name: "Home", id: "" });
+    this.$store.commit("SET_CURRENT_LEAGUE", {name: "Home", id: ""});
   },
   methods: {
     saveMessage() {
-      var dateFromUI = new Date();
-      var dateUTC = dateFromUI.toISOString();
+      let dateFromUI = new Date();
+      let dateUTC = dateFromUI.toISOString();
       if (this.message.length > 1) {
         db.collection("generalChat")
           .add({
@@ -170,10 +168,10 @@ export default {
             photoURL: this.authUser.photoURL,
             createdAt: dateUTC
           })
-          .then(function(docRef) {
+          .then(function (docRef) {
             console.log("Document written with ID: ", docRef.id);
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.error("Error adding document: ", error);
           });
       }
@@ -205,7 +203,7 @@ export default {
       });
     },
     scrollToEnd() {
-      var container = this.$el.querySelector("#container");
+      const container = this.$el.querySelector("#container");
       container.scrollTop = container.scrollHeight;
     },
     setMessageAreaHeight() {
@@ -217,7 +215,7 @@ export default {
     },
     onResize() {
       console.log("RESIZE");
-      this.setMessageAreaHeight;
+      this.setMessageAreaHeight();
     }
   }
   // updated: function() {
@@ -230,9 +228,11 @@ export default {
 .rounded {
   border-radius: 10px;
 }
+
 .no_scroll {
   overflow-y: auto;
 }
+
 .btn-positioning {
   width: 3em;
   bottom: 0 !important;

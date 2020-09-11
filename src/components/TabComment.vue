@@ -91,7 +91,6 @@
 </template>
 
 <script>
-import firebase from "firebase";
 
 export default {
   name: "Comments",
@@ -109,14 +108,14 @@ export default {
       return this.$store.getters.isAuthenticated;
     },
     getMatchCollectionId() {
-      if (typeof this.id_match !== "undefined")
-        return "commentMatch" + this.id_match;
-      return "commentMatch" + this.$route.params.id_match;
+      if (typeof this.idMatch !== "undefined")
+        return "commentMatch" + this.idMatch;
+      return "commentMatch" + this.$route.params.idMatch;
     }
   },
   watch: {
     $route(to, from) {
-      if (to.name == "matchinfo" && from.name == "matchinfo") {
+      if (to.name === "matchinfo" && from.name === "matchinfo") {
         this.fetchMessages();
       }
     }
@@ -131,8 +130,8 @@ export default {
   },
   methods: {
     saveMessage() {
-      var dateFromUI = new Date();
-      var dateUTC = dateFromUI.toISOString();
+      let dateFromUI = new Date();
+      let dateUTC = dateFromUI.toISOString();
 
       db.collection(this.getMatchCollectionId)
         .add({
@@ -141,10 +140,10 @@ export default {
           photoURL: this.authUser.photoURL,
           createdAt: dateUTC
         })
-        .then(function(docRef) {
+        .then(function (docRef) {
           console.log("Document written with ID: ", docRef.id);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Error adding document: ", error);
         });
 
@@ -157,7 +156,7 @@ export default {
           let allMessages = [];
           querySnapshot.forEach(doc => {
             //console.log(`${doc.id} => ${doc.data()}`);
-            allMessages.push({ id: doc.id, data: doc.data() });
+            allMessages.push({id: doc.id, data: doc.data()});
           });
           //Revert all message for recent first
           this.arrayOfMessages = allMessages.reverse();
@@ -168,7 +167,7 @@ export default {
         });
     },
     scrollToTop() {
-      var container = this.$el.querySelector("#container");
+      let container = this.$el.querySelector("#container");
       container.scrollTop = 0;
     },
     setMessageAreaHeight() {
@@ -186,6 +185,7 @@ export default {
 .sent_msg {
   background-color: #c5cae9;
 }
+
 .received_msg {
   background-color: #4db6ac;
 }

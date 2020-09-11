@@ -14,13 +14,13 @@
         v-for="competition in league_competition.competitions"
         :key="competition.id"
         class="pa-2"
-        xs6
-        sm4
         md3
+        sm4
+        xs6
       >
         <LeagueCard
-          :is-data-available="isDataAvailable(competition.id)"
           :current-competition="competition"
+          :is-data-available="isDataAvailable(competition.id)"
         />
       </v-flex>
     </v-layout>
@@ -28,8 +28,9 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import {mapActions, mapState} from "vuex";
 import LeagueCard from "../components/LeagueCard";
+
 export default {
   name: "Home",
   components: {
@@ -38,15 +39,17 @@ export default {
   data() {
     return {};
   },
-  created() {},
-  mounted() {},
   computed: {
     ...mapState(["loadingLeague", "league_competition", "league_matches_info"])
   },
+  created() {
+  },
+  mounted() {
+  },
   methods: {
     ...mapActions(["fetchAPI"]),
-    isDataAvailable(id_competition) {
-      return this.league_matches_info.hasOwnProperty(id_competition);
+    isDataAvailable(idCompetition) {
+      return this.league_matches_info.hasOwnProperty(idCompetition);
     }
   }
 };
