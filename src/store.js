@@ -29,31 +29,31 @@ export default new Vuex.Store({
                 str1: "competitions",
                 str2: "",
                 commitCmd: "SET_COMPETITION",
-                commitloadingFlag: "SET_LOADINGLEAGUE"
+                commitloadingFlag: "SET_LOADING_LEAGUE"
             },
             getMatches: {
                 str1: "competitions/",
                 str2: "/matches",
                 commitCmd: "SET_MATCHES",
-                commitloadingFlag: "SET_LOADINGMATCHES"
+                commitloadingFlag: "SET_LOADING_MATCHES"
             },
             getTeams: {
                 str1: "competitions/",
                 str2: "/teams",
                 commitCmd: "SET_TEAMS",
-                commitloadingFlag: "SET_LOADINGTEAMS"
+                commitloadingFlag: "SET_LOADING_TEAMS"
             },
             getStandings: {
                 str1: "competitions/",
                 str2: "/standings",
                 commitCmd: "SET_STANDING",
-                commitloadingFlag: "SET_LOADINGSTANDING"
+                commitloadingFlag: "SET_LOADING_STANDING"
             },
             getPlayers: {
                 str1: "teams/",
                 str2: "",
                 commitCmd: "SET_TEAM_SQUAD",
-                commitloadingFlag: "SET_LOADINGTEAMINFO"
+                commitloadingFlag: "SET_LOADING_TEAMINFO"
             }
         },
         apiLeaguesID: {
@@ -133,22 +133,22 @@ export default new Vuex.Store({
         SET_LOADING(state, payload) {
             state.loadingAPI = payload;
         },
-        SET_LOADINGLEAGUE(state, payload) {
+        SET_LOADING_LEAGUE(state, payload) {
             state.loadingLeague = payload;
         },
-        SET_LOADINGMATCHES(state, payload) {
+        SET_LOADING_MATCHES(state, payload) {
             state.loadingMatches = payload;
         },
-        SET_LOADINGTEAMS(state, payload) {
+        SET_LOADING_TEAMS(state, payload) {
             state.loadingTeams = payload;
         },
-        SET_LOADINGPLAYERS(state, payload) {
+        SET_LOADING_PLAYERS(state, payload) {
             state.loadingPlayers = payload;
         },
-        SET_LOADINGTEAMINFO(state, payload) {
+        SET_LOADING_TEAMINFO(state, payload) {
             state.loadingTeamInfo = payload;
         },
-        SET_LOADINGSTANDING(state, payload) {
+        SET_LOADING_STANDING(state, payload) {
             state.loadingStandings = payload;
         },
         SET_CURRENT_TEAM_ID(state, payload) {
@@ -218,7 +218,7 @@ export default new Vuex.Store({
                 .signOut()
                 .then(function () {
                     // Sign-out successful.
-                    console.log("Successully log out");
+                    console.log("Successfully log out");
                 })
                 .catch(function (error) {
                     // An error happened.;
@@ -258,7 +258,7 @@ export default new Vuex.Store({
 
             let requestURL =
                 state.API_URL + fetchOptions.str1 + params.query + fetchOptions.str2;
-            // console.log("Fechting Data  from football data org:", requestURL);
+            // console.log("Fetching Data  from football data org:", requestURL);
             axios
                 .get(requestURL, state.options)
                 .then(response => response.data)
@@ -286,7 +286,7 @@ export default new Vuex.Store({
             //   "Fetching players from thesportsdb with team name query:",
             //   string_query
             // );
-            commit("SET_LOADINGPLAYERS", true);
+            commit("SET_LOADING_PLAYERS", true);
             commit("SET_TEAM_PLAYERS", []);
             axios
                 .get(
@@ -315,7 +315,7 @@ export default new Vuex.Store({
                     }
                     commit("SET_TEAM_PLAYERS", players.player);
                     commit("SET_CURRENT_TEAM_ID", players.player[0].idTeam);
-                    commit("SET_LOADINGPLAYERS", false);
+                    commit("SET_LOADING_PLAYERS", false);
                 })
                 .catch(err => console.log(err));
         }
