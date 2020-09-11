@@ -111,7 +111,7 @@ export default {
     goToTeam(id_next, next_team) {
       this.$router.replace({
         name: "teaminfo",
-        params: {id_team: id_next, displayed_team: next_team}
+        params: {idTeam: id_next, displayedTeam: next_team}
       });
     }
   }

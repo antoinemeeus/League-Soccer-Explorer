@@ -46,8 +46,8 @@
                 name: 'teaminfo',
                 params: {
                   idCompetition: idCompetition,
-                  id_team: matchHomeTeam.id,
-                  displayed_team: matchHomeTeam
+                  idTeam: matchHomeTeam.id,
+                  displayedTeam: matchHomeTeam
                 }
               }"
             >
@@ -87,8 +87,8 @@
                 name: 'teaminfo',
                 params: {
                   idCompetition: idCompetition,
-                  id_team: matchAwayTeam.id,
-                  displayed_team: matchAwayTeam
+                  idTeam: matchAwayTeam.id,
+                  displayedTeam: matchAwayTeam
                 }
               }"
             >

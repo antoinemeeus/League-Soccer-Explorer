@@ -309,7 +309,7 @@ export default {
       }
       if (route_.name === "teaminfo") {
         let cur_id_competition = route_.params.idCompetition;
-        let cur_id_team = route_.params.id_team;
+        let cur_id_team = route_.params.idTeam;
         if (
           this.$store.state.team_football_org &&
           this.$store.state.team_football_org.id == cur_id_team

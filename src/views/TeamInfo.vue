@@ -267,7 +267,7 @@ export default {
       if (this.league_teams) {
         return this.league_teams.teams.find(obj => obj.id == this.idTeam);
       } else {
-        return this.displayed_team;
+        return this.displayedTeam;
       }
     },
     currentCompetition() {
