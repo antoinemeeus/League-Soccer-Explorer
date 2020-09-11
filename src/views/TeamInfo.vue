@@ -1,26 +1,26 @@
 <template>
   <v-container
     column
-    px-0
     pt-2
+    px-0
   >
     <!-- :style="clubColorStyle" -->
     <v-layout px-2>
       <v-flex xs3>
         <v-img
           :src="currentTeam.crestUrl"
-          max-height="80px"
           contain
+          max-height="80px"
         />
       </v-flex>
       <v-flex
-        xs9
         pa-1
+        xs9
       >
         <v-layout
           align-center
-          wrap
           fill-height
+          wrap
         >
           <v-flex xs12>
             <h2>
@@ -57,8 +57,8 @@
                         :href="currentTeam.website"
                         target="_blank"
                       >{{
-                        currentTeam.website
-                      }}</a>
+                          currentTeam.website
+                        }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -86,8 +86,8 @@
                     <h4>
                       Email:
                       <a :href="`mailto:${currentTeam.email}`">{{
-                        currentTeam.email
-                      }}</a>
+                          currentTeam.email
+                        }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -114,8 +114,8 @@
                     <h4>
                       Phone number:
                       <a :href="`tel://${currentTeam.phone}`">{{
-                        currentTeam.phone
-                      }}</a>
+                          currentTeam.phone
+                        }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -143,10 +143,10 @@
                     <h4>
                       Stadium:
                       <a
-                        target="_blank"
                         :href="
                           `https://www.google.com/maps/search/?api=1&query=${currentTeam.venue}`
                         "
+                        target="_blank"
                       >{{ currentTeam.venue }}</a>
                     </h4>
                   </v-card-title>
@@ -158,7 +158,7 @@
       </v-flex>
     </v-layout>
 
-    <v-divider />
+    <v-divider/>
     <v-layout pt-2>
       <v-flex xs12>
         <v-tabs
@@ -193,9 +193,9 @@
         <v-layout
           v-if="this.loadingPlayers"
           align-center
+          fill-height
           justify-center
           row
-          fill-height
         >
           <!-- <v-progress-circular
             size="50"
@@ -211,7 +211,7 @@
       </v-tab-item>
 
       <v-tab-item>
-        <TabStanding :id_team="id_team" />
+        <TabStanding :id_team="id_team"/>
       </v-tab-item>
       <v-tab-item>
         <TabMatches
@@ -254,14 +254,15 @@ export default {
       !this.current_team_id &&
       this.current_team_id != this.team_players[0].idTeam
     ) {
-      this.fetchPlayers({ string_query: this.currentTeam.shortName });
+      this.fetchPlayers({string_query: this.currentTeam.shortName});
     }
   },
   mounted() {
     this.setToolBarInfo();
   },
 
-  beforeDestroy() {},
+  beforeDestroy() {
+  },
 
   computed: {
     ...mapState([
@@ -277,7 +278,7 @@ export default {
       if (this.currentTeam.clubColors) {
         cur_color = this.currentTeam.clubColors.split("/")[0];
       }
-      return { "background-color": cur_color };
+      return {"background-color": cur_color};
     },
     currentTeam() {
       if (this.league_teams) {

@@ -16,8 +16,8 @@
         row
         justify-space-between
       >
-        <v-flex>{{ getLocalDateAndTime(indvMatch.utcDate) }} </v-flex>
-        <v-spacer />
+        <v-flex>{{ getLocalDateAndTime(indvMatch.utcDate) }}</v-flex>
+        <v-spacer/>
         <v-flex class="text-xs-right">
           {{ indvMatch.status }}
         </v-flex>
@@ -108,6 +108,7 @@
 
 <script>
 import moment from "moment";
+
 export default {
   name: "MatchCard",
   props: ["leagueCompetitionID", "indvMatch", "iscurrentMatch"],
@@ -131,7 +132,7 @@ export default {
     },
     periodScore() {
       var _score = this.indvMatch.score;
-      var obj = { name: "Scheduled", score: _score.halfTime };
+      var obj = {name: "Scheduled", score: _score.halfTime};
       if (this.testPeriodScore(_score.halfTime)) {
         obj.name = "HT";
         obj.score = _score.halfTime;

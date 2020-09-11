@@ -1,24 +1,24 @@
 <template>
   <v-container>
     <v-layout
+      align-center
       column
       justify-center
-      align-center
     >
       <h2>
         Sign in with :
       </h2>
       <v-flex pa-3>
         <v-btn
-          xs6
-          :loading="loadingUser"
           :disabled="loadingUser"
+          :loading="loadingUser"
+          xs6
           @click="login"
         >
           <v-layout
-            row
             align-center
             justify-space-around
+            row
           >
             <v-flex pr-3>
               <v-avatar size="30">
@@ -37,9 +37,7 @@
 </template>
 
 <script>
-import firebase from "firebase";
-import { mapState } from "vuex";
-import { mapActions } from "vuex";
+import {mapActions, mapState} from "vuex";
 
 export default {
   name: "Login",
@@ -47,7 +45,8 @@ export default {
   data() {
     return {};
   },
-  created() {},
+  created() {
+  },
   computed: {
     ...mapState(["loadingUser"])
   },

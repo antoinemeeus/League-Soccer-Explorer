@@ -4,6 +4,6 @@ import "vuetify/src/stylus/app.styl";
 import * as directives from "vuetify/es5/directives";
 
 Vue.use(Vuetify, {
-  iconfont: "mdi", //md
-  directives
+    iconfont: "mdi", //md
+    directives
 });

@@ -15,8 +15,8 @@
       </v-icon>
       <v-flex xs12>
         <v-layout
-          px-2
           pb-2
+          px-2
         >
           <v-flex xs6>
             <div class="headings">
@@ -24,8 +24,8 @@
             </div>
           </v-flex>
           <v-flex
-            xs6
             text-xs-right
+            xs6
           >
             <div class="headings">
               {{ currentMatch.status }}
@@ -34,12 +34,12 @@
         </v-layout>
         <v-layout
           justify-space-around
-          pt-2
           pa-1
+          pt-2
         >
           <v-flex
-            xs4
             text-xs-center
+            xs4
           >
             <router-link
               :to="{
@@ -56,15 +56,15 @@
                   matchHomeTeam.crestUrl ||
                     require(`@/assets/placeholdershield.png`)
                 "
-                max-height="80px"
                 contain
+                max-height="80px"
               />
             </router-link>
           </v-flex>
           <v-layout
-            px-2
-            justify-space-between
             align-center
+            justify-space-between
+            px-2
           >
             <h4 class=" display-1">
               {{ currentPeriodScore.homeTeam }}
@@ -79,8 +79,8 @@
             </h4>
           </v-layout>
           <v-flex
-            xs4
             text-xs-center
+            xs4
           >
             <router-link
               :to="{
@@ -97,25 +97,25 @@
                   matchAwayTeam.crestUrl ||
                     require(`@/assets/placeholdershield.png`)
                 "
-                max-height="80px"
                 contain
+                max-height="80px"
               />
             </router-link>
           </v-flex>
         </v-layout>
         <v-layout>
           <v-flex
-            xs4
             text-xs-center
+            xs4
           >
             <div class="my-3 subtitle">
               {{ matchHomeTeam.shortName }}
             </div>
           </v-flex>
-          <v-spacer />
+          <v-spacer/>
           <v-flex
-            xs4
             text-xs-center
+            xs4
           >
             <div class=" my-3 subtitle">
               {{ matchAwayTeam.shortName }}
@@ -128,20 +128,20 @@
       </v-icon>
     </v-layout>
 
-    <v-divider />
+    <v-divider/>
     <div v-if="isDataAvailable">
       <v-layout
         v-if="currentMatch.status != 'SCHEDULED'"
-        px-3
         justify-space-between
+        px-3
       >
         <v-flex xs5>
           <v-layout
             v-for="goalster in cur_goals_table.homeTeam"
             :key="goalster.id"
+            justify-space-between
             pr-2
             py-1
-            justify-space-between
           >
             <span class="caption grey--text">
               {{ goalster.scorer }}
@@ -151,8 +151,8 @@
         </v-flex>
 
         <v-flex
-          xs2
           align-self-center
+          xs2
         >
           <v-img
             :src="require('@/assets/goalers.png')"
@@ -163,9 +163,9 @@
           <v-layout
             v-for="goalster in cur_goals_table.awayTeam"
             :key="goalster.id"
+            justify-space-between
             pl-2
             py-1
-            justify-space-between
           >
             <span class="caption grey--text">
               {{ goalster.scorer }}
@@ -174,7 +174,7 @@
           </v-layout>
         </v-flex>
       </v-layout>
-      <v-divider />
+      <v-divider/>
 
       <v-layout pt-2>
         <v-flex xs12>
@@ -216,57 +216,57 @@
       >
         <v-tab-item>
           <LogoHeader
+            :away-logo-url="matchAwayTeam.crestUrl"
+            :home-logo-url="matchHomeTeam.crestUrl"
             title="Lineups"
-            :home-logo-url="matchHomeTeam.crestUrl"
-            :away-logo-url="matchAwayTeam.crestUrl"
           />
 
-          <v-divider />
-          <TabLineup :list_="currentMatch_AdditionalInfo.lineup" />
-          <v-divider />
+          <v-divider/>
+          <TabLineup :list_="currentMatch_AdditionalInfo.lineup"/>
+          <v-divider/>
           <LogoHeader
+            :away-logo-url="matchAwayTeam.crestUrl"
+            :home-logo-url="matchHomeTeam.crestUrl"
             title="Substitutes"
-            :home-logo-url="matchHomeTeam.crestUrl"
-            :away-logo-url="matchAwayTeam.crestUrl"
           />
-          <v-divider />
-          <TabLineup :list_="currentMatch_AdditionalInfo.bench" />
+          <v-divider/>
+          <TabLineup :list_="currentMatch_AdditionalInfo.bench"/>
         </v-tab-item>
 
         <v-tab-item>
           <LogoHeader
-            title="Team Stats"
-            :home-logo-url="matchHomeTeam.crestUrl"
             :away-logo-url="matchAwayTeam.crestUrl"
+            :home-logo-url="matchHomeTeam.crestUrl"
+            title="Team Stats"
           />
-          <v-divider />
-          <TabStats :stats="cur_stats" />
+          <v-divider/>
+          <TabStats :stats="cur_stats"/>
         </v-tab-item>
         <v-tab-item>
           <LogoHeader
-            title="Events"
-            :home-logo-url="matchHomeTeam.crestUrl"
             :away-logo-url="matchAwayTeam.crestUrl"
+            :home-logo-url="matchHomeTeam.crestUrl"
+            title="Events"
           />
-          <v-divider />
+          <v-divider/>
           <TabEvents
-            :tgoals="currentMatch_AdditionalInfo.goals"
             :tbookings="currentMatch_AdditionalInfo.bookings"
+            :tgoals="currentMatch_AdditionalInfo.goals"
             :tsubstitutions="currentMatch_AdditionalInfo.substitutions"
           />
         </v-tab-item>
         <v-tab-item>
           <LogoHeader
-            title="Comments"
-            :home-logo-url="matchHomeTeam.crestUrl"
             :away-logo-url="matchAwayTeam.crestUrl"
+            :home-logo-url="matchHomeTeam.crestUrl"
+            title="Comments"
           />
-          <v-divider />
+          <v-divider/>
           <TabComment
             v-if="isAuthenticated"
             :match_id="currentMatch.id"
           />
-          <Login v-if="!isAuthenticated" />
+          <Login v-if="!isAuthenticated"/>
         </v-tab-item>
       </v-tabs-items>
     </div>
@@ -282,14 +282,14 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { mapActions } from "vuex";
+import {mapActions, mapState} from "vuex";
 import TabStats from "../components/TabStats.vue";
 import TabLineup from "../components/TabLineup.vue";
 import LogoHeader from "../components/LogoHeader.vue";
 import TabEvents from "../components/TabEvents.vue";
 import TabComment from "../components/TabComment.vue";
 import Login from "./Login.vue";
+
 export default {
   name: "MatchInfo",
 
@@ -346,7 +346,7 @@ export default {
       if (this.league_matches_info[this.league_matches.competition.id]) {
         var cMatch_AddInfo = this.league_matches_info[
           this.league_matches.competition.id
-        ].find(
+          ].find(
           obj =>
             obj.matchDay == this.currentMatch.matchday &&
             this.currentMatch.homeTeam.name.includes(
@@ -388,7 +388,7 @@ export default {
             return obj;
           });
       }
-      return { homeTeam: homeTeamGoalsters, awayTeam: awayTeamGoalsters };
+      return {homeTeam: homeTeamGoalsters, awayTeam: awayTeamGoalsters};
     },
     matchHomeTeam() {
       return this.league_teams.teams.find(

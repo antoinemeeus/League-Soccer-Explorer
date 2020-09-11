@@ -63,7 +63,8 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import {mapState} from "vuex";
+
 export default {
   name: "TabMatches",
   props: ["idTeam"],
@@ -84,14 +85,14 @@ export default {
         class: "subheading px-1",
         fixed: true
       },
-      { text: "MP", value: "playedGames", align: "left", class: "px-1" },
-      { text: "W", value: "won", align: "left", class: "px-1" },
-      { text: "D", value: "draw", align: "left", class: "px-1" },
-      { text: "L", value: "lost", align: "left", class: "px-1" },
-      { text: "Pts", value: "points", align: "left", class: "px-1" },
-      { text: "GF", value: "goalsFor", align: "left", class: "px-1" },
-      { text: "GA", value: "goalsAgainst", align: "left", class: "px-1" },
-      { text: "GD", value: "goalDifference", align: "left", class: "px-1" }
+      {text: "MP", value: "playedGames", align: "left", class: "px-1"},
+      {text: "W", value: "won", align: "left", class: "px-1"},
+      {text: "D", value: "draw", align: "left", class: "px-1"},
+      {text: "L", value: "lost", align: "left", class: "px-1"},
+      {text: "Pts", value: "points", align: "left", class: "px-1"},
+      {text: "GF", value: "goalsFor", align: "left", class: "px-1"},
+      {text: "GA", value: "goalsAgainst", align: "left", class: "px-1"},
+      {text: "GD", value: "goalDifference", align: "left", class: "px-1"}
     ]
   }),
   computed: {
@@ -110,7 +111,7 @@ export default {
     goToTeam(id_next, next_team) {
       this.$router.replace({
         name: "teaminfo",
-        params: { id_team: id_next, displayed_team: next_team }
+        params: {id_team: id_next, displayed_team: next_team}
       });
     }
   }

@@ -77,13 +77,13 @@
                 </v-flex>
                 <v-flex>
                   <span class="grey--text caption">{{
-                    moment(msg.data.createdAt).from(new Date())
-                  }}</span>
+                      moment(msg.data.createdAt).from(new Date())
+                    }}</span>
                 </v-flex>
               </v-layout>
             </v-flex>
           </v-layout>
-          <v-divider />
+          <v-divider/>
         </v-layout>
       </v-flex>
     </v-layout>
@@ -141,10 +141,10 @@ export default {
           photoURL: this.authUser.photoURL,
           createdAt: dateUTC
         })
-        .then(function(docRef) {
+        .then(function (docRef) {
           console.log("Document written with ID: ", docRef.id);
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error("Error adding document: ", error);
         });
 
@@ -157,7 +157,7 @@ export default {
           let allMessages = [];
           querySnapshot.forEach(doc => {
             //console.log(`${doc.id} => ${doc.data()}`);
-            allMessages.push({ id: doc.id, data: doc.data() });
+            allMessages.push({id: doc.id, data: doc.data()});
           });
           //Revert all message for recent first
           this.arrayOfMessages = allMessages.reverse();
@@ -186,6 +186,7 @@ export default {
 .sent_msg {
   background-color: #c5cae9;
 }
+
 .received_msg {
   background-color: #4db6ac;
 }

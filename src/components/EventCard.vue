@@ -14,7 +14,7 @@
         <v-flex>
           Scorer: {{ event.scorer.split("(")[0] || event.scorer }}
         </v-flex>
-        <v-flex> Assist: {{ event.assist ? event.assist : "" }} </v-flex>
+        <v-flex> Assist: {{ event.assist ? event.assist : "" }}</v-flex>
       </v-layout>
     </v-card>
 

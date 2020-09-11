@@ -1,15 +1,15 @@
 <template>
   <v-container
-    px-1
     class="stickyPos elevation-4"
+    px-1
   >
     <v-layout
-      justify-space-between
       align-center
+      justify-space-between
     >
       <v-flex
-        xs2
         class="text-xs-center"
+        xs2
       >
         <v-icon
           :disabled="selectedMatchDay <= 1"
@@ -23,9 +23,9 @@
         v-model="selectedMatchDay"
         :items="matchdayList"
         box
-        single-line
-        hide-details
         dont-fill-mask-blanks
+        hide-details
+        single-line
       >
         <template
           slot="selection"
@@ -34,8 +34,8 @@
           <v-layout justify-space-between>
             <span>{{ item.name }} {{ item.value }}</span>
             <span
-              pb-1
               class="caption"
+              pb-1
             >
               {{
                 formatDates(item.startDate, item.endDate)
@@ -49,8 +49,8 @@
         >
           <v-list
             class="transparent"
-            two-line
             ripple
+            two-line
           >
             <v-list-tile-content>
               <v-list-tile-title>{{ item.name }} {{ item.value }}</v-list-tile-title>
@@ -61,8 +61,8 @@
       </v-select>
 
       <v-flex
-        xs2
         class="text-xs-center"
+        xs2
       >
         <v-icon
           :disabled="selectedMatchDay >= matchdayList.length"
@@ -82,21 +82,21 @@
     <v-layout
       v-for="match in getMatchesInMatchDay(selectedMatchDay)"
       :key="match.id"
-      wrap
       justify-center
+      wrap
     >
       <v-flex
-        sm6
-        xs12
-        class="py-1"
         :class="{
           'scroll_target current-match-card': match.id === nextMatch.id
         }"
+        class="py-1"
+        sm6
+        xs12
       >
         <MatchCard
-          :league-competition-i-d="id_competition"
-          :iscurrent-match="match.id === nextMatch.id"
           :indv-match="match"
+          :iscurrent-match="match.id === nextMatch.id"
+          :league-competition-i-d="id_competition"
         />
       </v-flex>
     </v-layout>
@@ -106,8 +106,7 @@
 <script>
 import moment from "moment";
 import MatchCard from "../components/MatchCard.vue";
-import { mapState } from "vuex";
-import { mapActions } from "vuex";
+import {mapActions, mapState} from "vuex";
 
 export default {
   name: "MatchesList",
@@ -237,13 +236,14 @@ export default {
 
     this.matchDaysDisplayed.push(this.currentMatchDay);
 
-    this.$nextTick(function() {
+    this.$nextTick(function () {
       // Code that will run only after the
       // entire view has been rendered
       this.goToNextMatch();
     });
   },
-  updated() {},
+  updated() {
+  },
   methods: {
     ...mapActions(["fetchAPI", "fetchTeamInfo"]),
 

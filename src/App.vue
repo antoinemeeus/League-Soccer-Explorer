@@ -191,9 +191,7 @@
 </template>
 
 <script>
-import firebase from "firebase";
-import {mapState} from "vuex";
-import {mapActions} from "vuex";
+import {mapActions, mapState} from "vuex";
 
 export default {
   name: "App",

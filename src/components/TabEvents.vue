@@ -38,6 +38,7 @@
 
 <script>
 import EventCard from "./EventCard.vue";
+
 export default {
   name: "TabEvent",
   components: {
