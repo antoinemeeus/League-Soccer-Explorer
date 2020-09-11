@@ -50,7 +50,7 @@ export default {
   computed: {
     allEvents() {
       return []
-        .concat(...[this.Tbookings, this.Tsubstitutions, this.Tgoals])
+        .concat(...[this.tbookings, this.tsubstitutions, this.tgoals])
         .sort((a, b) => a.minute - b.minute)
         .reverse();
     }
