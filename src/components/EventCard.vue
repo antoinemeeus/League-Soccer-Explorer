@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     colorCard() {
-      var str = this.event.card;
+      let str = this.event.card;
       if (str.includes("yellow")) return "Yellow";
       if (str.includes("red")) return "Red";
       return "";

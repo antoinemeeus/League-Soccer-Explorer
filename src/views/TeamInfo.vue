@@ -185,13 +185,13 @@
     >
       <v-tab-item>
         <TabPlayers
-          v-if="!this.loadingPlayers"
+          v-if="!loadingPlayers"
           :players="team_players"
           :team-info="team_football_org"
         />
 
         <v-layout
-          v-if="this.loadingPlayers"
+          v-if="loadingPlayers"
           align-center
           fill-height
           justify-center
@@ -211,12 +211,12 @@
       </v-tab-item>
 
       <v-tab-item>
-        <TabStanding :id_team="id_team" />
+        <TabStanding :id-team="idTeam" />
       </v-tab-item>
       <v-tab-item>
         <TabMatches
-          :competition-i-d="currentCompetition.id"
-          :list_team_matches="matchesWithCrest"
+          :competition-id="currentCompetition.id"
+          :list-team-matches="matchesWithCrest"
         />
       </v-tab-item>
     </v-tabs-items>
@@ -232,7 +232,6 @@ import TabPlayers from "../components/TabPlayers.vue";
 
 export default {
   name: "TeamInfo",
-
   components: {
     TabMatches,
     TabStanding,
@@ -266,7 +265,7 @@ export default {
     },
     currentTeam() {
       if (this.league_teams) {
-        return this.league_teams.teams.find(obj => obj.id == this.id_team);
+        return this.league_teams.teams.find(obj => obj.id == this.idTeam);
       } else {
         return this.displayed_team;
       }
@@ -277,7 +276,7 @@ export default {
     matchesWithCrest() {
       var matches = this.league_matches.matches.filter(
         obj =>
-          obj.homeTeam.id == this.id_team || obj.awayTeam.id === this.id_team
+          obj.homeTeam.id == this.idTeam || obj.awayTeam.id === this.idTeam
       );
       //Adding crestUrl to each matches homeTeam/awayTeam with information from league_teams
       return matches.map(obj => {
@@ -296,7 +295,7 @@ export default {
     if (
       this.team_players.length > 1 &&
       !this.current_team_id &&
-      this.current_team_id != this.team_players[0].idTeam
+      this.current_team_id != this.team_players[0].id_team
     ) {
       this.fetchPlayers({string_query: this.currentTeam.shortName});
     }
@@ -314,8 +313,8 @@ export default {
       this.$store.commit("SET_CURRENT_LEAGUE", this.league_teams.competition);
     },
     getLocalDateAndTime(utcD) {
-      var localDate = new Date(utcD);
-      var options = {
+      let localDate = new Date(utcD);
+      let options = {
         weekday: "short",
         year: "2-digit",
         month: "numeric",

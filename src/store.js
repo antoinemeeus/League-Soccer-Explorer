@@ -228,12 +228,12 @@ export default new Vuex.Store({
             //router.push("/");
         },
         fetchAPI({commit, state}, params) {
-            var fetchOptions = state.urlKeys[params.key];
-            var Storagekey = fetchOptions.str1 + params.query + fetchOptions.str2;
+            let fetchOptions = state.urlKeys[params.key];
+            let StorageKey = fetchOptions.str1 + params.query + fetchOptions.str2;
             commit(fetchOptions.commitloadingFlag, true);
             let now = new Date();
             let lastFetched = new Date(
-                JSON.parse(localStorage.getItem(Storagekey + "_savedTime"))
+                JSON.parse(localStorage.getItem(StorageKey + "_savedTime"))
             );
             let timePassedInMinutes = Math.abs(now - lastFetched) / (1000 * 60);
             if (timePassedInMinutes < state.minutesUpdate) {
@@ -245,7 +245,7 @@ export default new Vuex.Store({
                 //     " minutes"
                 // );
                 // console.log("Trying to load " + params.key + " data from LocalStorage");
-                let savedLocalData = JSON.parse(localStorage.getItem(Storagekey));
+                let savedLocalData = JSON.parse(localStorage.getItem(StorageKey));
                 if (savedLocalData) {
                     // console.log("savedLocalData " + params.key + " is present");
                     commit(fetchOptions.commitCmd, savedLocalData);
@@ -258,21 +258,22 @@ export default new Vuex.Store({
 
             let requestURL =
                 state.API_URL + fetchOptions.str1 + params.query + fetchOptions.str2;
-            // console.log("Fetching Data  from football data org:", requestURL);
             axios
                 .get(requestURL, state.options)
                 .then(response => response.data)
                 .then(dataJSON => {
                     commit(fetchOptions.commitCmd, dataJSON);
                     commit(fetchOptions.commitloadingFlag, false);
-                    localStorage.setItem(Storagekey, JSON.stringify(dataJSON));
+                    localStorage.setItem(StorageKey, JSON.stringify(dataJSON));
                     localStorage.setItem(
-                        Storagekey + "_savedTime",
+                        StorageKey + "_savedTime",
                         JSON.stringify(new Date())
                     );
                 })
                 .catch(err => {
                     console.log(err);
+                    commit(fetchOptions.commitloadingFlag, false);
+                    commit(fetchOptions.commitCmd, "{}");
                 });
         },
 
@@ -314,7 +315,7 @@ export default new Vuex.Store({
                             });
                     }
                     commit("SET_TEAM_PLAYERS", players.player);
-                    commit("SET_CURRENT_TEAM_ID", players.player[0].idTeam);
+                    commit("SET_CURRENT_TEAM_ID", players.player[0].id_team);
                     commit("SET_LOADING_PLAYERS", false);
                 })
                 .catch(err => console.log(err));

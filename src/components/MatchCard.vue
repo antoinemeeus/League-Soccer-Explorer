@@ -5,9 +5,9 @@
     :to="{
       name: 'matchinfo',
       params: {
-        id_competition: leagueCompetitionID,
-        id_match: indvMatch.id,
-        displayed_match: indvMatch
+        idCompetition: leagueCompetitionId,
+        idMatch: indvMatch.id,
+        displayedMatch: indvMatch
       }
     }"
   >
@@ -111,7 +111,7 @@ import moment from "moment";
 
 export default {
   name: "MatchCard",
-  props: ["leagueCompetitionID", "indvMatch", "iscurrentMatch"],
+  props: ["leagueCompetitionId", "indvMatch", "iscurrentMatch"],
   data: () => ({}),
 
   computed: {
@@ -131,8 +131,8 @@ export default {
       return this.iscurrentMatch ? "blue-grey lighten-3" : "";
     },
     periodScore() {
-      var _score = this.indvMatch.score;
-      var obj = {name: "Scheduled", score: _score.halfTime};
+      let _score = this.indvMatch.score;
+      let obj = {name: "Scheduled", score: _score.halfTime};
       if (this.testPeriodScore(_score.halfTime)) {
         obj.name = "HT";
         obj.score = _score.halfTime;
@@ -146,8 +146,8 @@ export default {
   },
   methods: {
     getLocalDateAndTime(utcD) {
-      var localDate = new Date(utcD);
-      var options = {
+      let localDate = new Date(utcD);
+      const options = {
         weekday: "short",
         year: "2-digit",
         month: "numeric",

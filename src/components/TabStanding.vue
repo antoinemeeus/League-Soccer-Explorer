@@ -9,7 +9,7 @@
       slot="items"
       slot-scope="props"
     >
-      <tr :active="props.item.team.id == id_team">
+      <tr :active="props.item.team.id == idTeam">
         <td class="text-xs-center px-0">
           {{ props.item.position }}
         </td>

@@ -48,8 +48,8 @@ export default {
   },
   methods: {
     ...mapActions(["fetchAPI"]),
-    isDataAvailable(id_competition) {
-      return this.league_matches_info.hasOwnProperty(id_competition);
+    isDataAvailable(idCompetition) {
+      return this.league_matches_info.hasOwnProperty(idCompetition);
     }
   }
 };

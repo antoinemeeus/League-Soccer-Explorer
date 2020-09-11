@@ -96,7 +96,7 @@
         <MatchCard
           :indv-match="match"
           :iscurrent-match="match.id === nextMatch.id"
-          :league-competition-i-d="id_competition"
+          :league-competition-id="idCompetition"
         />
       </v-flex>
     </v-layout>
@@ -129,14 +129,12 @@ export default {
       "goToCurrent",
       "selectedMDay"
     ]),
-
     matchdayList() {
       //Method to extract the matchday of list of matches and their start and end Dates.
       let matches = this.league_matches.matches;
       if (matches) {
         let previousMDay = matches[0].matchday;
-        let dateStart,
-          dateEnd = moment();
+        let dateStart, dateEnd = moment();
         let matchDayItems = [];
         let DateStart = moment(matches[0].utcDate);
         //Loop trough array until -1
@@ -165,7 +163,6 @@ export default {
       }
       return [];
     },
-
     currentLeagueInfo() {
       return this.league_matches.competition;
     },
@@ -194,11 +191,10 @@ export default {
         return obj;
       });
     },
-
     nextMatch() {
       //Find current or next match by obtaining the next index after the last match with status "FINISHED"
-      var lastIndex = 0;
-      var len = this.league_matches.matches.length;
+      let lastIndex = 0;
+      let len = this.league_matches.matches.length;
       for (let i = 0; i < len - 1; i++) {
         if (this.league_matches.matches[i].status === "FINISHED") {
           lastIndex = i;
@@ -233,10 +229,8 @@ export default {
       this.goToNextMatch();
     });
   },
-  updated() {
-  },
   methods: {
-    ...mapActions(["fetchAPI", "fetchTeamInfo"]),
+    ...mapActions(["fetchAPI"]),
 
     formatDates(startD, endD) {
       if (moment(startD).isSame(endD, "month")) {

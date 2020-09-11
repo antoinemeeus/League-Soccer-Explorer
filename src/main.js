@@ -12,7 +12,7 @@ Vue.prototype.moment = moment;
 
 require("firebase/firestore");
 
-var config = {
+const config = {
     apiKey: "AIzaSyCXMYKs5xwQxePtAJPKAIcIEb5ud99pQwA",
     authDomain: "soccerleagueexplorer.firebaseapp.com",
     databaseURL: "https://soccerleagueexplorer.firebaseio.com",
@@ -25,7 +25,7 @@ firebase.initializeApp(config);
 console.log("API KEY:" + config.apiKey);
 console.log(process.env.VUE_APP_FIRESTORE_TOKEN);
 // Initialize Cloud Firestore through Firebase
-var db = firebase.firestore();
+const db = firebase.firestore();
 
 window.db = db;
 

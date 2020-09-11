@@ -45,9 +45,9 @@
               :to="{
                 name: 'teaminfo',
                 params: {
-                  id_competition: this.id_competition,
+                  idCompetition: idCompetition,
                   id_team: matchHomeTeam.id,
-                  displayed_team: this.matchHomeTeam
+                  displayed_team: matchHomeTeam
                 }
               }"
             >
@@ -86,7 +86,7 @@
               :to="{
                 name: 'teaminfo',
                 params: {
-                  id_competition: this.id_competition,
+                  idCompetition: idCompetition,
                   id_team: matchAwayTeam.id,
                   displayed_team: matchAwayTeam
                 }
@@ -325,16 +325,16 @@ export default {
       var self = this;
       this.league_matches.matches.find((obj, idx) => {
         self.match_index = idx;
-        return obj.id == this.id_match;
+        return obj.id == this.idMatch;
       });
       return (
-        this.displayed_match ||
-        this.league_matches.matches.find(obj => obj.id == this.id_match)
+        this.displayedMatch ||
+        this.league_matches.matches.find(obj => obj.id == this.idMatch)
       );
     },
     isDataAvailable() {
       return this.league_matches_info.hasOwnProperty(
-        this.id_competition || this.league_matches.competition.id
+        this.idCompetition || this.league_matches.competition.id
       );
     },
     currentMatch_AdditionalInfo() {
@@ -407,11 +407,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      "fetchAPI",
-      "fetchMatches",
-      "fetchEventInfo",
-      "fetchTeams",
-      "fetchTeamInfo"
+      "fetchAPI"
     ]),
     setToolBarInfo() {
       this.$store.commit(
@@ -430,9 +426,9 @@ export default {
       this.$router.replace({
         name: "matchinfo",
         params: {
-          id_competition: this.id_competition,
-          id_match: prev_id,
-          displayed_match: prev_match
+          idCompetition: this.idCompetition,
+          idMatch: prev_id,
+          displayedMatch: prev_match
         }
       });
     },
@@ -447,9 +443,9 @@ export default {
       this.$router.replace({
         name: "matchinfo",
         params: {
-          id_competition: this.id_competition,
-          id_match: next_id,
-          displayed_match: next_match
+          idCompetition: this.idCompetition,
+          idMatch: next_id,
+          displayedMatch: next_match
         }
       });
     },

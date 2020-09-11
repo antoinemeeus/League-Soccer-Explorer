@@ -56,25 +56,25 @@ const router = new Router({
             component: Login
         },
         {
-            path: "/competition/:id_competition",
+            path: "/competition/:idCompetition",
             name: "competition",
             component: MatchesList,
             props: true
         },
         {
-            path: "/competition/:id_competition/match/:id_match",
+            path: "/competition/:idCompetition/match/:idMatch",
             name: "matchinfo",
             component: MatchInfo,
             props: true
         },
         {
-            path: "/competition/:id_competition/team/:id_team",
+            path: "/competition/:idCompetition/team/:idTeam",
             name: "teaminfo",
             component: TeamInfo,
             props: true
         },
         {
-            path: "/competition/:id_competition/team/:id_team/player/:id_player",
+            path: "/competition/:idCompetition/team/:idTeam/player/:idPlayer",
             name: "playerinfo",
             component: PlayerInfo,
             props: true

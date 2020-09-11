@@ -158,8 +158,8 @@ export default {
   },
   methods: {
     saveMessage() {
-      var dateFromUI = new Date();
-      var dateUTC = dateFromUI.toISOString();
+      let dateFromUI = new Date();
+      let dateUTC = dateFromUI.toISOString();
       if (this.message.length > 1) {
         db.collection("generalChat")
           .add({
@@ -203,7 +203,7 @@ export default {
       });
     },
     scrollToEnd() {
-      var container = this.$el.querySelector("#container");
+      const container = this.$el.querySelector("#container");
       container.scrollTop = container.scrollHeight;
     },
     setMessageAreaHeight() {

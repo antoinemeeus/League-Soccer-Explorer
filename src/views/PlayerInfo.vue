@@ -127,7 +127,7 @@ export default {
     getPlayer() {
       if (typeof this.displayed_player === "undefined") {
         console.log("Displayed player was undefined");
-        return this.team_players.find(obj => obj.idPlayer == this.id_player);
+        return this.team_players.find(obj => obj.idPlayer == this.idPlayer);
       } else return this.displayed_player;
     },
     getImageUrl() {

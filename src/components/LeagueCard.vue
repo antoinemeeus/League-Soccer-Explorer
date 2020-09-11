@@ -3,7 +3,7 @@
     height="270"
     :to="{
       name: 'competition',
-      params: { id_competition: currentCompetition.id }
+      params: { idCompetition: currentCompetition.id }
     }"
   >
     <div
@@ -38,7 +38,6 @@ export default {
   name: "LeaguesCards",
   props: ["currentCompetition", "isDataAvailable"],
   data: () => ({}),
-
   methods: {
     sendLeagueInfoStore() {
       this.$store.commit("SET_LEAGUE_ICON", this.currentCompetition.code);

@@ -108,9 +108,9 @@ export default {
       return this.$store.getters.isAuthenticated;
     },
     getMatchCollectionId() {
-      if (typeof this.id_match !== "undefined")
-        return "commentMatch" + this.id_match;
-      return "commentMatch" + this.$route.params.id_match;
+      if (typeof this.idMatch !== "undefined")
+        return "commentMatch" + this.idMatch;
+      return "commentMatch" + this.$route.params.idMatch;
     }
   },
   watch: {

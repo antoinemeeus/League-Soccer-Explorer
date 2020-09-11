@@ -244,10 +244,11 @@ export default {
     this.routeGetSetData(this.$route);
   },
   methods: {
-    ...mapActions(["fetchAPI", "fetchPlayers", "fetchTeamInfo"]),
+    ...mapActions(["fetchAPI", "fetchPlayers"]),
     logOut() {
       this.$store.dispatch("userLogOut");
       this.drawer = false;
+      this.$router.push("/");
     },
     logIn() {
       //this.drawer = false;
@@ -286,7 +287,7 @@ export default {
         }
       }
       if (route_.name === "competition" || route_.name === "matchinfo") {
-        let cur_id_competition = route_.params.id_competition;
+        let cur_id_competition = route_.params.idCompetition;
         if (
           this.$store.state.league_matches &&
           this.$store.state.league_matches.competition.id == cur_id_competition
@@ -307,7 +308,7 @@ export default {
         }
       }
       if (route_.name === "teaminfo") {
-        let cur_id_competition = route_.params.id_competition;
+        let cur_id_competition = route_.params.idCompetition;
         let cur_id_team = route_.params.id_team;
         if (
           this.$store.state.team_football_org &&
