@@ -50,11 +50,11 @@ export default {
 
   computed: {
     nonEmptyList() {
-      if (list) return list;
+      if (this.list) return this.list;
       return [];
     },
     maxListIndex() {
-      if (list) {
+      if (this.list) {
         return this.list.homeTeam.length >= this.list.awayTeam.length
           ? this.list.homeTeam.length - 1
           : this.list.awayTeam.lenght - 1;
