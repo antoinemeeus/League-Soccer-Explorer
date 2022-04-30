@@ -31,26 +31,29 @@
 import MatchCard from "./MatchCard.vue";
 
 export default {
-  name: "TabMatches",
-  components: {
-    MatchCard
-  },
-  props: ["competitionId", "listTeamMatches"],
-  data: () => ({}),
-  computed: {
-    nextMatch() {
-      //Find current or next match by obtaining the next index after the last match with status "FINISHED"
-      let lastIndex = 0;
-      let len = this.listTeamMatches.length;
-      for (let i = 0; i < len - 1; i++) {
-        if (this.listTeamMatches[i].status === "FINISHED") {
-          lastIndex = i;
+    name: "TabMatches",
+    components: {
+        MatchCard
+    },
+    props: {
+        competitionId: Number,
+        listTeamMatches: Array
+    },
+    data: () => ({}),
+    computed: {
+        nextMatch() {
+            //Find current or next match by obtaining the next index after the last match with status "FINISHED"
+            let lastIndex = 0;
+            let len = this.listTeamMatches.length;
+            for (let i = 0; i < len - 1; i++) {
+                if (this.listTeamMatches[i].status === "FINISHED") {
+                    lastIndex = i;
+                }
+            }
+            if (lastIndex + 1 < len) return this.listTeamMatches[lastIndex + 1];
+            return this.listTeamMatches[len - 1];
         }
-      }
-      if (lastIndex + 1 < len) return this.listTeamMatches[lastIndex + 1];
-      return this.listTeamMatches[len - 1];
-    }
-  },
-  methods: {}
+    },
+    methods: {}
 };
 </script>

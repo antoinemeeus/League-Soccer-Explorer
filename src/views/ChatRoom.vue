@@ -133,109 +133,109 @@
 <script>
 
 export default {
-  name: "ChatRoom",
-  components: {},
-  data() {
-    return {
-      messageAreaHeight: "",
-      texAreaRows: "1",
-      arrayOfMessages: [],
-      message: "",
-      authUser: {}
-    };
-  },
-  computed: {},
-  created() {
-    this.authUser = this.$store.getters.user;
-    console.log("USER ID:", this.authUser.uid);
-    this.fetchMessages();
-  },
-  mounted() {
-    this.setMessageAreaHeight();
-    this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
-    this.$store.commit("SET_LEAGUE_ICON", "Home");
-    this.$store.commit("SET_CURRENT_LEAGUE", {name: "Home", id: ""});
-  },
-  methods: {
-    saveMessage() {
-      let dateFromUI = new Date();
-      let dateUTC = dateFromUI.toISOString();
-      if (this.message.length > 1) {
-        db.collection("generalChat")
-          .add({
-            message: this.message,
-            displayName: this.authUser.displayName,
-            photoURL: this.authUser.photoURL,
-            createdAt: dateUTC
-          })
-          .then(function (docRef) {
-            console.log("Document written with ID: ", docRef.id);
-          })
-          .catch(function (error) {
-            console.error("Error adding document: ", error);
-          });
-      }
-
-      this.scrollToEnd();
-      this.message = null;
-      this.texAreaRows = "1";
-      // console.log(db);
+    name: "ChatRoom",
+    components: {},
+    data() {
+        return {
+            messageAreaHeight: "",
+            texAreaRows: "1",
+            arrayOfMessages: [],
+            message: "",
+            authUser: {},
+        };
     },
-    fetchMessages() {
-      db.collection("generalChat")
-        .orderBy("createdAt")
-        .onSnapshot(querySnapshot => {
-          let allMessages = [];
-          querySnapshot.forEach(doc => {
-            // console.log(`${doc.id} => ${doc.data()}`);
-            allMessages.push(doc.data());
-          });
-          this.arrayOfMessages = allMessages;
+    computed: {},
+    created() {
+        this.authUser = this.$store.getters.user;
+        console.log("USER ID:", this.authUser.uid);
+        this.fetchMessages();
+    },
+    mounted() {
+        this.setMessageAreaHeight();
+        this.$store.commit("SET_APP_TITLE", "Leagues And Cups");
+        this.$store.commit("SET_LEAGUE_ICON", "Home");
+        this.$store.commit("SET_CURRENT_LEAGUE", {name: "Home", id: ""});
+    },
+    methods: {
+        saveMessage() {
+            let dateFromUI = new Date();
+            let dateUTC = dateFromUI.toISOString();
+            if (this.message.length > 1) {
+                db.collection("generalChat")
+                    .add({
+                        message: this.message,
+                        displayName: this.authUser.displayName,
+                        photoURL: this.authUser.photoURL,
+                        createdAt: dateUTC
+                    })
+                    .then(function (docRef) {
+                        console.log("Document written with ID: ", docRef.id);
+                    })
+                    .catch(function (error) {
+                        console.error("Error adding document: ", error);
+                    });
+            }
 
-          setTimeout(() => {
             this.scrollToEnd();
-          }, 600);
-        });
-    },
-    scrollToEndWithTransition() {
-      document.querySelector(".last-msg").scrollIntoView({
-        behavior: "smooth"
-      });
-    },
-    scrollToEnd() {
-      const container = this.$el.querySelector("#container");
-      container.scrollTop = container.scrollHeight;
-    },
-    setMessageAreaHeight() {
-      let winH = window.innerHeight;
-      let toolbar = document.querySelector(".v-toolbar").clientHeight;
+            this.message = null;
+            this.texAreaRows = "1";
+            // console.log(db);
+        },
+        fetchMessages() {
+            db.collection("generalChat")
+                .orderBy("createdAt")
+                .onSnapshot(querySnapshot => {
+                    let allMessages = [];
+                    querySnapshot.forEach(doc => {
+                        // console.log(`${doc.id} => ${doc.data()}`);
+                        allMessages.push(doc.data());
+                    });
+                    this.arrayOfMessages = allMessages;
 
-      let textAH = this.$refs.textAreaInput.clientHeight;
-      this.messageAreaHeight = winH - textAH - toolbar - 20 + "px";
-    },
-    onResize() {
-      console.log("RESIZE");
-      this.setMessageAreaHeight();
+                    setTimeout(() => {
+                        this.scrollToEnd();
+                    }, 600);
+                });
+        },
+        scrollToEndWithTransition() {
+            document.querySelector(".last-msg").scrollIntoView({
+                behavior: "smooth"
+            });
+        },
+        scrollToEnd() {
+            const container = this.$el.querySelector("#container");
+            container.scrollTop = container.scrollHeight;
+        },
+        setMessageAreaHeight() {
+            let winH = window.innerHeight;
+            let toolbar = document.querySelector(".v-toolbar").clientHeight;
+
+            let textAH = this.$refs.textAreaInput.clientHeight;
+            this.messageAreaHeight = winH - textAH - toolbar - 20 + "px";
+        },
+        onResize() {
+            console.log("RESIZE");
+            this.setMessageAreaHeight();
+        }
     }
-  }
-  // updated: function() {
+    // updated: function() {
 
-  // }
+    // }
 };
 </script>
 
 <style scoped>
 .rounded {
-  border-radius: 10px;
+    border-radius: 10px;
 }
 
 .no_scroll {
-  overflow-y: auto;
+    overflow-y: auto;
 }
 
 .btn-positioning {
-  width: 3em;
-  bottom: 0 !important;
-  right: -10px;
+    width: 3em;
+    bottom: 0 !important;
+    right: -10px;
 }
 </style>

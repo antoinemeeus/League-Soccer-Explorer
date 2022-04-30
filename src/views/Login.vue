@@ -40,22 +40,22 @@
 import {mapActions, mapState} from "vuex";
 
 export default {
-  name: "Login",
-  components: {},
-  data() {
-    return {};
-  },
-  computed: {
-    ...mapState(["loadingUser"])
-  },
-  created() {
-  },
-  methods: {
-    ...mapActions(["userLogIn"]),
-    login() {
-      this.userLogIn();
+    name: "LoginComponent",
+    components: {},
+    data() {
+        return {};
+    },
+    computed: {
+        ...mapState(["loadingUser"])
+    },
+    created() {
+    },
+    methods: {
+        ...mapActions(["userLogIn"]),
+        login() {
+            this.userLogIn();
+        }
     }
-  }
 };
 </script>
 

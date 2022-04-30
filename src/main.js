@@ -5,14 +5,16 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import moment from "moment";
-//Firebase init
-import firebase from "firebase";
 
 Vue.prototype.moment = moment;
+Vue.config.productionTip = false;
 
-require("firebase/firestore");
+//Firebase init
+import { initializeApp } from 'firebase/app';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore } from 'firebase/firestore/lite';
 
-const config = {
+const firebaseConfig = {
     apiKey: "AIzaSyCXMYKs5xwQxePtAJPKAIcIEb5ud99pQwA",
     authDomain: "soccerleagueexplorer.firebaseapp.com",
     databaseURL: "https://soccerleagueexplorer.firebaseio.com",
@@ -20,16 +22,16 @@ const config = {
     storageBucket: "soccerleagueexplorer.appspot.com",
     messagingSenderId: "441675358824"
 };
-firebase.initializeApp(config);
+
+const firebaseApp = initializeApp(firebaseConfig);
 
 // Initialize Cloud Firestore through Firebase
-const db = firebase.firestore();
+const db = getFirestore(firebaseApp);
 
 window.db = db;
 
-Vue.config.productionTip = false;
-
-const unsubscribe = firebase.auth().onAuthStateChanged(firebaseUser => {
+const auth = getAuth(firebaseApp);
+const unsubscribe = onAuthStateChanged(auth,firebaseUser => {
     new Vue({
         el: "#app",
         router,

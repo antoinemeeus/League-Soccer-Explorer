@@ -291,182 +291,186 @@ import TabComment from "../components/TabComment.vue";
 import Login from "./Login.vue";
 
 export default {
-  name: "MatchInfo",
+    name: "MatchInfo",
 
-  components: {
-    TabStats,
-    TabLineup,
-    TabEvents,
-    TabComment,
-    LogoHeader,
-    Login
-  },
-  props: ["idCompetition", "idMatch", "displayedMatch"],
-  data() {
-    return {
-      tabs: null,
-      swipeDirection: "None",
-      match_index: null
-    };
-  },
-  computed: {
-    ...mapState([
-      "loadingMatches",
-      "loadingTeams",
-      "league_competition",
-      "league_matches",
-      "league_matches_info",
-      "league_teams"
-    ]),
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
+    components: {
+        TabStats,
+        TabLineup,
+        TabEvents,
+        TabComment,
+        LogoHeader,
+        Login
     },
-    currentMatch() {
-      let self = this;
-      this.league_matches.matches.find((obj, idx) => {
-        self.match_index = idx;
-        return obj.id == this.idMatch;
-      });
-      return (
-        this.displayedMatch ||
-        this.league_matches.matches.find(obj => obj.id == this.idMatch)
-      );
+    props: {
+        idCompetition: Number,
+        idMatch: Number,
+        displayedMatch: Object,
     },
-    isDataAvailable() {
-      return this.league_matches_info.hasOwnProperty(
-        this.idCompetition || this.league_matches.competition.id
-      );
+    data() {
+        return {
+            tabs: null,
+            swipeDirection: "None",
+            match_index: null
+        };
     },
-    currentMatch_AdditionalInfo() {
-      if (this.league_matches_info[this.league_matches.competition.id]) {
-        let cMatch_AddInfo = this.league_matches_info[
-          this.league_matches.competition.id
-          ].find(
-          obj =>
-            obj.matchDay == this.currentMatch.matchday &&
-            this.currentMatch.homeTeam.name.includes(
-              obj.homeTeam.name.substring(0, 3)
-            ) &&
-            this.currentMatch.awayTeam.name.includes(
-              obj.awayTeam.name.substring(0, 3)
-            )
-        );
-        if (cMatch_AddInfo != null) return cMatch_AddInfo;
-      }
-      return {
-        goals: [],
-        substitutions: [],
-        bookings: [],
-        bench: [],
-        lineup: []
-      };
-    },
-    cur_stats() {
-      //return list of objects
-      return this.currentMatch_AdditionalInfo.stats;
-    },
-    cur_goals_table() {
-      let homeTeamGoalsters = [];
-      let awayTeamGoalsters = [];
+    computed: {
+        ...mapState([
+            "loadingMatches",
+            "loadingTeams",
+            "league_competition",
+            "league_matches",
+            "league_matches_info",
+            "league_teams"
+        ]),
+        isAuthenticated() {
+            return this.$store.getters.isAuthenticated;
+        },
+        currentMatch() {
+            let self = this;
+            this.league_matches.matches.find((obj, idx) => {
+                self.match_index = idx;
+                return obj.id == this.idMatch;
+            });
+            return (
+                this.displayedMatch ||
+                this.league_matches.matches.find(obj => obj.id == this.idMatch)
+            );
+        },
+        isDataAvailable() {
+            return this.league_matches_info.hasOwnProperty(
+                this.idCompetition || this.league_matches.competition.id
+            );
+        },
+        currentMatch_AdditionalInfo() {
+            if (this.league_matches_info[this.league_matches.competition.id]) {
+                let cMatch_AddInfo = this.league_matches_info[
+                    this.league_matches.competition.id
+                    ].find(
+                    obj =>
+                        obj.matchDay == this.currentMatch.matchday &&
+                        this.currentMatch.homeTeam.name.includes(
+                            obj.homeTeam.name.substring(0, 3)
+                        ) &&
+                        this.currentMatch.awayTeam.name.includes(
+                            obj.awayTeam.name.substring(0, 3)
+                        )
+                );
+                if (cMatch_AddInfo != null) return cMatch_AddInfo;
+            }
+            return {
+                goals: [],
+                substitutions: [],
+                bookings: [],
+                bench: [],
+                lineup: []
+            };
+        },
+        cur_stats() {
+            //return list of objects
+            return this.currentMatch_AdditionalInfo.stats;
+        },
+        cur_goals_table() {
+            let homeTeamGoalsters = [];
+            let awayTeamGoalsters = [];
 
-      if (this.currentMatch_AdditionalInfo != undefined) {
-        homeTeamGoalsters = this.currentMatch_AdditionalInfo.goals
-          .filter(obj => obj.tType === "homeTeam")
-          .map((obj, index) => {
-            obj["id"] = index;
-            return obj;
-          });
-        awayTeamGoalsters = this.currentMatch_AdditionalInfo.goals
-          .filter(obj => obj.tType === "awayTeam")
-          .map((obj, index) => {
-            obj["id"] = index;
-            return obj;
-          });
-      }
-      return {homeTeam: homeTeamGoalsters, awayTeam: awayTeamGoalsters};
-    },
-    matchHomeTeam() {
-      return this.league_teams.teams.find(
-        obj => obj.id === this.currentMatch.homeTeam.id
-      );
-    },
-    matchAwayTeam() {
-      return this.league_teams.teams.find(
-        obj => obj.id === this.currentMatch.awayTeam.id
-      );
-    },
-    currentPeriodScore() {
-      let _score = this.currentMatch.score;
-      if (_score.fullTime.homeTeam != null || _score.fullTime.awayTeam != null)
-        return _score.fullTime;
-      else return _score.halfTime;
-    }
-  },
-  mounted() {
-    this.setToolBarInfo();
-  },
-  methods: {
-    ...mapActions([
-      "fetchAPI"
-    ]),
-    setToolBarInfo() {
-      this.$store.commit(
-        "SET_LEAGUE_ICON",
-        this.league_matches.competition.code
-      );
-      this.$store.commit("SET_APP_TITLE", this.league_matches.competition.name);
-      this.$store.commit("SET_CURRENT_LEAGUE", this.league_matches.competition);
-    },
-    getPreviousMatch() {
-      let newIndex = this.match_index - 1;
-      //check if no at index 0 or length-1
-      if (newIndex < 0) newIndex = this.match_index;
-      let prev_match = this.league_matches.matches[newIndex];
-      let prev_id = prev_match.id;
-      this.$router.replace({
-        name: "matchinfo",
-        params: {
-          idCompetition: this.idCompetition,
-          idMatch: prev_id,
-          displayedMatch: prev_match
+            if (this.currentMatch_AdditionalInfo != undefined) {
+                homeTeamGoalsters = this.currentMatch_AdditionalInfo.goals
+                    .filter(obj => obj.tType === "homeTeam")
+                    .map((obj, index) => {
+                        obj["id"] = index;
+                        return obj;
+                    });
+                awayTeamGoalsters = this.currentMatch_AdditionalInfo.goals
+                    .filter(obj => obj.tType === "awayTeam")
+                    .map((obj, index) => {
+                        obj["id"] = index;
+                        return obj;
+                    });
+            }
+            return {homeTeam: homeTeamGoalsters, awayTeam: awayTeamGoalsters};
+        },
+        matchHomeTeam() {
+            return this.league_teams.teams.find(
+                obj => obj.id === this.currentMatch.homeTeam.id
+            );
+        },
+        matchAwayTeam() {
+            return this.league_teams.teams.find(
+                obj => obj.id === this.currentMatch.awayTeam.id
+            );
+        },
+        currentPeriodScore() {
+            let _score = this.currentMatch.score;
+            if (_score.fullTime.homeTeam != null || _score.fullTime.awayTeam != null)
+                return _score.fullTime;
+            else return _score.halfTime;
         }
-      });
     },
-    getNextMatch() {
-      let newIndex = this.match_index + 1;
-      //check if no at index 0 or length-1
-      if (newIndex > this.league_matches.matches.length - 1)
-        newIndex = this.match_index;
+    mounted() {
+        this.setToolBarInfo();
+    },
+    methods: {
+        ...mapActions([
+            "fetchAPI"
+        ]),
+        setToolBarInfo() {
+            this.$store.commit(
+                "SET_LEAGUE_ICON",
+                this.league_matches.competition.code
+            );
+            this.$store.commit("SET_APP_TITLE", this.league_matches.competition.name);
+            this.$store.commit("SET_CURRENT_LEAGUE", this.league_matches.competition);
+        },
+        getPreviousMatch() {
+            let newIndex = this.match_index - 1;
+            //check if no at index 0 or length-1
+            if (newIndex < 0) newIndex = this.match_index;
+            let prev_match = this.league_matches.matches[newIndex];
+            let prev_id = prev_match.id;
+            this.$router.replace({
+                name: "matchinfo",
+                params: {
+                    idCompetition: this.idCompetition,
+                    idMatch: prev_id,
+                    displayedMatch: prev_match
+                }
+            });
+        },
+        getNextMatch() {
+            let newIndex = this.match_index + 1;
+            //check if no at index 0 or length-1
+            if (newIndex > this.league_matches.matches.length - 1)
+                newIndex = this.match_index;
 
-      let next_match = this.league_matches.matches[newIndex];
-      let next_id = next_match.id;
-      this.$router.replace({
-        name: "matchinfo",
-        params: {
-          idCompetition: this.idCompetition,
-          idMatch: next_id,
-          displayedMatch: next_match
+            let next_match = this.league_matches.matches[newIndex];
+            let next_id = next_match.id;
+            this.$router.replace({
+                name: "matchinfo",
+                params: {
+                    idCompetition: this.idCompetition,
+                    idMatch: next_id,
+                    displayedMatch: next_match
+                }
+            });
+        },
+        getLocalDateAndTime(utcD) {
+            let localDate = new Date(utcD);
+            let options = {
+                weekday: "short",
+                year: "2-digit",
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric"
+            };
+            return localDate.toLocaleDateString("en-GB", options);
         }
-      });
-    },
-    getLocalDateAndTime(utcD) {
-      let localDate = new Date(utcD);
-      let options = {
-        weekday: "short",
-        year: "2-digit",
-        month: "numeric",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric"
-      };
-      return localDate.toLocaleDateString("en-GB", options);
     }
-  }
 };
 </script>
 <style scoped>
 .sticky-tabs {
-  position: sticky;
-  top: 80px;
+    position: sticky;
+    top: 80px;
 }
 </style>

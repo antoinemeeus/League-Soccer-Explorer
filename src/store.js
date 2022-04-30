@@ -2,17 +2,19 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 import VueAxios from "vue-axios";
-import firebase from "firebase";
 import router from "./router";
+
+import {getAuth, GoogleAuthProvider} from "firebase/auth";
+import LeagueMatchesInfo_2021 from "./assets/MatchesInfo_2021.json";
+import LeagueMatchesInfo_2014 from "./assets/MatchesInfo_2014.json";
+import LeagueMatchesInfo_2019 from "./assets/MatchesInfo_2019.json";
+import LeagueMatchesInfo_2002 from "./assets/MatchesInfo_2002.json";
+
 
 Vue.use(Vuex);
 
 Vue.use(VueAxios, axios);
 
-import LeagueMatchesInfo_2021 from "./assets/MatchesInfo_2021.json";
-import LeagueMatchesInfo_2014 from "./assets/MatchesInfo_2014.json";
-import LeagueMatchesInfo_2019 from "./assets/MatchesInfo_2019.json";
-import LeagueMatchesInfo_2002 from "./assets/MatchesInfo_2002.json";
 
 export default new Vuex.Store({
     state: {
@@ -22,7 +24,10 @@ export default new Vuex.Store({
         minutesUpdate: 20,
         API_URL: "https://api.football-data.org/v2/",
         options: {
-            headers: {"X-Auth-Token": process.env.VUE_APP_API_TOKEN}
+            headers: {
+                "X-Auth-Token": process.env.VUE_APP_API_TOKEN,
+                "Origin": "http://localhost:8081",
+            }
         },
         urlKeys: {
             getLeagues: {
@@ -80,7 +85,7 @@ export default new Vuex.Store({
             2019: LeagueMatchesInfo_2019,
             2002: LeagueMatchesInfo_2002
         },
-        league_competition: null,
+        league_competition: {},
         league_matches: null,
         league_teams: null,
         league_standings: null,
@@ -164,8 +169,7 @@ export default new Vuex.Store({
     actions: {
         userSignUp({commit}, payload) {
             commit("setLoadingUser", true);
-            firebase
-                .auth()
+            getAuth()
                 .createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(firebaseUser => {
                     commit("setUser", {email: firebaseUser.user.email});
@@ -182,11 +186,10 @@ export default new Vuex.Store({
         },
         userLogIn({commit}) {
             commit("setLoadingUser", true);
-            const provider = new firebase.auth.GoogleAuthProvider();
+            const provider = new GoogleAuthProvider();
             provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
             //Sign in with pop up
-            firebase
-                .auth()
+            getAuth()
                 .signInWithPopup(provider)
                 .then(result => {
                     // This gives you a Google Access Token. You can use it to access the Google API.
@@ -200,21 +203,15 @@ export default new Vuex.Store({
                 })
                 .catch(function (error) {
                     // Handle Errors here.
-                    //var errorCode = error.code;
                     let errorMessage = error.message;
                     // The email of the user's account used.
                     console.error("ERROR!");
                     console.error(errorMessage);
-                    //var email = error.email;
-                    // The firebase.auth.AuthCredential type that was used.
-                    //var credential = error.credential;
                     commit("setLoadingUser", false);
-                    // ...
                 });
         },
         userLogOut({commit}) {
-            firebase
-                .auth()
+            getAuth()
                 .signOut()
                 .then(function () {
                     // Sign-out successful.
@@ -225,7 +222,6 @@ export default new Vuex.Store({
                     console.error(error);
                 });
             commit("setUser", null);
-            //router.push("/");
         },
         fetchAPI({commit, state}, params) {
             let fetchOptions = state.urlKeys[params.key];
@@ -237,22 +233,11 @@ export default new Vuex.Store({
             );
             let timePassedInMinutes = Math.abs(now - lastFetched) / (1000 * 60);
             if (timePassedInMinutes < state.minutesUpdate) {
-                // console.log(
-                //   "League update time " +
-                //     timePassedInMinutes +
-                //     " minutes is less than " +
-                //     state.minutesUpdate +
-                //     " minutes"
-                // );
-                // console.log("Trying to load " + params.key + " data from LocalStorage");
                 let savedLocalData = JSON.parse(localStorage.getItem(StorageKey));
                 if (savedLocalData) {
-                    // console.log("savedLocalData " + params.key + " is present");
                     commit(fetchOptions.commitCmd, savedLocalData);
                     commit(fetchOptions.commitloadingFlag, false);
                     return;
-                } else {
-                    // console.log("savedLocalData is missing!");
                 }
             }
 
@@ -277,15 +262,9 @@ export default new Vuex.Store({
                 });
         },
         fetchPlayers({commit, dispatch}, {string_query, retryCount}) {
-            // console.log("Count actual:", retryCount);
             if (typeof retryCount === "undefined") {
                 retryCount = 0;
-                // console.log("Count to zero:", retryCount);
             }
-            // console.log(
-            //   "Fetching players from thesportsdb with team name query:",
-            //   string_query
-            // );
             commit("SET_LOADING_PLAYERS", true);
             commit("SET_TEAM_PLAYERS", []);
             axios
@@ -295,11 +274,7 @@ export default new Vuex.Store({
                 )
                 .then(response => response.data)
                 .then(players => {
-                    //console.log(players);
                     if (players.player == null) {
-                        // console.log(
-                        //   "Failed to catch players with team named: " + string_query
-                        // );
                         let newTeamName = string_query.split(" ")[0];
 
                         if (retryCount === 1) {

@@ -107,63 +107,65 @@
 </template>
 
 <script>
-import moment from "moment";
 
 export default {
-  name: "MatchCard",
-  props: ["leagueCompetitionId", "indvMatch", "iscurrentMatch"],
-  data: () => ({}),
-
-  computed: {
-    isHomeWinner() {
-      return this.indvMatch.score.winner === "HOME_TEAM";
+    name: "MatchCard",
+    props: {
+        leagueCompetitionId: Number,
+        indvMatch: Object,
+        iscurrentMatch: Boolean,
     },
-    isAwayWinner() {
-      return this.indvMatch.score.winner === "AWAY_TEAM";
+    data: () => ({}),
+    computed: {
+        isHomeWinner() {
+            return this.indvMatch.score.winner === "HOME_TEAM";
+        },
+        isAwayWinner() {
+            return this.indvMatch.score.winner === "AWAY_TEAM";
+        },
+        localTime() {
+            return this.getLocalDateAndTime(this.indvMatch.utcDate);
+        },
+        isSchedule() {
+            return this.indvMatch.status === "SCHEDULED";
+        },
+        dynamicColor() {
+            return this.iscurrentMatch ? "blue-grey lighten-3" : "";
+        },
+        periodScore() {
+            let _score = this.indvMatch.score;
+            let obj = {name: "Scheduled", score: _score.halfTime};
+            if (this.testPeriodScore(_score.halfTime)) {
+                obj.name = "HT";
+                obj.score = _score.halfTime;
+            }
+            if (this.testPeriodScore(_score.fullTime)) {
+                obj.name = "FT";
+                obj.score = _score.fullTime;
+            }
+            return obj;
+        }
     },
-    localTime() {
-      return this.getLocalDateAndTime(this.indvMatch.utcDate);
-    },
-    isSchedule() {
-      return this.indvMatch.status === "SCHEDULED";
-    },
-    dynamicColor() {
-      return this.iscurrentMatch ? "blue-grey lighten-3" : "";
-    },
-    periodScore() {
-      let _score = this.indvMatch.score;
-      let obj = {name: "Scheduled", score: _score.halfTime};
-      if (this.testPeriodScore(_score.halfTime)) {
-        obj.name = "HT";
-        obj.score = _score.halfTime;
-      }
-      if (this.testPeriodScore(_score.fullTime)) {
-        obj.name = "FT";
-        obj.score = _score.fullTime;
-      }
-      return obj;
+    methods: {
+        getLocalDateAndTime(utcD) {
+            let localDate = new Date(utcD);
+            const options = {
+                weekday: "short",
+                year: "2-digit",
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric"
+            };
+            return localDate.toLocaleDateString("en-GB", options);
+        },
+        getImgSrc(src) {
+            if (src) return src;
+            return require("@/assets/placeholdershield.png");
+        },
+        testPeriodScore(obj) {
+            return obj.homeTeam != null || obj.awayTeam != null;
+        }
     }
-  },
-  methods: {
-    getLocalDateAndTime(utcD) {
-      let localDate = new Date(utcD);
-      const options = {
-        weekday: "short",
-        year: "2-digit",
-        month: "numeric",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric"
-      };
-      return localDate.toLocaleDateString("en-GB", options);
-    },
-    getImgSrc(src) {
-      if (src) return src;
-      return require("@/assets/placeholdershield.png");
-    },
-    testPeriodScore(obj) {
-      return obj.homeTeam != null || obj.awayTeam != null;
-    }
-  }
 };
 </script>

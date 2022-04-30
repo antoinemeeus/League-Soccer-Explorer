@@ -33,11 +33,13 @@
 
 <script>
 export default {
-  name: "TabStat",
-  props: ["stats"],
-  data: () => ({}),
+    name: "TabStat",
+    props: {
+        stats: Array
+    },
+    data: () => ({}),
 
-  computed: {},
-  methods: {}
+    computed: {},
+    methods: {}
 };
 </script>

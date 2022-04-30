@@ -40,11 +40,15 @@
 
 <script>
 export default {
-  name: "LogoHeader",
-  props: ["title", "homeLogoUrl", "awayLogoUrl"],
-  data: () => ({}),
+    name: "LogoHeader",
+    props: {
+        title: String,
+        homeLogoUrl: String,
+        awayLogoUrl: String,
+    },
+    data: () => ({}),
 
-  computed: {},
-  methods: {}
+    computed: {},
+    methods: {}
 };
 </script>

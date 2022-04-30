@@ -44,24 +44,26 @@
 
 <script>
 export default {
-  name: "TabLineup",
-  props: ["list"],
-  data: () => ({}),
-
-  computed: {
-    nonEmptyList() {
-      if (this.list) return this.list;
-      return [];
+    name: "TabLineup",
+    props: {
+        list: Array
     },
-    maxListIndex() {
-      if (this.list) {
-        return this.list.homeTeam.length >= this.list.awayTeam.length
-          ? this.list.homeTeam.length - 1
-          : this.list.awayTeam.lenght - 1;
-      }
-      return 0;
-    }
-  },
-  methods: {}
+    data: () => ({}),
+
+    computed: {
+        nonEmptyList() {
+            if (this.list) return this.list;
+            return [];
+        },
+        maxListIndex() {
+            if (this.list) {
+                return this.list.homeTeam.length >= this.list.awayTeam.length
+                    ? this.list.homeTeam.length - 1
+                    : this.list.awayTeam.lenght - 1;
+            }
+            return 0;
+        }
+    },
+    methods: {}
 };
 </script>

@@ -32,25 +32,25 @@ import {mapActions, mapState} from "vuex";
 import LeagueCard from "../components/LeagueCard";
 
 export default {
-  name: "Home",
-  components: {
-    LeagueCard
-  },
-  data() {
-    return {};
-  },
-  computed: {
-    ...mapState(["loadingLeague", "league_competition", "league_matches_info"])
-  },
-  created() {
-  },
-  mounted() {
-  },
-  methods: {
-    ...mapActions(["fetchAPI"]),
-    isDataAvailable(idCompetition) {
-      return this.league_matches_info.hasOwnProperty(idCompetition);
+    name: "HomeComponent",
+    components: {
+        LeagueCard
+    },
+    data() {
+        return {};
+    },
+    computed: {
+        ...mapState(["loadingLeague", "league_competition", "league_matches_info"])
+    },
+    created() {
+    },
+    mounted() {
+    },
+    methods: {
+        ...mapActions(["fetchAPI"]),
+        isDataAvailable(idCompetition) {
+            return this.league_matches_info.hasOwnProperty(idCompetition);
+        }
     }
-  }
 };
 </script>

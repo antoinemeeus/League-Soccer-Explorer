@@ -109,159 +109,161 @@ import MatchCard from "../components/MatchCard.vue";
 import {mapActions, mapState} from "vuex";
 
 export default {
-  name: "MatchesList",
+    name: "MatchesList",
 
-  components: {
-    MatchCard
-  },
-  props: ["idCompetition"],
-  data() {
-    return {
-      selectedMatchDay: 1,
-      matchDaysDisplayed: []
-    };
-  },
-  computed: {
-    ...mapState([
-      "league_competition",
-      "league_matches",
-      "league_teams",
-      "goToCurrent",
-      "selectedMDay"
-    ]),
-    matchdayList() {
-      //Method to extract the matchday of list of matches and their start and end Dates.
-      let matches = this.league_matches.matches;
-      if (matches) {
-        let matchDayItems = [];
-        let DateStart = moment(matches[0].utcDate);
-        //Loop trough array until -1
-        for (let i = 0; i < matches.length - 2; i++) {
-          let curMatchday = matches[i].matchday;
-          let nextMatchday = matches[i + 1].matchday;
-          if (nextMatchday > curMatchday) {
-            matchDayItems.push({
-              name: "Matchday",
-              value: curMatchday,
-              startDate: DateStart,
-              endDate: moment(matches[i].utcDate)
+    components: {
+        MatchCard
+    },
+    props: {
+        idCompetition: Number
+    },
+    data() {
+        return {
+            selectedMatchDay: 1,
+            matchDaysDisplayed: []
+        };
+    },
+    computed: {
+        ...mapState([
+            "league_competition",
+            "league_matches",
+            "league_teams",
+            "goToCurrent",
+            "selectedMDay"
+        ]),
+        matchdayList() {
+            //Method to extract the matchday of list of matches and their start and end Dates.
+            let matches = this.league_matches.matches;
+            if (matches) {
+                let matchDayItems = [];
+                let DateStart = moment(matches[0].utcDate);
+                //Loop trough array until -1
+                for (let i = 0; i < matches.length - 2; i++) {
+                    let curMatchday = matches[i].matchday;
+                    let nextMatchday = matches[i + 1].matchday;
+                    if (nextMatchday > curMatchday) {
+                        matchDayItems.push({
+                            name: "Matchday",
+                            value: curMatchday,
+                            startDate: DateStart,
+                            endDate: moment(matches[i].utcDate)
+                        });
+                        DateStart = moment(matches[i + 1].utcDate);
+                    }
+                }
+                //Add last item on array because you can't check outside of array bounds
+                let lastMatch = matches[matches.length - 1];
+                matchDayItems.push({
+                    name: "Matchday",
+                    value: lastMatch.matchday,
+                    startDate: DateStart,
+                    endDate: moment(lastMatch.utcDate)
+                });
+                return matchDayItems;
+            }
+            return [];
+        },
+        currentLeagueInfo() {
+            return this.league_matches.competition;
+        },
+        currentMatchDay() {
+            return this.league_matches.matches[0].season.currentMatchday;
+        },
+        matchesWithCrest() {
+            //Adding crestUrl to each matches homeTeam/awayTeam with information from league_teams
+            if (this.league_teams.teams.length === 0) {
+                return {};
+            }
+            return this.league_matches.matches.map(obj => {
+                let Tobj = obj;
+                let _homeTeam = this.league_teams.teams.find(
+                    elem => elem.id == Tobj.homeTeam.id
+                );
+                let _awayTeam = this.league_teams.teams.find(
+                    elem => elem.id == Tobj.awayTeam.id
+                );
+                obj.homeTeam["crestUrl"] = _homeTeam.crestUrl
+                    ? _homeTeam.crestUrl
+                    : require("@/assets/placeholdershield.png");
+                obj.awayTeam["crestUrl"] = _awayTeam.crestUrl
+                    ? _awayTeam.crestUrl
+                    : require("@/assets/placeholdershield.png");
+                return obj;
             });
-            DateStart = moment(matches[i + 1].utcDate);
-          }
+        },
+        nextMatch() {
+            //Find current or next match by obtaining the next index after the last match with status "FINISHED"
+            let lastIndex = 0;
+            let len = this.league_matches.matches.length;
+            for (let i = 0; i < len - 1; i++) {
+                if (this.league_matches.matches[i].status === "FINISHED") {
+                    lastIndex = i;
+                }
+            }
+            return this.league_matches.matches[lastIndex + 1];
+        },
+        sortedMatchDaysDisplayed() {
+            return this.matchDaysDisplayed.sort((a, b) => a - b);
         }
-        //Add last item on array because you can't check outside of array bounds
-        let lastMatch = matches[matches.length - 1];
-        matchDayItems.push({
-          name: "Matchday",
-          value: lastMatch.matchday,
-          startDate: DateStart,
-          endDate: moment(lastMatch.utcDate)
-        });
-        return matchDayItems;
-      }
-      return [];
     },
-    currentLeagueInfo() {
-      return this.league_matches.competition;
-    },
-    currentMatchDay() {
-      return this.league_matches.matches[0].season.currentMatchday;
-    },
-    matchesWithCrest() {
-      //Adding crestUrl to each matches homeTeam/awayTeam with information from league_teams
-      if (this.league_teams.teams.length === 0) {
-        return {};
-      }
-      return this.league_matches.matches.map(obj => {
-        let Tobj = obj;
-        let _homeTeam = this.league_teams.teams.find(
-          elem => elem.id == Tobj.homeTeam.id
-        );
-        let _awayTeam = this.league_teams.teams.find(
-          elem => elem.id == Tobj.awayTeam.id
-        );
-        obj.homeTeam["crestUrl"] = _homeTeam.crestUrl
-          ? _homeTeam.crestUrl
-          : require("@/assets/placeholdershield.png");
-        obj.awayTeam["crestUrl"] = _awayTeam.crestUrl
-          ? _awayTeam.crestUrl
-          : require("@/assets/placeholdershield.png");
-        return obj;
-      });
-    },
-    nextMatch() {
-      //Find current or next match by obtaining the next index after the last match with status "FINISHED"
-      let lastIndex = 0;
-      let len = this.league_matches.matches.length;
-      for (let i = 0; i < len - 1; i++) {
-        if (this.league_matches.matches[i].status === "FINISHED") {
-          lastIndex = i;
+    watch: {
+        goToCurrent() {
+            this.selectedMatchDay = this.nextMatch.matchday;
+            this.goToNextMatch();
+        },
+        selectedMatchDay() {
+            this.$store.commit("setSelectedMDay", this.selectedMatchDay);
         }
-      }
-      return this.league_matches.matches[lastIndex + 1];
     },
-    sortedMatchDaysDisplayed() {
-      return this.matchDaysDisplayed.sort((a, b) => a - b);
-    }
-  },
-  watch: {
-    goToCurrent() {
-      this.selectedMatchDay = this.nextMatch.matchday;
-      this.goToNextMatch();
-    },
-    selectedMatchDay() {
-      this.$store.commit("setSelectedMDay", this.selectedMatchDay);
-    }
-  },
-  mounted() {
-    //jump to current or nextMatch
-    this.setToolBarInfo();
-    //set matchday page if we go back
-    this.selectedMatchDay = this.nextMatch.matchday;
+    mounted() {
+        //jump to current or nextMatch
+        this.setToolBarInfo();
+        //set matchday page if we go back
+        this.selectedMatchDay = this.nextMatch.matchday;
 
-    this.matchDaysDisplayed.push(this.currentMatchDay);
+        this.matchDaysDisplayed.push(this.currentMatchDay);
 
-    this.$nextTick(function () {
-      // Code that will run only after the
-      // entire view has been rendered
-      this.goToNextMatch();
-    });
-  },
-  methods: {
-    ...mapActions(["fetchAPI"]),
-
-    formatDates(startD, endD) {
-      if (moment(startD).isSame(endD, "month")) {
-        return startD.format("DD") + " - " + endD.format("DD MMM");
-      }
-      return startD.format("DD MMM") + " - " + endD.format("DD MMM");
-    },
-    setToolBarInfo() {
-      this.$store.commit("SET_LEAGUE_ICON", this.currentLeagueInfo.code);
-      this.$store.commit("SET_APP_TITLE", this.currentLeagueInfo.name);
-      this.$store.commit("SET_CURRENT_LEAGUE", this.currentLeagueInfo);
-    },
-    goToNextMatch() {
-      let el = document.querySelector(".scroll_target");
-      if (el) {
-        let vOffset = window.innerHeight / 2 - el.clientHeight / 2;
-        this.$vuetify.goTo(el, {
-          duration: 0,
-          offset: -vOffset,
-          easing: "easeInOutCubic"
+        this.$nextTick(function () {
+            // Code that will run only after the
+            // entire view has been rendered
+            this.goToNextMatch();
         });
-      }
     },
-    previousMDay() {
-      if (this.selectedMatchDay > 1) this.selectedMatchDay -= 1;
-    },
-    nextMDay() {
-      if (this.selectedMatchDay < this.matchdayList.length)
-        this.selectedMatchDay += 1;
-    },
-    getMatchesInMatchDay(m_day) {
-      return this.matchesWithCrest.filter(obj => obj.matchday === m_day);
+    methods: {
+        ...mapActions(["fetchAPI"]),
+
+        formatDates(startD, endD) {
+            if (moment(startD).isSame(endD, "month")) {
+                return startD.format("DD") + " - " + endD.format("DD MMM");
+            }
+            return startD.format("DD MMM") + " - " + endD.format("DD MMM");
+        },
+        setToolBarInfo() {
+            this.$store.commit("SET_LEAGUE_ICON", this.currentLeagueInfo.code);
+            this.$store.commit("SET_APP_TITLE", this.currentLeagueInfo.name);
+            this.$store.commit("SET_CURRENT_LEAGUE", this.currentLeagueInfo);
+        },
+        goToNextMatch() {
+            let el = document.querySelector(".scroll_target");
+            if (el) {
+                let vOffset = window.innerHeight / 2 - el.clientHeight / 2;
+                this.$vuetify.goTo(el, {
+                    duration: 0,
+                    offset: -vOffset,
+                    easing: "easeInOutCubic"
+                });
+            }
+        },
+        previousMDay() {
+            if (this.selectedMatchDay > 1) this.selectedMatchDay -= 1;
+        },
+        nextMDay() {
+            if (this.selectedMatchDay < this.matchdayList.length)
+                this.selectedMatchDay += 1;
+        },
+        getMatchesInMatchDay(m_day) {
+            return this.matchesWithCrest.filter(obj => obj.matchday === m_day);
+        }
     }
-  }
 };
 </script>
