@@ -22,8 +22,6 @@ const config = {
 };
 firebase.initializeApp(config);
 
-console.log("API KEY:" + config.apiKey);
-console.log(process.env.VUE_APP_FIRESTORE_TOKEN);
 // Initialize Cloud Firestore through Firebase
 const db = firebase.firestore();
 
