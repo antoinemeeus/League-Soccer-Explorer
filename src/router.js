@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-import firebase from "firebase";
+import { getAuth } from "firebase/auth";
 
 import Home from "./views/Home.vue";
 import MatchesList from "./views/MatchesList.vue";
@@ -91,7 +91,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    const isAuthenticated = firebase.auth().currentUser;
+    const isAuthenticated = getAuth().currentUser;
     if (requiresAuth && !isAuthenticated) {
         next({name: "login", query: {from: to.path}});
     } else {
