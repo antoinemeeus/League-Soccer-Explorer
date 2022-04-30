@@ -47,7 +47,9 @@
 <script>
 export default {
     name: "PlayerCard",
-    props: ["player", "playerDataOrg"],
+    props: {
+        player: Object
+    },
     data: () => ({
         failed_image: false
     }),

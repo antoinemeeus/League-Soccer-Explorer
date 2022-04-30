@@ -56,9 +56,7 @@
                       <a
                         :href="currentTeam.website"
                         target="_blank"
-                      >{{
-                          currentTeam.website
-                        }}</a>
+                      >{{ currentTeam.website }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -85,9 +83,8 @@
                   <v-card-title color="primary">
                     <h4>
                       Email:
-                      <a :href="`mailto:${currentTeam.email}`">{{
-                          currentTeam.email
-                        }}</a>
+                      <a :href="`mailto:${currentTeam.email}`">
+                        {{ currentTeam.email }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -113,9 +110,9 @@
                   <v-card-title color="primary">
                     <h4>
                       Phone number:
-                      <a :href="`tel://${currentTeam.phone}`">{{
-                          currentTeam.phone
-                        }}</a>
+                      <a :href="`tel://${currentTeam.phone}`">
+                        {{ currentTeam.phone }}
+                      </a>
                     </h4>
                   </v-card-title>
                 </v-card>
