@@ -4,17 +4,16 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 import router from "./router";
 
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import {getAuth, GoogleAuthProvider} from "firebase/auth";
+import LeagueMatchesInfo_2021 from "./assets/MatchesInfo_2021.json";
+import LeagueMatchesInfo_2014 from "./assets/MatchesInfo_2014.json";
+import LeagueMatchesInfo_2019 from "./assets/MatchesInfo_2019.json";
+import LeagueMatchesInfo_2002 from "./assets/MatchesInfo_2002.json";
 
 
 Vue.use(Vuex);
 
 Vue.use(VueAxios, axios);
-
-import LeagueMatchesInfo_2021 from "./assets/MatchesInfo_2021.json";
-import LeagueMatchesInfo_2014 from "./assets/MatchesInfo_2014.json";
-import LeagueMatchesInfo_2019 from "./assets/MatchesInfo_2019.json";
-import LeagueMatchesInfo_2002 from "./assets/MatchesInfo_2002.json";
 
 
 export default new Vuex.Store({
@@ -25,7 +24,10 @@ export default new Vuex.Store({
         minutesUpdate: 20,
         API_URL: "https://api.football-data.org/v2/",
         options: {
-            headers: {"X-Auth-Token": process.env.VUE_APP_API_TOKEN}
+            headers: {
+                "X-Auth-Token": process.env.VUE_APP_API_TOKEN,
+                "Origin": "http://localhost:8081",
+            }
         },
         urlKeys: {
             getLeagues: {
@@ -83,7 +85,7 @@ export default new Vuex.Store({
             2019: LeagueMatchesInfo_2019,
             2002: LeagueMatchesInfo_2002
         },
-        league_competition: null,
+        league_competition: {},
         league_matches: null,
         league_teams: null,
         league_standings: null,

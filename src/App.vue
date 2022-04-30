@@ -290,7 +290,7 @@ export default {
         let cur_id_competition = route_.params.idCompetition;
         if (
           this.$store.state.league_matches &&
-          this.$store.state.league_matches.competition.id == cur_id_competition
+          this.$store.state.league_matches.competition.id === cur_id_competition
         ) {
           console.log("League_matches is already in store");
         } else {
@@ -299,7 +299,7 @@ export default {
         }
         if (
           this.$store.state.league_teams &&
-          this.$store.state.league_teams.competition.id == cur_id_competition
+          this.$store.state.league_teams.competition.id === cur_id_competition
         ) {
           console.log("League_teams is already in store");
         } else {
@@ -312,7 +312,7 @@ export default {
         let cur_id_team = route_.params.idTeam;
         if (
           this.$store.state.team_football_org &&
-          this.$store.state.team_football_org.id == cur_id_team
+          this.$store.state.team_football_org.id === cur_id_team
         ) {
           console.log("League_teamInfo is already in store");
         } else {
@@ -322,7 +322,7 @@ export default {
         }
         if (
           this.$store.state.league_matches &&
-          this.$store.state.league_matches.competition.id == cur_id_competition
+          this.$store.state.league_matches.competition.id === cur_id_competition
         ) {
           console.log("League_matches is already in store");
         } else {
@@ -332,7 +332,7 @@ export default {
 
         if (
           this.$store.state.league_teams &&
-          this.$store.state.league_teams.competition.id == cur_id_competition
+          this.$store.state.league_teams.competition.id === cur_id_competition
         ) {
           console.log("League_teams is already in store");
         } else {
@@ -342,7 +342,7 @@ export default {
 
         if (
           this.$store.state.league_standings &&
-          this.$store.state.league_standings.competition.id == cur_id_competition
+          this.$store.state.league_standings.competition.id === cur_id_competition
         ) {
           console.log("League_standings is already in store");
         } else {

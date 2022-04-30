@@ -40,33 +40,33 @@
 import EventCard from "./EventCard.vue";
 
 export default {
-  name: "TabEvent",
-  components: {
-    EventCard
-  },
-  props: ["tgoals", "tbookings", "tsubstitutions"],
-  data: () => ({}),
+    name: "TabEvent",
+    components: {
+        EventCard
+    },
+    props: {tgoals: Array, tbookings: Array, tsubstitutions: Array},
+    data: () => ({}),
 
-  computed: {
-    allEvents() {
-      return []
-        .concat(...[this.tbookings, this.tsubstitutions, this.tgoals])
-        .sort((a, b) => a.minute - b.minute)
-        .reverse();
-    }
-  },
-  methods: {
-    colorCard(str) {
-      if (str.includes("yellow")) return "yellow";
-      if (str.includes("red")) return "red";
-      return "white";
+    computed: {
+        allEvents() {
+            return []
+                .concat(...[this.tbookings, this.tsubstitutions, this.tgoals])
+                .sort((a, b) => a.minute - b.minute)
+                .reverse();
+        }
     },
-    isHome(evt) {
-      return evt.team.tType === "homeTeam" || evt.tType === "homeTeam";
-    },
-    isAway(evt) {
-      return evt.team.tType === "awayTeam" || evt.tType === "awayTeam";
+    methods: {
+        colorCard(str) {
+            if (str.includes("yellow")) return "yellow";
+            if (str.includes("red")) return "red";
+            return "white";
+        },
+        isHome(evt) {
+            return evt.team.tType === "homeTeam" || evt.tType === "homeTeam";
+        },
+        isAway(evt) {
+            return evt.team.tType === "awayTeam" || evt.tType === "awayTeam";
+        }
     }
-  }
 };
 </script>

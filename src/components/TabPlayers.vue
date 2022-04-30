@@ -13,7 +13,7 @@
         xs4
         class="pa-1"
       >
-        <PlayerCard
+        <player-card
           :player="player"
           :busteam-info="teamInfo"
         />
@@ -26,11 +26,14 @@
 import PlayerCard from "./PlayerCard.vue";
 
 export default {
-  name: "Tabplayers",
-  components: {
-    PlayerCard
-  },
-  props: ["players", "teamInfo"],
-  data: () => ({}),
+    name: "TabPlayersComponents",
+    components: {
+        PlayerCard
+    },
+    props: {
+        players: Array,
+        teamInfo: String,
+    },
+    data: () => ({}),
 };
 </script>

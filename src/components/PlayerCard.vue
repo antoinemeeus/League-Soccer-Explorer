@@ -46,25 +46,25 @@
 
 <script>
 export default {
-  name: "Playercard",
-  props: ["player", "playerDataOrg"],
-  data: () => ({
-    failed_image: false
-  }),
+    name: "PlayerCard",
+    props: ["player", "playerDataOrg"],
+    data: () => ({
+        failed_image: false
+    }),
 
-  computed: {
-    playerImageSrc() {
-      return this.player.strThumb
-        ? this.player.strThumb + "/preview"
-        : require("@/assets/CutOutPlaceHolder.jpg");
-    }
-  },
-  methods: {}
+    computed: {
+        playerImageSrc() {
+            return this.player.strThumb
+                ? this.player.strThumb + "/preview"
+                : require("@/assets/CutOutPlaceHolder.jpg");
+        }
+    },
+    methods: {}
 };
 </script>
 
 <style scoped>
 .roundedCorner {
-  border-radius: 10px;
+    border-radius: 10px;
 }
 </style>

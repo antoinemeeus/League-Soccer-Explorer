@@ -69,31 +69,31 @@
 
 <script>
 export default {
-  name: "EventCard",
-  props: ["event"],
-  data: () => ({}),
+    name: "EventCard",
+    props: {event: Object},
+    data: () => ({}),
 
-  computed: {
-    isGoal() {
-      return typeof this.event.scorer != "undefined";
+    computed: {
+        isGoal() {
+            return typeof this.event.scorer != "undefined";
 
+        },
+        isSubs() {
+            return typeof this.event.playerIn != "undefined";
+
+        },
+        isCard() {
+            return typeof this.event.card != "undefined";
+
+        }
     },
-    isSubs() {
-      return typeof this.event.playerIn != "undefined";
-
-    },
-    isCard() {
-      return typeof this.event.card != "undefined";
-
+    methods: {
+        colorCard() {
+            let str = this.event.card;
+            if (str.includes("yellow")) return "Yellow";
+            if (str.includes("red")) return "Red";
+            return "";
+        }
     }
-  },
-  methods: {
-    colorCard() {
-      let str = this.event.card;
-      if (str.includes("yellow")) return "Yellow";
-      if (str.includes("red")) return "Red";
-      return "";
-    }
-  }
 };
 </script>

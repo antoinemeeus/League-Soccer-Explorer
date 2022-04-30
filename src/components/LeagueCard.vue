@@ -34,16 +34,20 @@
 </template>
 
 <script>
+
 export default {
-  name: "LeaguesCards",
-  props: ["currentCompetition", "isDataAvailable"],
-  data: () => ({}),
-  methods: {
-    sendLeagueInfoStore() {
-      this.$store.commit("SET_LEAGUE_ICON", this.currentCompetition.code);
-      this.$store.commit("SET_APP_TITLE", this.currentCompetition.name);
-      this.$store.commit("SET_CURRENT_LEAGUE", this.currentCompetition);
+    name: "LeaguesCards",
+    props: {
+        currentCompetition: Object,
+        isDataAvailable: Boolean,
+    },
+    data: () => ({}),
+    methods: {
+        sendLeagueInfoStore() {
+            this.$store.commit("SET_LEAGUE_ICON", this.currentCompetition.code);
+            this.$store.commit("SET_APP_TITLE", this.currentCompetition.name);
+            this.$store.commit("SET_CURRENT_LEAGUE", this.currentCompetition);
+        }
     }
-  }
 };
 </script>

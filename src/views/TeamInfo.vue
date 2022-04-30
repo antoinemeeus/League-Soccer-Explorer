@@ -57,8 +57,8 @@
                         :href="currentTeam.website"
                         target="_blank"
                       >{{
-                        currentTeam.website
-                      }}</a>
+                          currentTeam.website
+                        }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -86,8 +86,8 @@
                     <h4>
                       Email:
                       <a :href="`mailto:${currentTeam.email}`">{{
-                        currentTeam.email
-                      }}</a>
+                          currentTeam.email
+                        }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -114,8 +114,8 @@
                     <h4>
                       Phone number:
                       <a :href="`tel://${currentTeam.phone}`">{{
-                        currentTeam.phone
-                      }}</a>
+                          currentTeam.phone
+                        }}</a>
                     </h4>
                   </v-card-title>
                 </v-card>
@@ -184,7 +184,7 @@
       class="white elevation-1"
     >
       <v-tab-item>
-        <TabPlayers
+        <tab-players
           v-if="!loadingPlayers"
           :players="team_players"
           :team-info="team_football_org"
@@ -231,100 +231,104 @@ import TabStanding from "../components/TabStanding.vue";
 import TabPlayers from "../components/TabPlayers.vue";
 
 export default {
-  name: "TeamInfo",
-  components: {
-    TabMatches,
-    TabStanding,
-    TabPlayers
-  },
-  props: ["idCompetition", "idTeam", "displayedTeam"],
-  data() {
-    return {
-      tabs: null,
-      website_menu: false,
-      website_email: false,
-      website_phone: false,
-      website_map: false
-    };
-  },
-  computed: {
-    ...mapState([
-      "loadingPlayers",
-      "team_players",
-      "league_matches",
-      "league_teams",
-      "current_team_id",
-      "team_football_org"
-    ]),
-    clubColorStyle() {
-      let cur_color = "transparent";
-      if (this.currentTeam.clubColors) {
-        cur_color = this.currentTeam.clubColors.split("/")[0];
-      }
-      return {"background-color": cur_color};
+    name: "TeamInfo",
+    components: {
+        TabMatches,
+        TabStanding,
+        TabPlayers
     },
-    currentTeam() {
-      if (this.league_teams) {
-        return this.league_teams.teams.find(obj => obj.id == this.idTeam);
-      } else {
-        return this.displayedTeam;
-      }
+    props: {
+        idCompetition: Number,
+        idTeam: Number,
+        displayedTeam: String
     },
-    currentCompetition() {
-      return this.league_teams.competition;
+    data() {
+        return {
+            tabs: null,
+            website_menu: false,
+            website_email: false,
+            website_phone: false,
+            website_map: false
+        };
     },
-    matchesWithCrest() {
-      let matches = this.league_matches.matches.filter(
-        obj =>
-          obj.homeTeam.id == this.idTeam || obj.awayTeam.id === this.idTeam
-      );
-      //Adding crestUrl to each matches homeTeam/awayTeam with information from league_teams
-      return matches.map(obj => {
-        let Tobj = obj;
-        obj.homeTeam["crestUrl"] = this.league_teams.teams.find(
-          elem => elem.id == Tobj.homeTeam.id
-        ).crestUrl;
-        obj.awayTeam["crestUrl"] = this.league_teams.teams.find(
-          elem => elem.id == Tobj.awayTeam.id
-        ).crestUrl;
-        return obj;
-      });
+    computed: {
+        ...mapState([
+            "loadingPlayers",
+            "team_players",
+            "league_matches",
+            "league_teams",
+            "current_team_id",
+            "team_football_org"
+        ]),
+        clubColorStyle() {
+            let cur_color = "transparent";
+            if (this.currentTeam.clubColors) {
+                cur_color = this.currentTeam.clubColors.split("/")[0];
+            }
+            return {"background-color": cur_color};
+        },
+        currentTeam() {
+            if (this.league_teams) {
+                return this.league_teams.teams.find(obj => obj.id == this.idTeam);
+            } else {
+                return this.displayedTeam;
+            }
+        },
+        currentCompetition() {
+            return this.league_teams.competition;
+        },
+        matchesWithCrest() {
+            let matches = this.league_matches.matches.filter(
+                obj =>
+                    obj.homeTeam.id == this.idTeam || obj.awayTeam.id === this.idTeam
+            );
+            //Adding crestUrl to each matches homeTeam/awayTeam with information from league_teams
+            return matches.map(obj => {
+                let Tobj = obj;
+                obj.homeTeam["crestUrl"] = this.league_teams.teams.find(
+                    elem => elem.id == Tobj.homeTeam.id
+                ).crestUrl;
+                obj.awayTeam["crestUrl"] = this.league_teams.teams.find(
+                    elem => elem.id == Tobj.awayTeam.id
+                ).crestUrl;
+                return obj;
+            });
+        }
+    },
+    created() {
+        if (
+            this.team_players.length > 1 &&
+            !this.current_team_id &&
+            this.current_team_id != this.team_players[0].id_team
+        ) {
+            this.fetchPlayers({string_query: this.currentTeam.shortName});
+        }
+    },
+    mounted() {
+        this.setToolBarInfo();
+    },
+    beforeDestroy() {
+    },
+    methods: {
+        ...mapActions(["fetchPlayers"]),
+        setToolBarInfo() {
+            this.$store.commit("SET_LEAGUE_ICON", this.league_teams.competition.code);
+            this.$store.commit("SET_APP_TITLE", this.league_teams.competition.name);
+            this.$store.commit("SET_CURRENT_LEAGUE", this.league_teams.competition);
+        },
+        getLocalDateAndTime(utcD) {
+            let localDate = new Date(utcD);
+            let options = {
+                weekday: "short",
+                year: "2-digit",
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric"
+            };
+            return localDate.toLocaleDateString("en-GB", options);
+        }
     }
-  },
-  created() {
-    if (
-      this.team_players.length > 1 &&
-      !this.current_team_id &&
-      this.current_team_id != this.team_players[0].id_team
-    ) {
-      this.fetchPlayers({string_query: this.currentTeam.shortName});
-    }
-  },
-  mounted() {
-    this.setToolBarInfo();
-  },
-  beforeDestroy() {
-  },
-  methods: {
-    ...mapActions(["fetchPlayers"]),
-    setToolBarInfo() {
-      this.$store.commit("SET_LEAGUE_ICON", this.league_teams.competition.code);
-      this.$store.commit("SET_APP_TITLE", this.league_teams.competition.name);
-      this.$store.commit("SET_CURRENT_LEAGUE", this.league_teams.competition);
-    },
-    getLocalDateAndTime(utcD) {
-      let localDate = new Date(utcD);
-      let options = {
-        weekday: "short",
-        year: "2-digit",
-        month: "numeric",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric"
-      };
-      return localDate.toLocaleDateString("en-GB", options);
-    }
-  }
 };
 </script>
 

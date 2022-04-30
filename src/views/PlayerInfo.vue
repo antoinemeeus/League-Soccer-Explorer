@@ -114,48 +114,51 @@
 import {mapState} from "vuex";
 
 export default {
-  name: "PlayerInfo",
+    name: "PlayerInfo",
 
-  components: {},
-  props: ["idPlayer", "displayedPlayer"],
-  data() {
-    return {};
-  },
-  computed: {
-    ...mapState(["team_football_org", "team_players"]),
-
-    getPlayer() {
-      if (typeof this.displayed_player === "undefined") {
-        console.log("Displayed player was undefined");
-        return this.team_players.find(obj => obj.idPlayer == this.idPlayer);
-      } else return this.displayed_player;
+    components: {},
+    props: {
+        idPlayer: Number,
+        displayedPlayer: String,
     },
-    getImageUrl() {
-      if (this.getPlayer.strCutout) {
-        console.log("strCutout exits");
-        console.log(this.getPlayer.strCutout);
-        return this.getPlayer.strCutout;
-      }
-      if (this.getPlayer.strThumb) {
-        console.log("strThumb exits");
-        return this.getPlayer.strThumb;
-      }
-      return require("@/assets/CutOutPlaceHolder.jpg");
-    }
-  },
-  beforeMount() {
-  },
-  mounted() {
-  },
-  beforeDestroy() {
-  },
-  methods: {
-    getAge(dateString) {
-      let birthDate = new Date(dateString);
-      let ageDifMs = Date.now() - birthDate.getTime();
-      let ageDate = new Date(ageDifMs); // miliseconds from epoch
-      return Math.abs(ageDate.getUTCFullYear() - 1970);
-    }
-  },
+    data() {
+        return {};
+    },
+    computed: {
+        ...mapState(["team_football_org", "team_players"]),
+
+        getPlayer() {
+            if (typeof this.displayed_player === "undefined") {
+                console.log("Displayed player was undefined");
+                return this.team_players.find(obj => obj.idPlayer == this.idPlayer);
+            } else return this.displayed_player;
+        },
+        getImageUrl() {
+            if (this.getPlayer.strCutout) {
+                console.log("strCutout exits");
+                console.log(this.getPlayer.strCutout);
+                return this.getPlayer.strCutout;
+            }
+            if (this.getPlayer.strThumb) {
+                console.log("strThumb exits");
+                return this.getPlayer.strThumb;
+            }
+            return require("@/assets/CutOutPlaceHolder.jpg");
+        }
+    },
+    beforeMount() {
+    },
+    mounted() {
+    },
+    beforeDestroy() {
+    },
+    methods: {
+        getAge(dateString) {
+            let birthDate = new Date(dateString);
+            let ageDifMs = Date.now() - birthDate.getTime();
+            let ageDate = new Date(ageDifMs); // miliseconds from epoch
+            return Math.abs(ageDate.getUTCFullYear() - 1970);
+        }
+    },
 };
 </script>
